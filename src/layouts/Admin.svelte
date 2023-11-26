@@ -32,9 +32,11 @@
 
   const token = getCookie("token");
   let userData;
+  let isMounted = false;
 
   onMount(async () => {
-    let res = await fetch(`${mainUrl}/api/getProfile`, {
+    if(!isMounted)
+    {let res = await fetch(`${mainUrl}/api/getProfile`, {
       headers: {
         Authorization: `bearer ${token}`,
         Accept: "application/json",
@@ -71,6 +73,7 @@
         onClick: function () {}, // Callback after click
       }).showToast();
     });
+    isMounted = true;}
   });
 </script>
 
