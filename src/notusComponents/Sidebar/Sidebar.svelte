@@ -436,7 +436,7 @@
           >
             <i
               class="fas fa-wallet mr-2 text-sm {location.href.indexOf(
-                '/transaksi/hutangSopir'
+                '/admin/transaksi/hutangSopir'
               ) !== -1
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
