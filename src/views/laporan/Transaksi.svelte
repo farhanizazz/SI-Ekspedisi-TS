@@ -97,10 +97,10 @@
       )
     : data;
 
-  $: console.log(dataSearch);
 
   onMount(() => {
     fetchData();
+    fetchRekeningData();
   });
 
   let showHargaOrderModal = false;
@@ -646,9 +646,13 @@
                                             <option selected
                                               >Choose an option</option
                                             >
-                                            <option value="1">Option 1</option>
-                                            <option value="2">Option 2</option>
-                                            <option value="3">Option 3</option>
+                                            {#each dataRekening as rekening}
+                                              <option
+                                                value={rekening.id}
+                                              >
+                                                {rekening.nama} | {rekening.sifat}
+                                              </option>
+                                            {/each}
                                           </select>
                                           <input
                                             class="mb-5 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -661,9 +665,9 @@
                                             <option selected
                                               >Choose an option</option
                                             >
-                                            <option value="1">Option 1</option>
-                                            <option value="2">Option 2</option>
-                                            <option value="3">Option 3</option>
+                                            <option value="1">Harga tambahan biaya order</option>
+                                            <option value="2">Harga tambahan uang jalan</option>
+                                            <option value="3">Harga tambahan harga jual</option>
                                           </select>
                                         </div>
                                       </div>
@@ -692,7 +696,7 @@
                               </div>
                             </div>
                             <div
-                              class="opacity-25 fixed inset-0 z-40 bg-black"
+                              class="opacity-25 fixed inset-0 z-40 bg-black" on:click={toggleHargaOrderModal}
                             ></div>
                           {/if}
                         </td>
