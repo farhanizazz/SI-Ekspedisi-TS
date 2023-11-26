@@ -95,11 +95,11 @@
         <Route path="subkon/*subkon" component={Subkon} />
         <Route path="users/*users" component={Users} />
         <Route path="roles/*roles" component={Roles} />
-      </Router>
-      <Router url="transaksi">
-        <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
-        <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
-        <Route path="order/*order" component={Transaksi} />
+        <Router url="transaksi">
+          <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
+          <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
+          <Route path="order/*order" component={Transaksi} />
+        </Router>
       </Router>
       <FooterAdmin />
     </div>

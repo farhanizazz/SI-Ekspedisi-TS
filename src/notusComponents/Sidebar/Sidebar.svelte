@@ -429,7 +429,7 @@
             use:link
             href="/transaksi/hutangSopir"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/transaksi/hutangSopir'
+              'admin/transaksi/hutangSopir'
             ) !== -1
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
@@ -450,14 +450,14 @@
             use:link
             href="/transaksi/pengeluaran"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/transaksi/pengeluaran'
+              'admin/transaksi/pengeluaran'
             ) !== -1
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
               class="fas fa-wallet mr-2 text-sm {location.href.indexOf(
-                '/transaksi/pengeluaran'
+                'admin/transaksi/pengeluaran'
               ) !== -1
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
