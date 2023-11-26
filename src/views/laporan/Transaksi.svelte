@@ -9,9 +9,11 @@
   import { onMount } from "svelte";
   import { createPopper } from "@popperjs/core";
   import Chips from "../../notusComponents/Chips/Chips.svelte";
+  import axios from "axios";
   // import "../../app.css";
 
   let data = [];
+  let dataRekening = [];
   const headingTransaksiOrder = [
     "TGL",
     "No Transaksi",
@@ -36,41 +38,51 @@
     }).then((res) => {
       res.json().then((res) => {
         res.data.forEach((e) => {
-          delete e.created_at;
-          delete e.updated_at;
-          delete e.m_penyewa_id;
-          delete e.m_armada_id;
-          delete e.m_sopir_id;
-          delete e.m_subkon_id;
-          delete e.rekening;
+          // delete e.created_at;
+          // delete e.updated_at;
+          // delete e.m_penyewa_id;
+          // delete e.m_armada_id;
+          // delete e.m_sopir_id;
+          // delete e.m_subkon_id;
+          // delete e.rekening;
 
-          e.biaya_lain_harga_order_arr = e.biaya_lain_harga_order_arr.map(
-            (e) => {
-              return ` ${e.nama} | ${e.nominal}`;
-            }
-          );
+          // // e.biaya_lain_harga_order_arr = e.biaya_lain_harga_order_arr.map(
+          // //   (e) => {
+          // //     return ` ${e.nama} | ${e.nominal}`;
+          // //   }
+          // // );
 
-          e.biaya_lain_uang_jalan_arr = e.biaya_lain_uang_jalan_arr.map((e) => {
-            return ` ${e.nama}`;
-          });
-          e.biaya_lain_harga_jual_arr = e.biaya_lain_harga_jual_arr.map((e) => {
-            return ` ${e.nama}`;
-          });
-          e.penyewa = e.penyewa.nama_perusahaan;
-          e.armada = e.armada.nopol;
-          e.sopir = e.sopir.nama;
-          if (e.subkon != null) {
-            e.subkon = e.subkon.nama_perusahaan;
-          } else {
-            e.subkon = "Bukan kendaraan subkon";
-          }
-          if (e.status_kendaraan_sendiri == null) {
-            e.status_kendaraan_sendiri = "Bukan kendaraan sendiri";
-          }
+          // // e.biaya_lain_uang_jalan_arr = e.biaya_lain_uang_jalan_arr.map((e) => {
+          // //   return ` ${e.nama}`;
+          // // });
+          // // e.biaya_lain_harga_jual_arr = e.biaya_lain_harga_jual_arr.map((e) => {
+          // //   return ` ${e.nama}`;
+          // // });
+          // e.penyewa = e.penyewa.nama_perusahaan;
+          // e.armada = e.armada.nopol;
+          // e.sopir = e.sopir.nama;
+          // if (e.subkon != null) {
+          //   e.subkon = e.subkon.nama_perusahaan;
+          // } else {
+          //   e.subkon = "Bukan kendaraan subkon";
+          // }
+          // if (e.status_kendaraan_sendiri == null) {
+          //   e.status_kendaraan_sendiri = "Bukan kendaraan sendiri";
+          // }
         });
         data = res.data;
       });
     });
+  }
+
+  async function fetchRekeningData() {
+    let res = await axios.get(`${mainUrl}/api/rekening`, {
+      headers: {
+        Authorization: `bearer ${getCookie("token")}`,
+      },
+    });
+    dataRekening = res.data.data;
+    console.log(dataRekening);
   }
 
   let search = "";
@@ -496,12 +508,12 @@
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.penyewa} / {tableData.muatan}
+                          {tableData.penyewa.nama_perusahaan} / {tableData.muatan}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.armada} / {tableData.sopir}
+                          {tableData.armada.nopol} / {tableData.sopir.nama}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
