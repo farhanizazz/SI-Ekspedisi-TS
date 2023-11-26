@@ -427,7 +427,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/transaksi/hutangSopir"
+            href="/admin/transaksi/hutangSopir"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
               'admin/transaksi/hutangSopir'
             ) !== -1
