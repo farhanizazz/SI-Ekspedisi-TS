@@ -427,7 +427,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/transaksi/hutangSopir"
+            href="/transaksi/hutangSopir"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
               'admin/transaksi/hutangSopir'
             ) !== -1
@@ -436,7 +436,7 @@
           >
             <i
               class="fas fa-wallet mr-2 text-sm {location.href.indexOf(
-                '/admin/transaksi/hutangSopir'
+                '/transaksi/hutangSopir'
               ) !== -1
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
@@ -448,16 +448,16 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/transaksi/pengeluaran"
+            href="/transaksi/pengeluaran"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/transaksi/pengeluaran'
+              '/transaksi/pengeluaran'
             ) !== -1
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
               class="fas fa-wallet mr-2 text-sm {location.href.indexOf(
-                '/admin/transaksi/pengeluaran'
+                '/transaksi/pengeluaran'
               ) !== -1
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
@@ -469,16 +469,16 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/transaksi/order"
+            href="/transaksi/order"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/transaksi/order'
+              '/transaksi/order'
             ) !== -1
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
               class="fas fa-wallet mr-2 text-sm {location.href.indexOf(
-                '/admin/transaksi/order'
+                '/transaksi/order'
               ) !== -1
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
