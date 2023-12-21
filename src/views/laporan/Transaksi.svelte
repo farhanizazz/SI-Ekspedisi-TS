@@ -69,6 +69,9 @@
           // if (e.status_kendaraan_sendiri == null) {
           //   e.status_kendaraan_sendiri = "Bukan kendaraan sendiri";
           // }
+          if (e.biaya_lain_harga_jual == null) {
+            e.biaya_lain_harga_jual = [];
+          }
         });
         data = res.data;
       });
@@ -97,6 +100,59 @@
       )
     : data;
 
+  const changeStatusKendaraanSendiri = ({ data, id }) => {
+    try {
+      axios
+        .put(`${mainUrl}/api/transaksi/order/${id}`, data, {
+          headers: {
+            Authorization: `bearer ${getCookie("token")}`,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          fetchData();
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const changeStatusSuratJalan = ({ data, id }) => {
+    try {
+      axios
+        .put(`${mainUrl}/api/transaksi/order/${id}`, data, {
+          headers: {
+            Authorization: `bearer ${getCookie("token")}`,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          fetchData();
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addBiaya = ({ data, id }) => {
+    try {
+      axios
+        .put(`${mainUrl}/api/transaksi/order/${id}`, data, {
+          headers: {
+            Authorization: `bearer ${getCookie("token")}`,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          sifat = 0;
+          jenis = 0;
+          biaya = null;
+          fetchData();
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   onMount(() => {
     fetchData();
@@ -189,6 +245,11 @@
   function toggleHargaOrderModal() {
     showHargaOrderModal = !showHargaOrderModal;
   }
+
+  let sifat = 0;
+  let jenis = 0;
+  let biaya;
+  let errorModalMsg;
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -395,36 +456,53 @@
                                 : 'hidden'}"
                             >
                               <Chips
-                                onClick={() => {
-                                  tableData.status_kendaraan_sendiri =
-                                    "Berangkat";
-                                }}
+                                onClick={() =>
+                                  changeStatusKendaraanSendiri({
+                                    data: {
+                                      ...tableData,
+                                      status_kendaraan_sendiri: "Berangkat",
+                                    },
+                                    id: tableData.id,
+                                  })}
                                 text="Berangkat"
                                 bgColor="#bbf7d0"
                                 textColor="#16a34a"
                               />
                               <Chips
-                                onClick={() => {
-                                  tableData.status_kendaraan_sendiri = "Pulang";
-                                }}
+                                onClick={() =>
+                                  changeStatusKendaraanSendiri({
+                                    data: {
+                                      ...tableData,
+                                      status_kendaraan_sendiri: "Pulang",
+                                    },
+                                    id: tableData.id,
+                                  })}
                                 text="Pulang"
                                 bgColor="#fecaca"
                                 textColor="#dc2626"
                               />
                               <Chips
-                                onClick={() => {
-                                  tableData.status_kendaraan_sendiri =
-                                    "Kontrak";
-                                }}
+                                onClick={() =>
+                                  changeStatusKendaraanSendiri({
+                                    data: {
+                                      ...tableData,
+                                      status_kendaraan_sendiri: "Kontrak",
+                                    },
+                                    id: tableData.id,
+                                  })}
                                 text="Kontrak"
                                 bgColor="#fef08a"
                                 textColor="#d97706"
                               />
                               <Chips
-                                onClick={() => {
-                                  tableData.status_kendaraan_sendiri =
-                                    "Kota-Kota";
-                                }}
+                                onClick={() =>
+                                  changeStatusKendaraanSendiri({
+                                    data: {
+                                      ...tableData,
+                                      status_kendaraan_sendiri: "Kota-Kota",
+                                    },
+                                    id: tableData.id,
+                                  })}
                                 text="Kota-Kota"
                                 bgColor="#bfdbfe"
                                 textColor="#2563eb"
@@ -478,26 +556,41 @@
                                 : 'hidden'}"
                             >
                               <Chips
-                                onClick={() => {
-                                  tableData.status_surat_jalan = "Sopir";
-                                }}
+                                onClick={() =>
+                                  changeStatusSuratJalan({
+                                    data: {
+                                      ...tableData,
+                                      status_surat_jalan: "Sopir",
+                                    },
+                                    id: tableData.id,
+                                  })}
                                 text="Sopir"
                                 bgColor="#bbf7d0"
                                 textColor="#16a34a"
                               />
                               <Chips
-                                onClick={() => {
-                                  tableData.status_surat_jalan = "Kantor";
-                                }}
+                                onClick={() =>
+                                  changeStatusSuratJalan({
+                                    data: {
+                                      ...tableData,
+                                      status_surat_jalan: "Kantor",
+                                    },
+                                    id: tableData.id,
+                                  })}
                                 text="Kantor"
                                 bgColor="#fecaca"
                                 textColor="#dc2626"
                               />
                               <Chips
-                                onClick={() => {
-                                  tableData.status_surat_jalan = "Dikirim";
-                                }}
-                                text="Dikirim"
+                                onClick={() =>
+                                  changeStatusSuratJalan({
+                                    data: {
+                                      ...tableData,
+                                      status_surat_jalan: "Selesai",
+                                    },
+                                    id: tableData.id,
+                                  })}
+                                text="Selesai"
                                 bgColor="#fef08a"
                                 textColor="#d97706"
                               />
@@ -582,23 +675,51 @@
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
                           <button
-                            class="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
                             on:click={toggleHargaOrderModal}
+                            class="flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                            style="background-color: #bbf7d0; color: #16a34a;"
                           >
-                            Open regular modal
+                            <div
+                              class="flex-initial max-w-full leading-none text-xs font-semibold"
+                            >
+                              Tambahkan Biaya
+                            </div>
                           </button>
                           {#if tableData.biaya_lain_harga_order_arr.length == 0 && tableData.biaya_lain_harga_jual_arr.length == 0 && tableData.biaya_lain_uang_jalan_arr.length == 0}
                             <p class="text-center">Tidak ada biaya tambahan</p>
                           {:else}
                             {#each tableData.biaya_lain_harga_order_arr as biaya}
-                              <p class="text-center">{biaya}</p>
+                              <div
+                                class="bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                              >
+                                <div
+                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                >
+                                  {biaya.nominal} | {biaya.sifat}
+                                </div>
+                              </div>
                             {/each}
                             {#each tableData.biaya_lain_harga_jual_arr as biaya}
-                              <p class="text-center">{biaya}</p>
+                              <div
+                                class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                              >
+                                <div
+                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                >
+                                  {biaya.nominal} | {biaya.sifat}
+                                </div>
+                              </div>
                             {/each}
                             {#each tableData.biaya_lain_uang_jalan_arr as biaya}
-                              <p class="text-center">{biaya}</p>
+                              <div
+                                class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                              >
+                                <div
+                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                >
+                                  {biaya.nominal} | {biaya.sifat}
+                                </div>
+                              </div>
                             {/each}
                           {/if}
 
@@ -641,15 +762,14 @@
                                           class="flex flex-col justify-center items-center"
                                         >
                                           <select
+                                            bind:value={sifat}
                                             class="mb-5 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                           >
-                                            <option selected
-                                              >Choose an option</option
+                                            <option selected value={0}
+                                              >Silahkan pilih sifat biaya</option
                                             >
                                             {#each dataRekening as rekening}
-                                              <option
-                                                value={rekening.id}
-                                              >
+                                              <option value={rekening.id}>
                                                 {rekening.nama} | {rekening.sifat}
                                               </option>
                                             {/each}
@@ -657,18 +777,33 @@
                                           <input
                                             class="mb-5 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                             type="number"
+                                            bind:value={biaya}
                                             placeholder="Masukkan biaya tambahan"
                                           />
                                           <select
+                                            bind:value={jenis}
                                             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                           >
-                                            <option selected
-                                              >Choose an option</option
+                                            <option selected value={0}
+                                              >Silahkan pilih jenis biaya</option
                                             >
-                                            <option value="1">Harga tambahan biaya order</option>
-                                            <option value="2">Harga tambahan uang jalan</option>
-                                            <option value="3">Harga tambahan harga jual</option>
+                                            <option value="1"
+                                              >Harga tambahan biaya order</option
+                                            >
+                                            <option value="2"
+                                              >Harga tambahan uang jalan</option
+                                            >
+                                            <option value="3"
+                                              >Harga tambahan harga jual</option
+                                            >
                                           </select>
+                                          {#if errorModalMsg}
+                                            <div class="text-red-500 pt-6">
+                                              <p>
+                                                {errorModalMsg}
+                                              </p>
+                                            </div>
+                                          {/if}
                                         </div>
                                       </div>
                                     </div>
@@ -687,7 +822,59 @@
                                     <button
                                       class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                       type="button"
-                                      on:click={toggleHargaOrderModal}
+                                      on:click={() => {
+                                        if (jenis == 0 || sifat == 0) {
+                                          errorModalMsg =
+                                            "Mohon pilih jenis dan sifat terlebih dahulu";
+                                          return;
+                                        }
+                                        if (jenis == 1) {
+                                          addBiaya({
+                                            data: {
+                                              ...tableData,
+                                              biaya_lain_harga_order:
+                                                tableData.biaya_lain_harga_order.concat(
+                                                  {
+                                                    m_rekening_id: sifat,
+                                                    nominal: biaya,
+                                                  }
+                                                ),
+                                            },
+                                            id: tableData.id,
+                                          });
+                                        }
+                                        if (jenis == 2) {
+                                          addBiaya({
+                                            data: {
+                                              ...tableData,
+                                              biaya_lain_uang_jalan:
+                                                tableData.biaya_lain_uang_jalan.concat(
+                                                  {
+                                                    m_rekening_id: sifat,
+                                                    nominal: biaya,
+                                                  }
+                                                ),
+                                            },
+                                            id: tableData.id,
+                                          });
+                                        }
+                                        if (jenis == 3) {
+                                          addBiaya({
+                                            data: {
+                                              ...tableData,
+                                              biaya_lain_harga_jual:
+                                                tableData.biaya_lain_harga_jual.concat(
+                                                  {
+                                                    m_rekening_id: sifat,
+                                                    nominal: biaya,
+                                                  }
+                                                ),
+                                            },
+                                            id: tableData.id,
+                                          });
+                                        }
+                                        toggleHargaOrderModal();
+                                      }}
                                     >
                                       Save Changes
                                     </button>
@@ -696,7 +883,8 @@
                               </div>
                             </div>
                             <div
-                              class="opacity-25 fixed inset-0 z-40 bg-black" on:click={toggleHargaOrderModal}
+                              class="opacity-25 fixed inset-0 z-40 bg-black"
+                              on:click={toggleHargaOrderModal}
                             ></div>
                           {/if}
                         </td>
