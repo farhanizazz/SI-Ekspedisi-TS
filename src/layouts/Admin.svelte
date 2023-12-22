@@ -1,5 +1,5 @@
 <script>
-	import Transaksi from './../views/laporan/Transaksi.svelte';
+	import Transaksi from '../views/laporan/Order/Transaksi.svelte';
   import { Router, Route, navigate } from "svelte-routing";
   import Toastify from "toastify-js";
 

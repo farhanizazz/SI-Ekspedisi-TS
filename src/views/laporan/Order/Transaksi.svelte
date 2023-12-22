@@ -1,14 +1,15 @@
 <script>
+	import DetailBiayaTambahan from './DetailBiayaTambahan.svelte';
   // core components
-  import CardEditLaporanTransaksiOrder from "../../notusComponents/Cards/CardInput/CardEdit/CardEditLaporanTransaksiOrder.svelte";
+  import CardEditLaporanTransaksiOrder from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditLaporanTransaksiOrder.svelte";
   import { Router, Route } from "svelte-routing";
-  import { mainUrl } from "../../environment";
+  import { mainUrl } from "../../../environment";
   import { getCookie } from "svelte-cookie";
-  import CardInputLaporanTransaksiOrder from "../../notusComponents/Cards/CardInput/CardInputLaporanTransaksiOrder.svelte";
+  import CardInputLaporanTransaksiOrder from "../../../notusComponents/Cards/CardInput/CardInputLaporanTransaksiOrder.svelte";
   import { link } from "svelte-routing";
   import { onMount } from "svelte";
   import { createPopper } from "@popperjs/core";
-  import Chips from "../../notusComponents/Chips/Chips.svelte";
+  import Chips from "../../../notusComponents/Chips/Chips.svelte";
   import axios from "axios";
   // import "../../app.css";
 
@@ -250,6 +251,7 @@
   let jenis = 0;
   let biaya;
   let errorModalMsg;
+  let totalSum = 0;
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -688,7 +690,7 @@
                           {#if tableData.biaya_lain_harga_order_arr.length == 0 && tableData.biaya_lain_harga_jual_arr.length == 0 && tableData.biaya_lain_uang_jalan_arr.length == 0}
                             <p class="text-center">Tidak ada biaya tambahan</p>
                           {:else}
-                            {#each tableData.biaya_lain_harga_order_arr as biaya}
+                            <!-- {#each tableData.biaya_lain_harga_order_arr as biaya}
                               <div
                                 class="bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
@@ -720,7 +722,13 @@
                                   {biaya.nominal} | {biaya.sifat}
                                 </div>
                               </div>
-                            {/each}
+                            {/each} -->
+                            <div>
+                              Total Biaya Tambahan: <a use:link href={`/transaksi/order/detail-biaya-tambahan`} class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none">
+                              {tableData.biaya_lain_harga_jual_arr.reduce((acc, curr) => curr.sifat === 'Menambahkan' ? acc + curr.nominal : acc - curr.nominal, 0) +
+                              tableData.biaya_lain_uang_jalan_arr.reduce((acc, curr) => curr.sifat === 'Menambahkan' ? acc + curr.nominal : acc - curr.nominal, 0) +
+                              tableData.biaya_lain_harga_order_arr.reduce((acc, curr) => curr.sifat === 'Menambahkan' ? acc + curr.nominal : acc - curr.nominal, 0)}</a>
+                            </div>
                           {/if}
 
                           {#if showHargaOrderModal}
@@ -937,6 +945,9 @@
       </Route>
       <Route path="add">
         <CardInputLaporanTransaksiOrder />
+      </Route>
+      <Route path="detail-biaya-tambahan">
+        <DetailBiayaTambahan />
       </Route>
       <Route path="edit/:edit" let:params>
         <CardEditLaporanTransaksiOrder id={params.edit} />
