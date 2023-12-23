@@ -220,56 +220,62 @@
           </div>
         </div>
 
-        <div class=" w-6/12 px-4">
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-about-me"
-            >
-              Subkon
-            </label>
-            <select
-              id="grid-about-me"
-              disabled={data.status_kendaraan != "Subkon"}
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              bind:value={data.m_subkon_id}
-            >
-              <option>Silahkan Pilih Subkon</option>
-              {#each subkons as subkon}
-                <option value={subkon.id}>{subkon.nama_perusahaan}</option>
-              {/each}
-            </select>
-            {#if "m_subkon_id" in error}
-              <p class="text-red-500 text-sm">{error.m_subkon_id}</p>
-            {/if}
+        {#if data.status_kendaraan == "Subkon"}
+          <div class=" w-6/12 px-4">
+            <div class="relative w-full mb-3">
+              <label
+                class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                for="grid-about-me"
+              >
+                Subkon
+              </label>
+              <select
+                id="grid-about-me"
+                disabled={data.status_kendaraan != "Subkon"}
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                bind:value={data.m_subkon_id}
+              >
+                <option>Silahkan Pilih Subkon</option>
+                {#each subkons as subkon}
+                  <option value={subkon.id}>{subkon.nama_perusahaan}</option>
+                {/each}
+              </select>
+              {#if "m_subkon_id" in error}
+                <p class="text-red-500 text-sm">{error.m_subkon_id}</p>
+              {/if}
+            </div>
           </div>
-        </div>
+        {/if}
 
-        <div class=" w-6/12 px-4">
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-about-me"
-            >
-              Status Kendaraan Sendiri
-            </label>
-            <select
-              disabled={data.status_kendaraan != "Sendiri"}
-              id="grid-about-me"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              bind:value={data.status_kendaraan_sendiri}
-            >
-              <option>Silahkan Pilih Status Kendaraan Sendiri</option>
-              <option value="Berangkat">Berangkat</option>
-              <option value="Pulang">Pulang</option>
-              <option value="Kontrak">Kontrak</option>
-              <option value="Kota-Kota">Kota-Kota</option>
-            </select>
-            {#if "status_kendaraan_sendiri" in error}
-              <p class="text-red-500 text-sm">{error.status_kendaraan_sendiri}</p>
-            {/if}
+        {#if data.status_kendaraan == "Sendiri"}
+          <div class=" w-6/12 px-4">
+            <div class="relative w-full mb-3">
+              <label
+                class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                for="grid-about-me"
+              >
+                Status Kendaraan Sendiri
+              </label>
+              <select
+                disabled={data.status_kendaraan != "Sendiri"}
+                id="grid-about-me"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                bind:value={data.status_kendaraan_sendiri}
+              >
+                <option>Silahkan Pilih Status Kendaraan Sendiri</option>
+                <option value="Berangkat">Berangkat</option>
+                <option value="Pulang">Pulang</option>
+                <option value="Kontrak">Kontrak</option>
+                <option value="Kota-Kota">Kota-Kota</option>
+              </select>
+              {#if "status_kendaraan_sendiri" in error}
+                <p class="text-red-500 text-sm">
+                  {error.status_kendaraan_sendiri}
+                </p>
+              {/if}
+            </div>
           </div>
-        </div>
+        {/if}
 
         <div class=" w-6/12 px-4">
           <div class="relative w-full mb-3">
@@ -710,6 +716,7 @@
           </div>
         </div>
 
+        {#if data.status_kendaraan == 'Sendiri'}
         <div class="w-full lg:w-6/12 px-4">
           <div class="relative w-full mb-3">
             <label
@@ -755,7 +762,7 @@
             {/if}
           </div>
         </div>
-        
+
         <div class="w-full lg:w-6/12 px-4">
           <div class="relative w-full mb-3">
             <label
@@ -778,7 +785,7 @@
             {/if}
           </div>
         </div>
-
+        {/if}
         <div class="w-full lg:w-6/12 px-4">
           <div class="relative w-full mb-3">
             <label
