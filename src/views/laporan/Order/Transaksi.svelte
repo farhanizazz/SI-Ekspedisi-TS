@@ -950,7 +950,7 @@
         <CardInputLaporanTransaksiOrder />
       </Route>
       <Route path="detail-biaya-tambahan/:id" let:params>
-        <DetailBiayaTambahan id={params.id} data={dataSearch} />
+        <DetailBiayaTambahan id={params.id} />
       </Route>
       <Route path="edit/:edit" let:params>
         <CardEditLaporanTransaksiOrder id={params.edit} />
