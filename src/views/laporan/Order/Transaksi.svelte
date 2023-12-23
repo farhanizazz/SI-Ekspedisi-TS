@@ -172,10 +172,10 @@
       if (popoverDropdownRefStatusHargaOrder) {
         popoverDropdownRefStatusHargaOrder.style.left = `${window.scrollX}px`;
       }
-    }
-    tableSendiri.addEventListener('scroll', updatePosition);
+    };
+    tableSendiri.addEventListener("scroll", updatePosition);
     return () => {
-      tableSendiri.removeEventListener('scroll', updatePosition);
+      tableSendiri.removeEventListener("scroll", updatePosition);
     };
   });
 
@@ -339,7 +339,10 @@
 
           <div class="block w-full overflow-x-auto">
             <!-- Projects table -->
-            <table bind:this={tableSendiri} class="items-center w-full bg-transparent border-collapse">
+            <table
+              bind:this={tableSendiri}
+              class="items-center w-full bg-transparent border-collapse"
+            >
               <thead>
                 <tr>
                   {#each headingTransaksiOrder as data}
@@ -540,7 +543,15 @@
                               />
                             </div>
                           </div>
-                          {tableData.tanggal_awal}
+                          <div class="text-center">
+                            {tableData.tanggal_awal}
+                            {#if tableData.status_kendaraan_sendiri == "Kontrak"}
+                              <br />
+                              -
+                              <br />
+                              {tableData.tanggal_akhir}
+                            {/if}
+                          </div>
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
