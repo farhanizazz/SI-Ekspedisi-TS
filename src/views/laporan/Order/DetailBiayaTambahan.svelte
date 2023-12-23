@@ -6,7 +6,7 @@
   import { onMount } from 'svelte';
 
   export let id;
-  let data = [{ biaya_lain_harga_order_arr: [] }];
+  let data;
   const headingPengeluaran = ["ID Rekening", "Jumlah", "Sifat"];
   console.log(data);
 
@@ -28,6 +28,7 @@
   }
   onMount(() => {
     fetchData();
+    console.log(data);
   });
 </script>
 
@@ -50,7 +51,7 @@
   href="/transaksi/pengeluaran"
   deleteApi={undefined}
   heading="Biaya Lain Harga Order"
-  data={data[id].biaya_lain_harga_order_arr}
+  data={data && data[id] && data[id].biaya_lain_harga_order_arr}
   withEdit={false}
   addData={false}
 />
@@ -59,7 +60,7 @@
   href="/transaksi/pengeluaran"
   deleteApi={undefined}
   heading="Biaya Lain Uang Jalan"
-  data={data[id].biaya_lain_uang_jalan_arr}
+  data={data && data[id] && data[id].biaya_lain_uang_jalan_arr}
   withEdit={false}
   addData={false}
   on:delete={(event) => {
@@ -81,7 +82,7 @@
   href="/transaksi/pengeluaran"
   deleteApi={`${mainUrl}/api/transaksi/`}
   heading="Data Lain Harga Jual"
-  data={data[id].biaya_lain_harga_jual_arr}
+  data={data && data[id] && data[id].biaya_lain_harga_jual_arr}
   withEdit={false}
   addData={false}
   on:delete={(event) => {

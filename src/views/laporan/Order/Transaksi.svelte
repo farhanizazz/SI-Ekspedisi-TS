@@ -162,34 +162,46 @@
     }
   };
 
+  let tableSendiri;
+  let tableSubkon;
   onMount(() => {
     fetchData();
     fetchRekeningData();
+    const updatePosition = () => {
+      console.log(popoverDropdownRefStatusHargaOrder);
+      if (popoverDropdownRefStatusHargaOrder) {
+        popoverDropdownRefStatusHargaOrder.style.left = `${window.scrollX}px`;
+      }
+    }
+    tableSendiri.addEventListener('scroll', updatePosition);
+    return () => {
+      tableSendiri.removeEventListener('scroll', updatePosition);
+    };
   });
 
+  let showHargaOrderModal = [];
+  $: showHargaOrderModal = data.map(() => false);
 
-  let showHargaOrderModal = false;
-
-  let dropdownPopoverShowStatusKendaraanSendiri = false;
+  let dropdownPopoverShowStatusKendaraanSendiri = [];
+  $: dropdownPopoverShowStatusKendaraanSendiri = dataSearch.map(() => false);
   let btnDropdownRefStatusKendaraanSendiri;
   let popoverDropdownRefStatusKendaraanSendiri;
 
   let dropdownPopoverShowStatusSuratJalan = [];
   $: dropdownPopoverShowStatusSuratJalan = dataSearch.map(() => false);
-
-  $: console.log(dropdownPopoverShowStatusSuratJalan);
   let btnDropdownRefStatusSuratJalan;
   let popoverDropdownRefStatusSuratJalan;
 
-  let dropdownPopoverShowStatusHargaOrder = false;
+  let dropdownPopoverShowStatusHargaOrder = [];
+  $: dropdownPopoverShowStatusHargaOrder = dataSearch.map(() => false);
   let btnDropdownRefStatusHargaOrder;
   let popoverDropdownRefStatusHargaOrder;
 
-  const toggleDropdownStatusKendaraanSendiri = () => {
-    if (dropdownPopoverShowStatusKendaraanSendiri) {
-      dropdownPopoverShowStatusKendaraanSendiri = false;
+  const toggleDropdownStatusKendaraanSendiri = (index) => {
+    if (dropdownPopoverShowStatusKendaraanSendiri[index]) {
+      dropdownPopoverShowStatusKendaraanSendiri[index] = false;
     } else {
-      dropdownPopoverShowStatusKendaraanSendiri = true;
+      dropdownPopoverShowStatusKendaraanSendiri[index] = true;
       createPopper(
         btnDropdownRefStatusKendaraanSendiri,
         popoverDropdownRefStatusKendaraanSendiri,
@@ -231,11 +243,11 @@
     }
   };
 
-  const toggleDropdownStatusHargaOrder = () => {
-    if (dropdownPopoverShowStatusHargaOrder) {
-      dropdownPopoverShowStatusHargaOrder = false;
+  const toggleDropdownStatusHargaOrder = (index) => {
+    if (dropdownPopoverShowStatusHargaOrder[index]) {
+      dropdownPopoverShowStatusHargaOrder[index] = false;
     } else {
-      dropdownPopoverShowStatusHargaOrder = true;
+      dropdownPopoverShowStatusHargaOrder[index] = true;
       createPopper(
         btnDropdownRefStatusHargaOrder,
         popoverDropdownRefStatusHargaOrder,
@@ -254,8 +266,8 @@
     }
   };
 
-  function toggleHargaOrderModal() {
-    showHargaOrderModal = !showHargaOrderModal;
+  function toggleHargaOrderModal(id) {
+    showHargaOrderModal[id] = !showHargaOrderModal[id];
   }
 
   let sifat = 0;
@@ -327,7 +339,7 @@
 
           <div class="block w-full overflow-x-auto">
             <!-- Projects table -->
-            <table class="items-center w-full bg-transparent border-collapse">
+            <table bind:this={tableSendiri} class="items-center w-full bg-transparent border-collapse">
               <thead>
                 <tr>
                   {#each headingTransaksiOrder as data}
@@ -425,7 +437,8 @@
                           <div class="container mx-autoflex flex-row mb-2">
                             <button
                               bind:this={btnDropdownRefStatusKendaraanSendiri}
-                              on:click={toggleDropdownStatusKendaraanSendiri}
+                              on:click={() =>
+                                toggleDropdownStatusKendaraanSendiri(index)}
                               class="flex justify-center items-center m-1 px-2 py-1 rounded-full bg-orange-200 text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               style="
                               background-color: 
@@ -467,8 +480,10 @@
                             </button>
                             <div
                               bind:this={popoverDropdownRefStatusKendaraanSendiri}
-                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusKendaraanSendiri
-                                ? 'block'
+                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusKendaraanSendiri[
+                                index
+                              ]
+                                ? 'absolute'
                                 : 'hidden'}"
                             >
                               <Chips
@@ -533,7 +548,8 @@
                           <div class="container mx-autoflex flex-row mb-2">
                             <button
                               bind:this={btnDropdownRefStatusSuratJalan}
-                              on:click={() => toggleDropdownStatusSuratJalan(index)}
+                              on:click={() =>
+                                toggleDropdownStatusSuratJalan(index)}
                               class="flex justify-center items-center m-1 px-2 py-1 rounded-full text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               style="
                             background-color: 
@@ -567,7 +583,9 @@
                             <!-- {dropdownPopoverShow ? 'block' : 'hidden'} -->
                             <div
                               bind:this={popoverDropdownRefStatusSuratJalan}
-                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusSuratJalan[index]
+                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusSuratJalan[
+                                index
+                              ]
                                 ? 'absolute'
                                 : 'hidden'}"
                             >
@@ -635,7 +653,8 @@
                           <div class="container mx-autoflex flex-row mb-2">
                             <button
                               bind:this={btnDropdownRefStatusHargaOrder}
-                              on:click={toggleDropdownStatusHargaOrder}
+                              on:click={() =>
+                                toggleDropdownStatusHargaOrder(index)}
                               class="flex justify-center items-center m-1 px-2 py-1 rounded-full text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               style="
                             background-color: 
@@ -663,8 +682,10 @@
                             <!-- {dropdownPopoverShow ? 'block' : 'hidden'} -->
                             <div
                               bind:this={popoverDropdownRefStatusHargaOrder}
-                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusHargaOrder
-                                ? 'block'
+                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusHargaOrder[
+                                index
+                              ]
+                                ? 'absolute'
                                 : 'hidden'}"
                             >
                               <Chips
@@ -691,7 +712,7 @@
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
                           <button
-                            on:click={toggleHargaOrderModal}
+                            on:click={() => (showHargaOrderModal[index] = true)}
                             class="flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                             style="background-color: #bbf7d0; color: #16a34a;"
                           >
@@ -768,7 +789,7 @@
                             </div>
                           {/if}
 
-                          {#if showHargaOrderModal}
+                          {#if showHargaOrderModal[index]}
                             <div
                               class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
                             >
@@ -788,7 +809,8 @@
                                     </h3>
                                     <button
                                       class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                      on:click={toggleHargaOrderModal}
+                                      on:click={() =>
+                                        toggleHargaOrderModal(index)}
                                     >
                                       <span
                                         class="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none"
@@ -860,7 +882,8 @@
                                     <button
                                       class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                       type="button"
-                                      on:click={toggleHargaOrderModal}
+                                      on:click={() =>
+                                        toggleHargaOrderModal(index)}
                                     >
                                       Close
                                     </button>
@@ -868,6 +891,7 @@
                                       class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                       type="button"
                                       on:click={() => {
+                                        console.log(tableData.id);
                                         if (jenis == 0 || sifat == 0) {
                                           errorModalMsg =
                                             "Mohon pilih jenis dan sifat terlebih dahulu";
@@ -918,7 +942,7 @@
                                             id: tableData.id,
                                           });
                                         }
-                                        toggleHargaOrderModal();
+                                        toggleHargaOrderModal(index);
                                       }}
                                     >
                                       Save Changes
@@ -929,7 +953,7 @@
                             </div>
                             <div
                               class="opacity-25 fixed inset-0 z-40 bg-black"
-                              on:click={toggleHargaOrderModal}
+                              on:click={() => toggleHargaOrderModal(index)}
                             ></div>
                           {/if}
                         </td>
@@ -1124,7 +1148,8 @@
                             <div class="container mx-autoflex flex-row mb-2">
                               <button
                                 bind:this={btnDropdownRefStatusKendaraanSendiri}
-                                on:click={toggleDropdownStatusKendaraanSendiri}
+                                on:click={() =>
+                                  toggleDropdownStatusKendaraanSendiri(index)}
                                 class="flex justify-center items-center m-1 px-2 py-1 rounded-full bg-orange-200 text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 style="
                               background-color: 
@@ -1166,8 +1191,10 @@
                               </button>
                               <div
                                 bind:this={popoverDropdownRefStatusKendaraanSendiri}
-                                class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusKendaraanSendiri
-                                  ? 'block'
+                                class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusKendaraanSendiri[
+                                  index
+                                ]
+                                  ? 'absolute'
                                   : 'hidden'}"
                               >
                                 <Chips
@@ -1233,7 +1260,8 @@
                           <div class="container mx-autoflex flex-row mb-2">
                             <button
                               bind:this={btnDropdownRefStatusSuratJalan}
-                              on:click={() => toggleDropdownStatusSuratJalan(index)}
+                              on:click={() =>
+                                toggleDropdownStatusSuratJalan(index)}
                               class="flex justify-center items-center m-1 px-2 py-1 rounded-full text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               style="
                             background-color: 
@@ -1267,7 +1295,9 @@
                             <!-- {dropdownPopoverShow ? 'block' : 'hidden'} -->
                             <div
                               bind:this={popoverDropdownRefStatusSuratJalan}
-                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusSuratJalan[index]
+                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusSuratJalan[
+                                index
+                              ]
                                 ? 'absolute'
                                 : 'hidden'}"
                             >
@@ -1335,7 +1365,8 @@
                           <div class="container mx-autoflex flex-row mb-2">
                             <button
                               bind:this={btnDropdownRefStatusHargaOrder}
-                              on:click={toggleDropdownStatusHargaOrder}
+                              on:click={() =>
+                                toggleDropdownStatusHargaOrder(index)}
                               class="flex justify-center items-center m-1 px-2 py-1 rounded-full text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               style="
                             background-color: 
@@ -1363,8 +1394,10 @@
                             <!-- {dropdownPopoverShow ? 'block' : 'hidden'} -->
                             <div
                               bind:this={popoverDropdownRefStatusHargaOrder}
-                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusHargaOrder
-                                ? 'block'
+                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusHargaOrder[
+                                index
+                              ]
+                                ? 'absolute'
                                 : 'hidden'}"
                             >
                               <Chips
@@ -1391,7 +1424,7 @@
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
                           <button
-                            on:click={toggleHargaOrderModal}
+                            on:click={() => (showHargaOrderModal[index] = true)}
                             class="flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                             style="background-color: #bbf7d0; color: #16a34a;"
                           >
@@ -1468,7 +1501,7 @@
                             </div>
                           {/if}
 
-                          {#if showHargaOrderModal}
+                          {#if showHargaOrderModal[index]}
                             <div
                               class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
                             >
@@ -1488,7 +1521,8 @@
                                     </h3>
                                     <button
                                       class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                      on:click={toggleHargaOrderModal}
+                                      on:click={() =>
+                                        toggleHargaOrderModal(index)}
                                     >
                                       <span
                                         class="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none"
@@ -1560,7 +1594,8 @@
                                     <button
                                       class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                       type="button"
-                                      on:click={toggleHargaOrderModal}
+                                      on:click={() =>
+                                        toggleHargaOrderModal(index)}
                                     >
                                       Close
                                     </button>
@@ -1568,6 +1603,7 @@
                                       class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                       type="button"
                                       on:click={() => {
+                                        console.log(tableData.id);
                                         if (jenis == 0 || sifat == 0) {
                                           errorModalMsg =
                                             "Mohon pilih jenis dan sifat terlebih dahulu";
@@ -1618,7 +1654,7 @@
                                             id: tableData.id,
                                           });
                                         }
-                                        toggleHargaOrderModal();
+                                        toggleHargaOrderModal(index);
                                       }}
                                     >
                                       Save Changes
@@ -1629,7 +1665,7 @@
                             </div>
                             <div
                               class="opacity-25 fixed inset-0 z-40 bg-black"
-                              on:click={toggleHargaOrderModal}
+                              on:click={() => toggleHargaOrderModal(index)}
                             ></div>
                           {/if}
                         </td>
