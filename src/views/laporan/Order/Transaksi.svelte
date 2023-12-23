@@ -252,6 +252,9 @@
   let biaya;
   let errorModalMsg;
   let totalSum = 0;
+  let detailBiayaOrderData = [];
+  let detailBiayaUangJalanData = [];
+  let detailBiayahargaJualData = [];
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -402,7 +405,7 @@
                       >
                     </tr>
                   {/each} -->
-                  {#each dataSearch as tableData}
+                  {#each dataSearch as tableData, index}
                     {#if tableData.status_kendaraan == "Sendiri"}
                       <tr>
                         <td
@@ -724,7 +727,7 @@
                               </div>
                             {/each} -->
                             <div>
-                              Total Biaya Tambahan: <a use:link href={`/transaksi/order/detail-biaya-tambahan`} class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none">
+                              Total Biaya Tambahan: <a use:link href={`/transaksi/order/detail-biaya-tambahan/${index}`} class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none">
                               {tableData.biaya_lain_harga_jual_arr.reduce((acc, curr) => curr.sifat === 'Menambahkan' ? acc + curr.nominal : acc - curr.nominal, 0) +
                               tableData.biaya_lain_uang_jalan_arr.reduce((acc, curr) => curr.sifat === 'Menambahkan' ? acc + curr.nominal : acc - curr.nominal, 0) +
                               tableData.biaya_lain_harga_order_arr.reduce((acc, curr) => curr.sifat === 'Menambahkan' ? acc + curr.nominal : acc - curr.nominal, 0)}</a>
@@ -946,8 +949,8 @@
       <Route path="add">
         <CardInputLaporanTransaksiOrder />
       </Route>
-      <Route path="detail-biaya-tambahan">
-        <DetailBiayaTambahan />
+      <Route path="detail-biaya-tambahan/:id" let:params>
+        <DetailBiayaTambahan id={params.id} data={dataSearch} />
       </Route>
       <Route path="edit/:edit" let:params>
         <CardEditLaporanTransaksiOrder id={params.edit} />

@@ -4,6 +4,7 @@
   import TableDropdown from "../../notusComponents/Dropdowns/TableDropdown.svelte";
   import { onMount } from "svelte";
   import { getCookie } from "svelte-cookie";
+  import { createEventDispatcher } from "svelte";
 
   // can be one of light or dark
   export let color = "light";
@@ -11,6 +12,7 @@
   export let tableHeading = [];
   export let data = [{}];
   export let href;
+  export let withEdit = true;
   export let onLoad = () => {};
   export let addData = true;
   export let deleteApi;
@@ -28,6 +30,12 @@
         )
       )
     : data;
+
+  const dispatch = createEventDispatcher();
+  function handleDelete(index) {
+    // Dispatch the custom event with the index value
+    dispatch('delete', { index });
+  }
 </script>
 
 <div
@@ -64,13 +72,13 @@
         </div>
 
         {#if addData === true}
-        <a use:link href={`${href}/add`}>
-          <p
-            class="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-          >
-            Tambah Data
-          </p>
-        </a>
+          <a use:link href={`${href}/add`}>
+            <p
+              class="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+            >
+              Tambah Data
+            </p>
+          </a>
         {/if}
       </div>
     </div>
@@ -103,7 +111,7 @@
       </thead>
       {#if data.length > 0}
         <tbody>
-          {#each dataSearch as tableData}
+          {#each dataSearch as tableData, index}
             <tr>
               {#each Object.keys(data[0]) as header}
                 {#if tableData[header] == "aktif"}
@@ -137,24 +145,29 @@
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
               >
-                <a use:link href={`${href}/edit/${tableData.id}`}>
-                  <p
-                    class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                  >
-                    Edit
-                  </p>
-                </a>
-
+                {#if withEdit === true}
+                  <a use:link href={`${href}/edit/${tableData.id}`}>
+                    <p
+                      class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
+                    >
+                      Edit
+                    </p>
+                  </a>
+                {/if}
                 <button
                   on:click={() => {
-                    fetch(deleteApi + `${tableData.id}`, {
-                      method: "delete",
-                      headers: {
-                        Authorization: `bearer ${getCookie("token")}`,
-                      },
-                    }).then(() => {
-                      onLoad();
-                    });
+                    if (deleteApi !== undefined) {
+                      fetch(deleteApi + `${tableData.id}`, {
+                        method: "delete",
+                        headers: {
+                          Authorization: `bearer ${getCookie("token")}`,
+                        },
+                      }).then(() => {
+                        onLoad();
+                      });
+                    } else {
+                      handleDelete(index)
+                    }
                   }}
                   class="w-full"
                 >
@@ -163,8 +176,8 @@
                   >
                     Hapus Data
                   </p>
-                </button></td
-              >
+                </button>
+              </td>
             </tr>
           {/each}
         </tbody>
