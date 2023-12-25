@@ -153,29 +153,27 @@
     </div>
     <div class="flex-auto px-4 lg:px-10 py-10">
       <div class="flex flex-wrap">
-        <div class="w-full lg:w-6/12 px-4">
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-supir"
-            >
-              Tanggal Awal
-            </label>
-            <input
-              id="grid-supir"
-              type="date"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan Tanggal Transaksi"
-              name="nama-supir"
-              bind:value={data.tanggal_awal}
-            />
-            {#if "tanggal_awal" in error}
-              <p class="text-red-500 text-sm">{error.tanggal_awal}</p>
-            {/if}
-          </div>
+        <div class="relative w-full mb-3">
+          <label
+            class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+            for="grid-supir"
+          >
+            Tanggal Awal
+          </label>
+          <input
+            id="grid-supir"
+            type="date"
+            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+            placeholder="Masukkan Tanggal Transaksi"
+            name="nama-supir"
+            bind:value={data.tanggal_awal}
+          />
+          {#if "tanggal_awal" in error}
+            <p class="text-red-500 text-sm">{error.tanggal_awal}</p>
+          {/if}
         </div>
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -195,9 +193,9 @@
               <p class="text-red-500 text-sm">{error.tanggal_akhir}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -218,10 +216,10 @@
               <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
             {/if}
           </div>
-        </div>
+       
 
         {#if data.status_kendaraan == "Subkon"}
-          <div class=" w-6/12 px-4">
+          
             <div class="relative w-full mb-3">
               <label
                 class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -244,11 +242,11 @@
                 <p class="text-red-500 text-sm">{error.m_subkon_id}</p>
               {/if}
             </div>
-          </div>
+          
         {/if}
 
         {#if data.status_kendaraan == "Sendiri"}
-          <div class=" w-6/12 px-4">
+          
             <div class="relative w-full mb-3">
               <label
                 class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -274,10 +272,10 @@
                 </p>
               {/if}
             </div>
-          </div>
+          
         {/if}
 
-        <div class=" w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -299,9 +297,9 @@
               <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class=" w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -323,9 +321,9 @@
               <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class=" w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -347,9 +345,9 @@
               <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
             {/if}
           </div>
-        </div>
+       
 
-        <div class=" w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -371,9 +369,9 @@
               <p class="text-red-500 text-sm">{error.sopir}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -393,9 +391,9 @@
               <p class="text-red-500 text-sm">{error.muatan}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -415,9 +413,9 @@
               <p class="text-red-500 text-sm">{error.asal}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -437,9 +435,9 @@
               <p class="text-red-500 text-sm">{error.tujuan}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -459,9 +457,9 @@
               <p class="text-red-500 text-sm">{error.harga_order}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -481,9 +479,9 @@
               <p class="text-red-500 text-sm">{error.bayar_harga_order}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -504,7 +502,7 @@
               <p class="text-red-500 text-sm">{error.status_harga_order}</p>
             {/if}
           </div>
-        </div>
+        
 
         <!-- <div class="w-full lg:w-6/12 px-4">
           <div class="relative w-full mb-3">
@@ -693,7 +691,7 @@
           </div>
         </div> -->
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -714,79 +712,79 @@
               <p class="text-red-500 text-sm">{error.status_pajak}</p>
             {/if}
           </div>
-        </div>
+        
 
-        {#if data.status_kendaraan == 'Sendiri'}
-        <div class="w-full lg:w-6/12 px-4">
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-setor"
-            >
-              Setor
-            </label>
-            <input
-              id="grid-setor"
-              type="number"
-              disabled={data.status_kendaraan != "Sendiri"}
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan Bayar Harga Order"
-              name="setor"
-              bind:value={data.setor}
-            />
-            {#if "setor" in error}
-              <p class="text-red-500 text-sm">{error.setor}</p>
-            {/if}
-          </div>
-        </div>
+        {#if data.status_kendaraan == "Sendiri"}
+        
+            <div class="relative w-full mb-3">
+              <label
+                class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                for="grid-setor"
+              >
+                Setor
+              </label>
+              <input
+                id="grid-setor"
+                type="number"
+                disabled={data.status_kendaraan != "Sendiri"}
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                placeholder="Masukkan Bayar Harga Order"
+                name="setor"
+                bind:value={data.setor}
+              />
+              {#if "setor" in error}
+                <p class="text-red-500 text-sm">{error.setor}</p>
+              {/if}
+            </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-uang_jalan"
-            >
-              Uang Jalan
-            </label>
-            <input
-              id="grid-uang_jalan"
-              disabled={data.status_kendaraan != "Sendiri"}
-              type="number"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan Bayar Harga Order"
-              name="uang_jalan"
-              bind:value={data.uang_jalan}
-            />
-            {#if "uang_jalan" in error}
-              <p class="text-red-500 text-sm">{error.uang_jalan}</p>
-            {/if}
-          </div>
-        </div>
+          
+            <div class="relative w-full mb-3">
+              <label
+                class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                for="grid-uang_jalan"
+              >
+                Uang Jalan
+              </label>
+              <input
+                id="grid-uang_jalan"
+                disabled={data.status_kendaraan != "Sendiri"}
+                type="number"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                placeholder="Masukkan Bayar Harga Order"
+                name="uang_jalan"
+                bind:value={data.uang_jalan}
+              />
+              {#if "uang_jalan" in error}
+                <p class="text-red-500 text-sm">{error.uang_jalan}</p>
+              {/if}
+            </div>
+          
 
-        <div class="w-full lg:w-6/12 px-4">
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-potongan_wajib"
-            >
-              Potongan Wajib
-            </label>
-            <input
-              id="grid-potongan_wajib"
-              disabled={data.status_kendaraan != "Sendiri"}
-              type="number"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan Bayar Harga Order"
-              name="potongan_wajib"
-              bind:value={data.potongan_wajib}
-            />
-            {#if "potongan_wajib" in error}
-              <p class="text-red-500 text-sm">{error.potongan_wajib}</p>
-            {/if}
-          </div>
-        </div>
+          
+            <div class="relative w-full mb-3">
+              <label
+                class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                for="grid-potongan_wajib"
+              >
+                Potongan Wajib
+              </label>
+              <input
+                id="grid-potongan_wajib"
+                disabled={data.status_kendaraan != "Sendiri"}
+                type="number"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                placeholder="Masukkan Bayar Harga Order"
+                name="potongan_wajib"
+                bind:value={data.potongan_wajib}
+              />
+              {#if "potongan_wajib" in error}
+                <p class="text-red-500 text-sm">{error.potongan_wajib}</p>
+              {/if}
+            </div>
+          
         {/if}
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -806,9 +804,9 @@
               <p class="text-red-500 text-sm">{error.harga_jual}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
+       
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -828,9 +826,9 @@
               <p class="text-red-500 text-sm">{error.bayar_harga_jual}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full lg:w-6/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -851,9 +849,9 @@
               <p class="text-red-500 text-sm">{error.status_harga_jual}</p>
             {/if}
           </div>
-        </div>
+        
 
-        <div class="w-full w-12/12 px-4">
+        
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -870,7 +868,7 @@
               <p class="text-red-500 text-sm">{error.ket_trans}</p>
             {/if}
           </div>
-        </div>
+        
       </div>
     </div>
   </div>
