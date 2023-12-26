@@ -1,12 +1,14 @@
 <script>
-	import { getCookie } from 'svelte-cookie';
+  import { getCookie } from "svelte-cookie";
   import CardTable from "./../../../../src/notusComponents/Cards/CardTable.svelte";
   import { mainUrl } from "../../../environment";
   import axios from "axios";
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
 
   export let id;
-  let data;
+  let data = [{
+    status_kendaraan: "",
+  }];
   const headingPengeluaran = ["ID Rekening", "Jumlah", "Sifat"];
   console.log(data);
 
@@ -37,15 +39,17 @@
     const index = event.detail.index;
     console.log(index);
     data[id].biaya_lain_harga_order.splice(index, 1);
-    axios.put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
-      biaya_lain_harga_order: data[id].biaya_lain_harga_order,
-      ...data[id]
-    }).then((res) => {
-      console.log(res);
-      if(res.data.status == "success") {
-        fetchData();
-      }
-    });
+    axios
+      .put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
+        biaya_lain_harga_order: data[id].biaya_lain_harga_order,
+        ...data[id],
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.data.status == "success") {
+          fetchData();
+        }
+      });
   }}
   tableHeading={headingPengeluaran}
   href="/transaksi/pengeluaran"
@@ -55,28 +59,35 @@
   withEdit={false}
   addData={false}
 />
-<CardTable
-  tableHeading={headingPengeluaran}
-  href="/transaksi/pengeluaran"
-  deleteApi={undefined}
-  heading="Biaya Lain Uang Jalan"
-  data={data && data[id] && data[id].biaya_lain_uang_jalan_arr}
-  withEdit={false}
-  addData={false}
-  on:delete={(event) => {
-    const index = event.detail.index;
-    console.log(index);
-    data[id].biaya_lain_uang_jalan.splice(index, 1);
-    axios.put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
-      biaya_lain_uang_jalan: data[id].biaya_lain_uang_jalan,
-      ...data[id]
-    }).then((res) => {
-      if(res.data.status == "success") {
-        fetchData();
-      }
-    });
-  }}
-/>
+
+{#if data[id].status_kendaraan == "Sendiri"}
+  <CardTable
+    tableHeading={headingPengeluaran}
+    href="/transaksi/pengeluaran"
+    deleteApi={undefined}
+    heading="Biaya Lain Uang Jalan"
+    data={data && data[id] && data[id].biaya_lain_uang_jalan_arr}
+    withEdit={false}
+    addData={false}
+    on:delete={(event) => {
+      const index = event.detail.index;
+      console.log(index);
+      data[id].biaya_lain_uang_jalan.splice(index, 1);
+      axios
+        .put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
+          biaya_lain_uang_jalan: data[id].biaya_lain_uang_jalan,
+          ...data[id],
+        })
+        .then((res) => {
+          if (res.data.status == "success") {
+            fetchData();
+          }
+        });
+    }}
+  />
+{/if}
+
+{#if data[id].status_kendaraan == "Subkon"}
 <CardTable
   tableHeading={headingPengeluaran}
   href="/transaksi/pengeluaran"
@@ -89,13 +100,16 @@
     const index = event.detail.index;
     console.log(index);
     data[id].biaya_lain_harga_jual.splice(index, 1);
-    axios.put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
-      biaya_lain_harga_jual: data[id].biaya_lain_harga_jual,
-      ...data[id]
-    }).then((res) => {
-      if(res.data.status == "success") {
-        fetchData();
-      }
-    });
+    axios
+      .put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
+        biaya_lain_harga_jual: data[id].biaya_lain_harga_jual,
+        ...data[id],
+      })
+      .then((res) => {
+        if (res.data.status == "success") {
+          fetchData();
+        }
+      });
   }}
 />
+{/if}

@@ -27,8 +27,22 @@
     "Setor",
     "Uang Jalan",
     "Potongan Wajib",
-    "Uang Jalan Tambah / Kurang",
     "Sisa Tagihan",
+  ];
+
+  const headingTransaksiOrderSubkon = [
+    "TGL",
+    "No Transaksi",
+    "Penyewa / Muatan",
+    "Kendaraan / Sopir",
+    "Asal / Tujuan",
+    "Harga Order",
+    "Biaya Tambah / Kurang",
+    "PPH/PPN",
+    "Sisa Piutang Tagihan",
+    "Harga Jual",
+    "Sisa Hutang ke Subkon",
+    "Ket",
   ];
 
   function fetchData() {
@@ -173,10 +187,6 @@
         popoverDropdownRefStatusHargaOrder.style.left = `${window.scrollX}px`;
       }
     };
-    tableSendiri.addEventListener("scroll", updatePosition);
-    return () => {
-      tableSendiri.removeEventListener("scroll", updatePosition);
-    };
   });
 
   let showHargaOrderModal = [];
@@ -278,6 +288,7 @@
   let detailBiayaOrderData = [];
   let detailBiayaUangJalanData = [];
   let detailBiayahargaJualData = [];
+  let IDRFormatter = new Intl.NumberFormat("id-ID",);
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -717,7 +728,7 @@
                               />
                             </div>
                           </div>
-                          {tableData.harga_order}
+                          Rp. {IDRFormatter.format(tableData.harga_order)}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
@@ -775,7 +786,7 @@
                                 href={`/transaksi/order/detail-biaya-tambahan/${index}`}
                                 class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
-                                {tableData.biaya_lain_harga_jual_arr.reduce(
+                                Rp. {IDRFormatter.format(tableData.biaya_lain_harga_jual_arr.reduce(
                                   (acc, curr) =>
                                     curr.sifat === "Menambahkan"
                                       ? acc + curr.nominal
@@ -795,7 +806,7 @@
                                         ? acc + curr.nominal
                                         : acc - curr.nominal,
                                     0
-                                  )}</a
+                                  ))}</a
                               >
                             </div>
                           {/if}
@@ -868,12 +879,16 @@
                                             <option value="1"
                                               >Harga tambahan biaya order</option
                                             >
-                                            <option value="2"
-                                              >Harga tambahan uang jalan</option
-                                            >
+                                            {#if tableData.status_kendaraan == "Sendiri"}
+                                              <option value="2"
+                                                >Harga tambahan uang jalan</option
+                                              >
+                                            {/if}
+                                            {#if tableData.status_kendaraan == "Subkon"}
                                             <option value="3"
                                               >Harga tambahan harga jual</option
                                             >
+                                            {/if}
                                           </select>
                                           {#if errorModalMsg}
                                             <div class="text-red-500 pt-6">
@@ -971,32 +986,27 @@
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.total_pajak}
+                          Rp. {IDRFormatter.format(tableData.total_pajak)}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.setor}
+                          Rp. {IDRFormatter.format(tableData.setor)}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.uang_jalan}
+                          Rp. {IDRFormatter.format(tableData.uang_jalan)}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.potongan_wajib}
+                          Rp. {IDRFormatter.format(tableData.potongan_wajib)}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.uang_jalan}
-                        </td>
-                        <td
-                          class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                        >
-                          {tableData.sisa_tagihan}
+                          Rp. {IDRFormatter.format(tableData.sisa_tagihan)}
                         </td>
                       </tr>
                     {/if}
@@ -1063,7 +1073,7 @@
             <table class="items-center w-full bg-transparent border-collapse">
               <thead>
                 <tr>
-                  {#each headingTransaksiOrder as data}
+                  {#each headingTransaksiOrderSubkon as data}
                     <th
                       class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
                       'light'
@@ -1429,7 +1439,7 @@
                               />
                             </div>
                           </div>
-                          {tableData.harga_order}
+                          Rp. {IDRFormatter.format(tableData.harga_order)}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
@@ -1487,7 +1497,7 @@
                                 href={`/transaksi/order/detail-biaya-tambahan/${index}`}
                                 class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
-                                {tableData.biaya_lain_harga_jual_arr.reduce(
+                                Rp. {IDRFormatter.format(tableData.biaya_lain_harga_jual_arr.reduce(
                                   (acc, curr) =>
                                     curr.sifat === "Menambahkan"
                                       ? acc + curr.nominal
@@ -1507,7 +1517,7 @@
                                         ? acc + curr.nominal
                                         : acc - curr.nominal,
                                     0
-                                  )}</a
+                                  ))}</a
                               >
                             </div>
                           {/if}
@@ -1580,12 +1590,16 @@
                                             <option value="1"
                                               >Harga tambahan biaya order</option
                                             >
-                                            <option value="2"
-                                              >Harga tambahan uang jalan</option
-                                            >
+                                            {#if tableData.status_kendaraan == "Sendiri"}
+                                              <option value="2"
+                                                >Harga tambahan uang jalan</option
+                                              >
+                                            {/if}
+                                            {#if tableData.status_kendaraan == "Subkon"}
                                             <option value="3"
                                               >Harga tambahan harga jual</option
                                             >
+                                            {/if}
                                           </select>
                                           {#if errorModalMsg}
                                             <div class="text-red-500 pt-6">
@@ -1683,32 +1697,22 @@
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.total_pajak}
+                          Rp. {IDRFormatter.format(tableData.total_pajak)}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.setor}
+                          Sisa Piutang
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.uang_jalan}
+                          Rp. {IDRFormatter.format(tableData.harga_jual)}
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          {tableData.potongan_wajib}
-                        </td>
-                        <td
-                          class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                        >
-                          {tableData.uang_jalan}
-                        </td>
-                        <td
-                          class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                        >
-                          {tableData.sisa_tagihan}
+                          Rp. {IDRFormatter.format(tableData.sisa_hutang_ke_subkon)}
                         </td>
                       </tr>
                     {/if}
@@ -1716,7 +1720,7 @@
                 </tbody>
               {:else}
                 <tbody>
-                  <td colspan={headingTransaksiOrder.length + 1}>
+                  <td colspan={headingTransaksiOrderSubkon.length + 1}>
                     <h1 class="text-center py-5 text-blueGray-300">
                       Data Kosong
                     </h1>

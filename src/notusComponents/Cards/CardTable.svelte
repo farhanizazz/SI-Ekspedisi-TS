@@ -36,6 +36,7 @@
     // Dispatch the custom event with the index value
     dispatch('delete', { index });
   }
+  let IDRFormatter = new Intl.NumberFormat("id-ID",);
 </script>
 
 <div
@@ -138,7 +139,7 @@
                   <td
                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                   >
-                    {tableData[header]}
+                    {typeof tableData[header] == "number" && (header != 'id' && header != 'm_rekening_id') ? 'Rp. ' + IDRFormatter.format(tableData[header]) : tableData[header]}
                   </td>
                 {/if}
               {/each}
