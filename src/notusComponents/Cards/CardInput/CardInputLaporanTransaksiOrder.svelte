@@ -6,6 +6,9 @@
 
   let error = {};
   let data = {
+    nopol_subkon: "",
+    sopir_subkon: "",
+    nomor_sj_po_do: "",
     tanggal_awal: "",
     tanggal_akhir: "",
     status_kendaraan: "",
@@ -518,6 +521,46 @@
             </select>
             {#if "m_subkon_id" in error}
               <p class="text-red-500 text-sm">{error.m_subkon_id}</p>
+            {/if}
+          </div>
+
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              for="grid-sopir-subkon"
+            >
+              Sopir
+            </label>
+            <input
+              id="grid-sopir-subkon"
+              type="text"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              placeholder="Masukkan nama sopir"
+              name="sopir-subkon"
+              bind:value={data.sopir_subkon}
+            />
+            {#if "sopir_subkon" in error}
+              <p class="text-red-500 text-sm">{error.sopir_subkon}</p>
+            {/if}
+          </div>
+
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              for="grid-nopol-subkon"
+            >
+              Nopol
+            </label>
+            <input
+              id="grid-nopol-subkon"
+              type="text"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              placeholder="Masukkan nopol subkon"
+              name="nopol-subkon"
+              bind:value={data.nopol_subkon}
+            />
+            {#if "nopol_subkon" in error}
+              <p class="text-red-500 text-sm">{error.nopol_subkon}</p>
             {/if}
           </div>
 
