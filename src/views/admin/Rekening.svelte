@@ -14,6 +14,7 @@
     "Nama",
     "Nama Bank",
     "Nomor Rekening",
+    "Saldo"
     ];
 
   function fetchData() {

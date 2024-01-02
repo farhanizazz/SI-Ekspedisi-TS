@@ -141,6 +141,7 @@
                   >
                     {typeof tableData[header] == "number" &&
                     header != "id" &&
+                    header != "nomor_rekening" &&
                     header != "m_rekening_id"
                       ? "Rp. " + IDRFormatter.format(tableData[header])
                       : tableData[header]}

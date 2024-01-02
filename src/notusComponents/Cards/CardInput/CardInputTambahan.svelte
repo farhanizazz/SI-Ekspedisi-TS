@@ -11,7 +11,7 @@
 
   function handleSubmit() {
 
-    const response = fetch(`${mainUrl}/api/master/rekening`, {
+    const response = fetch(`${mainUrl}/api/master/tambahan`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `bearer ${getCookie('token')}`,
@@ -24,7 +24,7 @@
       res.json().then((res) => {
         console.log(res);
         if (res.status != "error") {
-          navigate("/admin/rekening");
+          navigate("/admin/tambahan");
         } else {
           error = res.message;
         }

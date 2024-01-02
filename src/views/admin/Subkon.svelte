@@ -18,8 +18,8 @@
     "ID",
     "Nama Perusahaan",
     "Alamat",
-    "Keterangan",
     "Penanggung Jawab",
+    "Keterangan",
   ];
 
   function fetchData() {

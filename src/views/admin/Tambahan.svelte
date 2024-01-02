@@ -27,7 +27,7 @@
         if (res.data.role.akses.master_rekening.view != true) {
           navigate("/admin/dashboard");
         } else {
-          fetch(`${mainUrl}/api/master/rekening`, {
+          fetch(`${mainUrl}/api/master/tambahan`, {
             headers: {
               Authorization: `bearer ${getCookie("token")}`,
             },
@@ -55,7 +55,7 @@
           tableHeading={headingRekening}
           href="/admin/tambahan"
           deleteApi={`${mainUrl}/api/master/tambahan/`}
-          heading="Data Rekening"
+          heading="Data Tambahan"
           {data}
           onLoad={fetchData}
         />
