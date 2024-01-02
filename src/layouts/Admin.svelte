@@ -26,6 +26,7 @@
   import { getCookie } from "svelte-cookie";
   import Users from "../views/admin/Users.svelte";
   import Roles from "../views/admin/Roles.svelte";
+  import Tambahan from '../views/admin/Tambahan.svelte';
 
   export let location;
   export let admin = "";
@@ -95,6 +96,7 @@
         <Route path="subkon/*subkon" component={Subkon} />
         <Route path="users/*users" component={Users} />
         <Route path="roles/*roles" component={Roles} />
+        <Route path="tambahan/*tambahan" component={Tambahan} />
       </Router>
       <Router url="transaksi">
         <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />

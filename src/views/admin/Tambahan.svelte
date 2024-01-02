@@ -5,14 +5,15 @@
   import CardEditRekening from "../../notusComponents/Cards/CardInput/CardEdit/CardEditRekening.svelte";
   import { getCookie } from "svelte-cookie";
   import { mainUrl } from "../../environment";
+  import CardInputTambahan from "../../notusComponents/Cards/CardInput/CardInputTambahan.svelte";
+  import CardEditTambahan from "../../notusComponents/Cards/CardInput/CardEdit/CardEditTambahan.svelte";
   export let location;
 
   let data = [];
   const headingRekening = [
     "ID",
     "Nama",
-    "Nama Bank",
-    "Nomor Rekening",
+    "Sifat",
     ];
 
   function fetchData() {
@@ -48,22 +49,22 @@
 
 <div class="flex flex-wrap mt-4">
   <div class="w-full mb-12 px-4">
-    <Router route="rekening">
+    <Router route="tambahan">
       <Route path="">
         <CardTable
           tableHeading={headingRekening}
-          href="/admin/rekening"
-          deleteApi={`${mainUrl}/api/master/rekening/`}
+          href="/admin/tambahan"
+          deleteApi={`${mainUrl}/api/master/tambahan/`}
           heading="Data Rekening"
           {data}
           onLoad={fetchData}
         />
       </Route>
       <Route path="add">
-        <CardInputRekening />
+        <CardInputTambahan/>
       </Route>
       <Route path="edit/:edit" let:params>
-        <CardEditRekening id={params.edit} />
+        <CardEditTambahan id={params.edit} />
       </Route>
     </Router>
   </div>
