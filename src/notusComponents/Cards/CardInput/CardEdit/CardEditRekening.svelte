@@ -7,8 +7,9 @@
   export let id;
   let error = {};
   let data = {
-    nama: '',
-    sifat: '',
+    atas_nama: "",
+    nama_bank: "",
+    nomor_rekening: "",
   };
 
   onMount(async () => {
@@ -71,7 +72,7 @@
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
               for="grid-supir"
             >
-              Nama Transaksi
+              Nama Pemilik
             </label>
             <input
               id="grid-supir"
@@ -79,10 +80,10 @@
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               placeholder="Masukkan Biaya Kuli"
               name="nama"
-              bind:value={data.nama}
+              bind:value={data.atas_nama}
             />
-            {#if "nama" in error}
-              <p class="text-red-500 text-sm">{error.nama}</p>
+            {#if "atas_nama" in error}
+              <p class="text-red-500 text-sm">{error.atas_nama}</p>
             {/if}
           </div>
         </div>
@@ -90,23 +91,41 @@
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-alamat"
+              for="grid-supir"
             >
-              Nominal
+              Nama Bank
             </label>
-            <select
-              id="grid-biaya_lain_harga_order"
+            <input
+              id="grid-supir"
               type="text"
-              bind:value={data.sifat}
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              placeholder="Masukkan nama bank"
+              name="nama"
+              bind:value={data.nama_bank}
+            />
+            {#if "nama_bank" in error}
+              <p class="text-red-500 text-sm">{error.nama_bank}</p>
+            {/if}
+          </div>
+        </div>
+        <div class="w-full lg:w-12/12 px-4">
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              for="grid-supir"
             >
-              <option>Silahkan Pilih Sifat Rekening</option>
-              <option value="Menambahkan">Menambahkan</option>
-              <option value="Mengurangi">Mengurangi</option>
-
-            </select>
-            {#if "sifat" in error}
-              <p class="text-red-500 text-sm">{error.sifat}</p>
+              Nomor Rekening
+            </label>
+            <input
+              id="grid-supir"
+              type="number"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              placeholder="Masukkan nomor rekening"
+              name="nama"
+              bind:value={data.nomor_rekening}
+            />
+            {#if "nomor_rekening" in error}
+              <p class="text-red-500 text-sm">{error.nomor_rekening}</p>
             {/if}
           </div>
         </div>

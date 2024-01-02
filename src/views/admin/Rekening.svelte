@@ -1,4 +1,5 @@
 <script>
+	import CardTableRekening from './../../notusComponents/Cards/CardTableRekening.svelte';
   import CardTable from "../../notusComponents/Cards/CardTable.svelte";
   import { Router, Route } from "svelte-routing";
   import CardInputRekening from "../../notusComponents/Cards/CardInput/CardInputRekening.svelte";
@@ -50,7 +51,7 @@
   <div class="w-full mb-12 px-4">
     <Router route="rekening">
       <Route path="">
-        <CardTable
+        <CardTableRekening
           tableHeading={headingRekening}
           href="/admin/rekening"
           deleteApi={`${mainUrl}/api/master/rekening/`}
