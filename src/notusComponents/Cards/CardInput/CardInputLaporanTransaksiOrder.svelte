@@ -4,6 +4,13 @@
   import { mainUrl } from "../../../environment";
   import { getCookie } from "svelte-cookie";
 
+  const date = new Date();
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so we need to add 1
+  const year = date.getFullYear();
+
+  const currentDate = `${year}-${month}-${day}`;
+
   let error = {};
   let data = {
     nopol_subkon: "",
@@ -13,7 +20,7 @@
     tanggal_akhir: "",
     status_kendaraan: "",
     status_kendaraan_sendiri: null,
-    status_surat_jalan: "",
+    status_surat_jalan: "Sopir",
     m_penyewa_id: null,
     muatan: "",
     m_armada_id: null,
@@ -44,6 +51,7 @@
   let subkons = [];
 
   onMount(async () => {
+    data.tanggal_awal = currentDate;
     fetch(`${mainUrl}/api/master/penyewa`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
@@ -116,6 +124,17 @@
   });
 
   function handleSubmit() {
+    if(data.status_kendaraan == "Sendiri"){
+      data.m_subkon_id = null;
+      data.nopol_subkon = null;
+      data.sopir_subkon = null;
+      data.harga_jual = null;
+    } else {
+      data.m_armada_id = '';
+      data.m_sopir_id = '';
+      data.uang_jalan = null;
+      data.status_surat_jalan = '';
+    }
     const response = fetch(`${mainUrl}/api/transaksi/order`, {
       headers: {
         "Content-Type": "application/json",
@@ -135,6 +154,7 @@
       });
     });
   }
+  
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
@@ -160,16 +180,16 @@
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-supir"
+              for="grid-tanggal-awal"
             >
               Tanggal Awal
             </label>
             <input
-              id="grid-supir"
+              id="grid-tanggal-awal"
               type="date"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               placeholder="Masukkan Tanggal Transaksi"
-              name="nama-supir"
+              name="tanggal-awal"
               bind:value={data.tanggal_awal}
             />
             {#if "tanggal_awal" in error}
@@ -212,7 +232,6 @@
             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
             bind:value={data.status_surat_jalan}
           >
-            <option>Silahkan Pilih Status Surat Jalan</option>
             <option value="Sopir">Sopir</option>
             <option value="Kantor">Kantor</option>
             <option value="Selesai">Selesai</option>

@@ -1,4 +1,5 @@
 <script>
+	import DetailTransaksi from './DetailTransaksi.svelte';
   import DetailBiayaTambahan from "./DetailBiayaTambahan.svelte";
   // core components
   import CardEditLaporanTransaksiOrder from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditLaporanTransaksiOrder.svelte";
@@ -288,7 +289,7 @@
   let detailBiayaOrderData = [];
   let detailBiayaUangJalanData = [];
   let detailBiayahargaJualData = [];
-  let IDRFormatter = new Intl.NumberFormat("id-ID",);
+  let IDRFormatter = new Intl.NumberFormat("id-ID");
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -672,63 +673,12 @@
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          <div class="container mx-autoflex flex-row mb-2">
-                            <button
-                              bind:this={btnDropdownRefStatusHargaOrder}
-                              on:click={() =>
-                                toggleDropdownStatusHargaOrder(index)}
-                              class="flex justify-center items-center m-1 px-2 py-1 rounded-full text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                              style="
-                            background-color: 
-                              {tableData.status_harga_order == 'Dp'
-                                ? '#bbf7d0'
-                                : ''}
-                              {tableData.status_harga_order == 'Pelunasan'
-                                ? '#bbf7d0'
-                                : ''};
-                            color: 
-                              {tableData.status_harga_order == 'Dp'
-                                ? '#16a34a'
-                                : ''}
-                              {tableData.status_harga_order == 'Pelunasan'
-                                ? '#16a34a'
-                                : ''};"
-                            >
-                              <div
-                                class="flex-initial max-w-full leading-none text-xs font-semibold"
-                              >
-                                {tableData.status_harga_order}
-                              </div>
-                            </button>
-                            <!-- bind:this={popoverDropdownRef} -->
-                            <!-- {dropdownPopoverShow ? 'block' : 'hidden'} -->
-                            <div
-                              bind:this={popoverDropdownRefStatusHargaOrder}
-                              class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusHargaOrder[
-                                index
-                              ]
-                                ? 'absolute'
-                                : 'hidden'}"
-                            >
-                              <Chips
-                                onClick={() => {
-                                  tableData.status_harga_order = "Dp";
-                                }}
-                                text="Dp"
-                                bgColor="#bbf7d0"
-                                textColor="#16a34a"
-                              />
-                              <Chips
-                                onClick={() => {
-                                  tableData.status_harga_order = "Pelunasan";
-                                }}
-                                text="Pelunasan"
-                                bgColor="#bbf7d0"
-                                textColor="#16a34a"
-                              />
-                            </div>
-                          </div>
                           Rp. {IDRFormatter.format(tableData.harga_order)}
+                          <br />
+                          <a
+                            href="/transaksi/order/mutasi/{tableData.id}"
+                            >Rp. {IDRFormatter.format(tableData.harga_order)}
+                          </a>
                         </td>
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
@@ -786,27 +736,29 @@
                                 href={`/transaksi/order/detail-biaya-tambahan/${index}`}
                                 class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
-                                Rp. {IDRFormatter.format(tableData.biaya_lain_harga_jual_arr.reduce(
-                                  (acc, curr) =>
-                                    curr.sifat === "Menambahkan"
-                                      ? acc + curr.nominal
-                                      : acc - curr.nominal,
-                                  0
-                                ) +
-                                  tableData.biaya_lain_uang_jalan_arr.reduce(
+                                Rp. {IDRFormatter.format(
+                                  tableData.biaya_lain_harga_jual_arr.reduce(
                                     (acc, curr) =>
                                       curr.sifat === "Menambahkan"
                                         ? acc + curr.nominal
                                         : acc - curr.nominal,
                                     0
                                   ) +
-                                  tableData.biaya_lain_harga_order_arr.reduce(
-                                    (acc, curr) =>
-                                      curr.sifat === "Menambahkan"
-                                        ? acc + curr.nominal
-                                        : acc - curr.nominal,
-                                    0
-                                  ))}</a
+                                    tableData.biaya_lain_uang_jalan_arr.reduce(
+                                      (acc, curr) =>
+                                        curr.sifat === "Menambahkan"
+                                          ? acc + curr.nominal
+                                          : acc - curr.nominal,
+                                      0
+                                    ) +
+                                    tableData.biaya_lain_harga_order_arr.reduce(
+                                      (acc, curr) =>
+                                        curr.sifat === "Menambahkan"
+                                          ? acc + curr.nominal
+                                          : acc - curr.nominal,
+                                      0
+                                    )
+                                )}</a
                               >
                             </div>
                           {/if}
@@ -885,9 +837,9 @@
                                               >
                                             {/if}
                                             {#if tableData.status_kendaraan == "Subkon"}
-                                            <option value="3"
-                                              >Harga tambahan harga jual</option
-                                            >
+                                              <option value="3"
+                                                >Harga tambahan harga jual</option
+                                              >
                                             {/if}
                                           </select>
                                           {#if errorModalMsg}
@@ -1497,27 +1449,29 @@
                                 href={`/transaksi/order/detail-biaya-tambahan/${index}`}
                                 class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
-                                Rp. {IDRFormatter.format(tableData.biaya_lain_harga_jual_arr.reduce(
-                                  (acc, curr) =>
-                                    curr.sifat === "Menambahkan"
-                                      ? acc + curr.nominal
-                                      : acc - curr.nominal,
-                                  0
-                                ) +
-                                  tableData.biaya_lain_uang_jalan_arr.reduce(
+                                Rp. {IDRFormatter.format(
+                                  tableData.biaya_lain_harga_jual_arr.reduce(
                                     (acc, curr) =>
                                       curr.sifat === "Menambahkan"
                                         ? acc + curr.nominal
                                         : acc - curr.nominal,
                                     0
                                   ) +
-                                  tableData.biaya_lain_harga_order_arr.reduce(
-                                    (acc, curr) =>
-                                      curr.sifat === "Menambahkan"
-                                        ? acc + curr.nominal
-                                        : acc - curr.nominal,
-                                    0
-                                  ))}</a
+                                    tableData.biaya_lain_uang_jalan_arr.reduce(
+                                      (acc, curr) =>
+                                        curr.sifat === "Menambahkan"
+                                          ? acc + curr.nominal
+                                          : acc - curr.nominal,
+                                      0
+                                    ) +
+                                    tableData.biaya_lain_harga_order_arr.reduce(
+                                      (acc, curr) =>
+                                        curr.sifat === "Menambahkan"
+                                          ? acc + curr.nominal
+                                          : acc - curr.nominal,
+                                      0
+                                    )
+                                )}</a
                               >
                             </div>
                           {/if}
@@ -1596,9 +1550,9 @@
                                               >
                                             {/if}
                                             {#if tableData.status_kendaraan == "Subkon"}
-                                            <option value="3"
-                                              >Harga tambahan harga jual</option
-                                            >
+                                              <option value="3"
+                                                >Harga tambahan harga jual</option
+                                              >
                                             {/if}
                                           </select>
                                           {#if errorModalMsg}
@@ -1712,7 +1666,9 @@
                         <td
                           class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                         >
-                          Rp. {IDRFormatter.format(tableData.sisa_hutang_ke_subkon)}
+                          Rp. {IDRFormatter.format(
+                            tableData.sisa_hutang_ke_subkon
+                          )}
                         </td>
                       </tr>
                     {/if}
@@ -1730,6 +1686,9 @@
             </table>
           </div>
         </div>
+      </Route>
+      <Route path="mutasi/:id" let:params>
+        <DetailTransaksi id={params.id}/>
       </Route>
       <Route path="add">
         <CardInputLaporanTransaksiOrder />
