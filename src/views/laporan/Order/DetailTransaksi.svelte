@@ -8,7 +8,13 @@
 
   export let id;
   let data = [];
-  const headingPengeluaran = ["ID Rekening", "Jumlah", "Sifat"];
+  let dataOriginal = [];
+  const headingPengeluaran = [
+    "ID",
+    "Tanggal Pembayaran",
+    "Nominal",
+    "Keterangan",
+  ];
   console.log(data);
 
   function fetchData() {
@@ -18,14 +24,25 @@
       },
     }).then((res) => {
       res.json().then((res) => {
-        data = res.data;
+        data = res.data.map((e) => {
+          let copy = { ...e };
+          delete copy.created_at;
+          delete copy.updated_at;
+          delete copy.transaksi_order_id;
+          delete copy.master_rekening_id;
+          if (copy.keterangan == null) {
+            copy.keterangan = "Tidak ada keterangan";
+          }
+          return copy;
+        });
+        dataOriginal = res.data;
       });
     });
   }
   onMount(() => {
     fetchData();
   });
-  $: console.log(data);
+  $: console.log(dataOriginal);
 </script>
 
 <Router route={id}>
