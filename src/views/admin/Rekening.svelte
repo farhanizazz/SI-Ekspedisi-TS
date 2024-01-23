@@ -13,8 +13,8 @@
     "ID",
     "Nama",
     "Nama Bank",
+    "Saldo",
     "Nomor Rekening",
-    "Saldo"
     ];
 
   function fetchData() {

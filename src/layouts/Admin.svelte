@@ -1,5 +1,5 @@
 <script>
-	import Transaksi from '../views/laporan/Order/Transaksi.svelte';
+  import Transaksi from "../views/laporan/Order/Transaksi.svelte";
   import { Router, Route, navigate } from "svelte-routing";
   import Toastify from "toastify-js";
 
@@ -26,7 +26,7 @@
   import { getCookie } from "svelte-cookie";
   import Users from "../views/admin/Users.svelte";
   import Roles from "../views/admin/Roles.svelte";
-  import Tambahan from '../views/admin/Tambahan.svelte';
+  import Tambahan from "../views/admin/Tambahan.svelte";
 
   export let location;
   export let admin = "";
@@ -36,53 +36,56 @@
   let isMounted = false;
 
   onMount(async () => {
-    if(!isMounted)
-    {let res = await fetch(`${mainUrl}/api/getProfile`, {
-      headers: {
-        Authorization: `bearer ${token}`,
-        Accept: "application/json",
-      },
-    });
-    res = await res.json();
-    userData = await res.data;
-    if (res.status !== "success") {
-      navigate("/auth/login");
-    }
-
-    let notifications = await fetch(
-      `${mainUrl}/api/notifikasi/getReminderPajak`,
-      {
+    if (!isMounted) {
+      let res = await fetch(`${mainUrl}/api/getProfile`, {
         headers: {
           Authorization: `bearer ${token}`,
           Accept: "application/json",
         },
+      });
+      res = await res.json();
+      userData = await res.data;
+      if (res.status !== "success") {
+        navigate("/auth/login");
       }
-    );
-    notifications = await notifications.json();
-      
-    notifications.data.forEach((e) => {
-      Toastify({
-        text: e.message,
-        duration: -1,
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "right", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-          background: `${e.selisih.includes('terlewati') ? '#ef4444' : '#f59e0b'}`,
-        },
-        onClick: function () {}, // Callback after click
-      }).showToast();
-    });
-    isMounted = true;}
+
+      let notifications = await fetch(
+        `${mainUrl}/api/notifikasi/getReminderPajak`,
+        {
+          headers: {
+            Authorization: `bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+      notifications = await notifications.json();
+
+      notifications.data.forEach((e) => {
+        Toastify({
+          text: e.message,
+          duration: -1,
+          close: true,
+          gravity: "top", // `top` or `bottom`
+          position: "right", // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: `${
+              e.selisih.includes("terlewati") ? "#ef4444" : "#f59e0b"
+            }`,
+          },
+          onClick: function () {}, // Callback after click
+        }).showToast();
+      });
+      isMounted = true;
+    }
   });
 </script>
 
 <div>
-  <Sidebar {location} {userData}/>
-  <div class="relative md:ml-64 bg-blueGray-100">
+  <!-- <Sidebar {location} {userData}/> -->
+  <HeaderStats {location} />
+  <div class="relative bg-blueGray-100">
     <!-- <AdminNavbar /> -->
-    <HeaderStats />
     <div class="px-4 md:px-10 mx-auto w-full -m-24">
       <Router url="admin">
         <Route path="dashboard" component={Dashboard} />

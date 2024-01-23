@@ -1,4 +1,5 @@
 <script>
+  import { link } from "svelte-routing";
   // core components
   import CardStats from "../Cards/CardStats.svelte";
   import { onMount } from "svelte";
@@ -8,24 +9,174 @@
   let data;
   fetch(`${mainUrl}/api/master/rekening/total`, {
     headers: {
-        Authorization: `bearer ${getCookie('token')}`
-      }
+      Authorization: `bearer ${getCookie("token")}`,
+    },
   }).then((res) => {
     res.json().then((res) => {
-      if (res.data === null)
-        data = 0;
-      else data = res.data
+      if (res.data === null) data = 0;
+      else data = res.data;
     });
   });
+
+  let selected = 1;
+  export let location;
 </script>
 
 <!-- Header -->
-<div class="relative bg-red-500 md:pt-32 pb-32 pt-12">
+<div class="relative bg-red-500 md:pt-12 pb-32 pt-12">
   <div class="px-4 md:px-10 mx-auto w-full">
-    <div>
+    <div class="px-4">
       <!-- Card stats -->
-      <div class="flex flex-wrap">
-        <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
+      <ul class="flex">
+        <li
+          class={`${selected == 1 ? "active" : ""} px-6 py-3`}
+          on:click={() => {
+            selected = 1;
+          }}
+        >
+          Master
+        </li>
+        <li
+          class={`${selected == 2 ? "active" : ""} px-6 py-3`}
+          on:click={() => {
+            selected = 2;
+          }}
+        >
+          Transaksi
+        </li>
+        <li
+          class={`${selected == 3 ? "active" : ""} px-6 py-3`}
+          on:click={() => {
+            selected = 3;
+          }}
+        >
+          Laporan
+        </li>
+      </ul>
+
+      {#if selected == 1}
+        <ul class="flex text-center">
+          <a use:link href="/admin/sopir">
+            <li
+              class="px-6 py-3 {location.href.indexOf('/admin/sopir') !== -1
+                ? 'active'
+                : ''}"
+            >
+              Master Sopir
+            </li>
+          </a>
+
+          <a use:link href="/admin/penyewa">
+            <li
+              class="px-6 py-3 {location.href.indexOf('/admin/penyewa') !== -1
+                ? 'active'
+                : ''}"
+            >
+              Master Penyewa
+            </li>
+          </a>
+
+          <a use:link href="/admin/armada">
+            <li
+              class="px-6 py-3 {location.href.indexOf('/admin/armada') !== -1
+                ? 'active'
+                : ''}"
+            >
+              Master Armada
+            </li>
+          </a>
+
+          <a use:link href="/admin/rekening">
+            <li
+              class="px-6 py-3 {location.href.indexOf('/admin/rekening') !== -1
+                ? 'active'
+                : ''}"
+            >
+              Master Rekening
+            </li>
+          </a>
+
+          <a use:link href="/admin/tambahan">
+            <li
+              class="px-6 py-3 {location.href.indexOf('/admin/tambahan') !== -1
+                ? 'active'
+                : ''}"
+            >
+              Master Tambahan
+            </li>
+          </a>
+
+          <a use:link href="/admin/subkon">
+            <li
+              class="px-6 py-3 {location.href.indexOf('/admin/subkon') !== -1
+                ? 'active'
+                : ''}"
+            >
+              Master Subkon
+            </li>
+          </a>
+        </ul>
+        <ul class="flex text-center">
+          <a use:link href="/admin/users">
+            <li
+              class="px-6 py-3 {location.href.indexOf('/admin/users') !== -1
+                ? 'active'
+                : ''}"
+            >
+              Master Pegawai
+            </li>
+          </a>
+
+          <a use:link href="/admin/roles">
+            <li
+              class="px-6 py-3 {location.href.indexOf('/admin/roles') !== -1
+                ? 'active'
+                : ''}"
+            >
+              Master Akses
+            </li>
+          </a>
+        </ul>
+      {/if}
+
+      {#if selected == 2}
+        <ul class="flex">
+          <a use:link href="/transaksi/hutangSopir">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/transaksi/hutangSopir'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Transaksi Hutang Sopir
+            </li>
+          </a>
+          <a use:link href="/transaksi/pengeluaran">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/transaksi/pengeluaran'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Transaksi Pengeluaran
+            </li>
+          </a>
+          <a use:link href="/transaksi/order">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/transaksi/order'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Transaksi Transaksi Order
+            </li></a
+          >
+        </ul>
+      {/if}
+      <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
           <CardStats
             statSubtitle="TOTAL REKENING"
             statTitle={data}
@@ -73,8 +224,35 @@
             statIconColor="bg-emerald-500"
           />
         </div> -->
-        
-      </div>
     </div>
   </div>
 </div>
+
+<style>
+  li {
+    padding-left: 1.5rem /* 24px */;
+    padding-right: 1.5rem /* 24px */;
+    padding-top: 0.75rem /* 12px */;
+    padding-bottom: 0.75rem /* 12px */;
+    border-radius: 0.375rem /* 6px */;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  li:hover {
+    background-color: #00000042;
+    border-radius: 0.375rem /* 6px */;
+  }
+
+  .active {
+    background-color: #fff;
+    border-radius: 0.375rem /* 6px */;
+    cursor: default;
+    color: #000;
+  }
+
+  .active:hover {
+    background-color: #fff;
+    border-radius: 0.375rem /* 6px */;
+  }
+</style>

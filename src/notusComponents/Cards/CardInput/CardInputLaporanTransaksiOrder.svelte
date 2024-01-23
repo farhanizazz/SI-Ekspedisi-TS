@@ -15,7 +15,9 @@
   let data = {
     nopol_subkon: "",
     sopir_subkon: "",
-    nomor_sj_po_do: "",
+    nomor_sj: "",
+    nomor_po: "",
+    nomor_do: "",
     tanggal_awal: "",
     tanggal_akhir: "",
     status_kendaraan: "",
@@ -130,10 +132,7 @@
       data.sopir_subkon = null;
       data.harga_jual = null;
     } else {
-      data.m_armada_id = '';
-      data.m_sopir_id = '';
       data.uang_jalan = null;
-      data.status_surat_jalan = '';
     }
     const response = fetch(`${mainUrl}/api/transaksi/order`, {
       headers: {
@@ -223,6 +222,66 @@
         <div class="relative w-full mb-3">
           <label
             class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+            for="grid-SJ"
+          >
+            Nomor SJ
+          </label>
+          <input
+            id="grid-SJ"
+            type="number"
+            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+            placeholder="Masukkan Nomor SJ"
+            name="SJ"
+            bind:value={data.nomor_sj}
+          />
+          {#if "nomor_sj" in error}
+            <p class="text-red-500 text-sm">{error.nomor_sj}</p>
+          {/if}
+        </div>
+
+        <div class="relative w-full mb-3">
+          <label
+            class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+            for="grid-PO"
+          >
+            Nomor PO
+          </label>
+          <input
+            id="grid-PO"
+            type="number"
+            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+            placeholder="Masukkan Nomor PO"
+            name="PO"
+            bind:value={data.nomor_po}
+          />
+          {#if "nomor_po" in error}
+            <p class="text-red-500 text-sm">{error.nomor_po}</p>
+          {/if}
+        </div>
+
+        <div class="relative w-full mb-3">
+          <label
+            class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+            for="grid-DO"
+          >
+            Nomor DO
+          </label>
+          <input
+            id="grid-DO"
+            type="number"
+            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+            placeholder="Masukkan Nomor DO"
+            name="DO"
+            bind:value={data.nomor_do}
+          />
+          {#if "nomor_do" in error}
+            <p class="text-red-500 text-sm">{error.nomor_do}</p>
+          {/if}
+        </div>
+
+        <div class="relative w-full mb-3">
+          <label
+            class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
             for="grid-about-me"
           >
             Status Surat Jalan
@@ -236,8 +295,8 @@
             <option value="Kantor">Kantor</option>
             <option value="Selesai">Selesai</option>
           </select>
-          {#if "status_kendaraan" in error}
-            <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
+          {#if "status_surat_jalan" in error}
+            <p class="text-red-500 text-sm">{error.status_surat_jalan}</p>
           {/if}
         </div>
 
@@ -259,7 +318,7 @@
             {/each}
           </select>
           {#if "m_penyewa_id" in error}
-            <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
+            <p class="text-red-500 text-sm">{error.m_penyewa_id}</p>
           {/if}
         </div>
 
@@ -334,7 +393,7 @@
             id="grid-Harga_Order"
             type="number"
             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-            placeholder="Masukkan Harga_Order penyewa"
+            placeholder="Masukkan Harga Order penyewa"
             name="Harga_Order"
             bind:value={data.harga_order}
           />
@@ -404,6 +463,28 @@
             <p class="text-red-500 text-sm">{error.status_pajak}</p>
           {/if}
         </div>
+
+        {#if data.status_pajak == "ya"}
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              for="grid-ppn"
+            >
+              Pajak (dalam %)
+            </label>
+            <input
+              id="grid-ppn"
+              type="number"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              placeholder="Masukkan Jumlah Pajak dalam %"
+              name="ppn"
+              bind:value={data.ppn}
+            />
+            {#if "ppn" in error}
+              <p class="text-red-500 text-sm">{error.ppn}</p>
+            {/if}
+          </div>
+        {/if}
 
         <div class="relative w-full mb-3">
           <label
