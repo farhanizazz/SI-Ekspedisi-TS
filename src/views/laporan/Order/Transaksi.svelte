@@ -15,7 +15,7 @@
   // import "../../app.css";
 
   let data = [];
-  let dataRekening = [];
+  let dataTambahan = [];
   const headingTransaksiOrder = [
     "TGL",
     "No Transaksi",
@@ -60,7 +60,7 @@
           // delete e.m_armada_id;
           // delete e.m_sopir_id;
           // delete e.m_subkon_id;
-          // delete e.rekening;
+          // delete e.tambahan;
 
           // // e.biaya_lain_harga_order_arr = e.biaya_lain_harga_order_arr.map(
           // //   (e) => {
@@ -101,13 +101,13 @@
   }
 
   async function fetchRekeningData() {
-    let res = await axios.get(`${mainUrl}/api/rekening`, {
+    let res = await axios.get(`${mainUrl}/api/master/tambahan`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
     });
-    dataRekening = res.data.data;
-    console.log(dataRekening);
+    dataTambahan = res.data.data;
+    console.log(dataTambahan);
   }
 
   let search = "";
@@ -849,9 +849,9 @@
                                               <option selected value={0}
                                                 >Silahkan pilih sifat biaya</option
                                               >
-                                              {#each dataRekening as rekening}
-                                                <option value={rekening.id}>
-                                                  {rekening.nama} | {rekening.sifat}
+                                              {#each dataTambahan as tambahan}
+                                                <option value={tambahan.id}>
+                                                  {tambahan.nama} | {tambahan.sifat}
                                                 </option>
                                               {/each}
                                             </select>
@@ -922,7 +922,7 @@
                                                 biaya_lain_harga_order:
                                                   tableData.biaya_lain_harga_order.concat(
                                                     {
-                                                      m_rekening_id: sifat,
+                                                      m_tambahan_id: sifat,
                                                       nominal: biaya,
                                                     }
                                                   ),
@@ -937,7 +937,7 @@
                                                 biaya_lain_uang_jalan:
                                                   tableData.biaya_lain_uang_jalan.concat(
                                                     {
-                                                      m_rekening_id: sifat,
+                                                      m_tambahan_id: sifat,
                                                       nominal: biaya,
                                                     }
                                                   ),
@@ -952,7 +952,7 @@
                                                 biaya_lain_harga_jual:
                                                   tableData.biaya_lain_harga_jual.concat(
                                                     {
-                                                      m_rekening_id: sifat,
+                                                      m_tambahan_id: sifat,
                                                       nominal: biaya,
                                                     }
                                                   ),
@@ -1368,7 +1368,7 @@
                           <td
                             class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                           >
-                            {tableData.armada.nopol} / {tableData.sopir.nama}
+                            {tableData.nopol_subkon} / {tableData.sopir_subkon}
                           </td>
                           <td
                             class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
@@ -1568,9 +1568,9 @@
                                               <option selected value={0}
                                                 >Silahkan pilih sifat biaya</option
                                               >
-                                              {#each dataRekening as rekening}
-                                                <option value={rekening.id}>
-                                                  {rekening.nama} | {rekening.sifat}
+                                              {#each dataTambahan as tambahan}
+                                                <option value={tambahan.id}>
+                                                  {tambahan.nama} | {tambahan.sifat}
                                                 </option>
                                               {/each}
                                             </select>
@@ -1641,7 +1641,7 @@
                                                 biaya_lain_harga_order:
                                                   tableData.biaya_lain_harga_order.concat(
                                                     {
-                                                      m_rekening_id: sifat,
+                                                      m_tambahan_id: sifat,
                                                       nominal: biaya,
                                                     }
                                                   ),
@@ -1656,7 +1656,7 @@
                                                 biaya_lain_uang_jalan:
                                                   tableData.biaya_lain_uang_jalan.concat(
                                                     {
-                                                      m_rekening_id: sifat,
+                                                      m_tambahan_id: sifat,
                                                       nominal: biaya,
                                                     }
                                                   ),
@@ -1671,7 +1671,7 @@
                                                 biaya_lain_harga_jual:
                                                   tableData.biaya_lain_harga_jual.concat(
                                                     {
-                                                      m_rekening_id: sifat,
+                                                      m_tambahan_id: sifat,
                                                       nominal: biaya,
                                                     }
                                                   ),
@@ -1715,6 +1715,46 @@
                             Rp. {IDRFormatter.format(
                               tableData.sisa_hutang_ke_subkon
                             )}
+                          </td>
+                          <td
+                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                          >
+                            Ket
+                          </td>
+                          <td
+                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                          >
+                            <a
+                              use:link
+                              href={`/transaksi/order/edit/${tableData.id}`}
+                            >
+                              <p
+                                class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
+                              >
+                                Edit
+                              </p>
+                            </a>
+                            <button
+                              on:click={() => {
+                                fetch(mainUrl + '/api/transaksi/order/' + `${tableData.id}`, {
+                                  method: "delete",
+                                  headers: {
+                                    Authorization: `bearer ${getCookie(
+                                      "token"
+                                    )}`,
+                                  },
+                                }).then(() => {
+                                  fetchData();
+                                });
+                              }}
+                              class="w-full"
+                            >
+                              <p
+                                class="text-center bg-red-500 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+                              >
+                                Hapus Data
+                              </p>
+                            </button>
                           </td>
                         </tr>
                       {/if}

@@ -228,7 +228,7 @@
           </label>
           <input
             id="grid-SJ"
-            type="number"
+            type="text"
             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
             placeholder="Masukkan Nomor SJ"
             name="SJ"
@@ -248,7 +248,7 @@
           </label>
           <input
             id="grid-PO"
-            type="number"
+            type="text"
             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
             placeholder="Masukkan Nomor PO"
             name="PO"
@@ -268,7 +268,7 @@
           </label>
           <input
             id="grid-DO"
-            type="number"
+            type="text"
             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
             placeholder="Masukkan Nomor DO"
             name="DO"
