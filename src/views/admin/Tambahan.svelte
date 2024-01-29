@@ -7,7 +7,6 @@
   import { mainUrl } from "../../environment";
   import CardInputTambahan from "../../notusComponents/Cards/CardInput/CardInputTambahan.svelte";
   import CardEditTambahan from "../../notusComponents/Cards/CardInput/CardEdit/CardEditTambahan.svelte";
-  export let location;
 
   let data = [];
   const headingRekening = [

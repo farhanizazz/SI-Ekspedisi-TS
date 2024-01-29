@@ -131,7 +131,7 @@
                     considerable range.
                   </p>
                   <a
-                    href="#pablo"
+                    href="#"
                     on:click={(e) => e.preventDefault()}
                     class="font-normal text-red-500"
                   >

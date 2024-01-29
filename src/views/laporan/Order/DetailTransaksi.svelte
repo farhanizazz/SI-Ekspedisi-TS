@@ -1,4 +1,5 @@
 <script>
+	import CardInputDetailTransaksi from '../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte';
   import { Router, Route } from "svelte-routing";
   import { getCookie } from "svelte-cookie";
   import CardTable from "../../../notusComponents/Cards/CardTable.svelte";
@@ -57,6 +58,5 @@
       addData={true}
     />
   </Route>
-
-  <Route path="add"></Route>
+  <Route path="add" component={CardInputDetailTransaksi}/>
 </Router>

@@ -135,7 +135,7 @@
       <div class="flex flex-wrap mt-6 relative">
         <div class="w-1/2">
           <a
-            href="#pablo"
+            href="#"
             on:click={(e) => e.preventDefault()}
             class="text-blueGray-200"
           >

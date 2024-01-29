@@ -1,4 +1,5 @@
 <script>
+	import CardInputDetailTransaksi from './../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte';
   import DetailTransaksi from "./DetailTransaksi.svelte";
   import DetailBiayaTambahan from "./DetailBiayaTambahan.svelte";
   // core components
@@ -316,7 +317,7 @@
             <ul class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row">
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <a
-                  href="#pablo"
+                  href="#"
                   class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
                   1
                     ? 'text-white bg-red-600'
@@ -328,7 +329,7 @@
               </li>
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <a
-                  href="#pablo"
+                  href="#"
                   class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
                   2
                     ? 'text-white bg-red-600'
@@ -1378,63 +1379,13 @@
                           <td
                             class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                           >
-                            <div class="container mx-autoflex flex-row mb-2">
-                              <button
-                                bind:this={btnDropdownRefStatusHargaOrder}
-                                on:click={() =>
-                                  toggleDropdownStatusHargaOrder(index)}
-                                class="flex justify-center items-center m-1 px-2 py-1 rounded-full text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                                style="
-                            background-color: 
-                              {tableData.status_harga_order == 'Dp'
-                                  ? '#bbf7d0'
-                                  : ''}
-                              {tableData.status_harga_order == 'Pelunasan'
-                                  ? '#bbf7d0'
-                                  : ''};
-                            color: 
-                              {tableData.status_harga_order == 'Dp'
-                                  ? '#16a34a'
-                                  : ''}
-                              {tableData.status_harga_order == 'Pelunasan'
-                                  ? '#16a34a'
-                                  : ''};"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                            <a
+                                  use:link
+                                  href={`/transaksi/order/mutasi/${index}`}
+                                  class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
-                                  {tableData.status_harga_order}
-                                </div>
-                              </button>
-                              <!-- bind:this={popoverDropdownRef} -->
-                              <!-- {dropdownPopoverShow ? 'block' : 'hidden'} -->
-                              <div
-                                bind:this={popoverDropdownRefStatusHargaOrder}
-                                class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusHargaOrder[
-                                  index
-                                ]
-                                  ? 'absolute'
-                                  : 'hidden'}"
-                              >
-                                <Chips
-                                  onClick={() => {
-                                    tableData.status_harga_order = "Dp";
-                                  }}
-                                  text="Dp"
-                                  bgColor="#bbf7d0"
-                                  textColor="#16a34a"
-                                />
-                                <Chips
-                                  onClick={() => {
-                                    tableData.status_harga_order = "Pelunasan";
-                                  }}
-                                  text="Pelunasan"
-                                  bgColor="#bbf7d0"
-                                  textColor="#16a34a"
-                                />
-                              </div>
-                            </div>
-                            Rp. {IDRFormatter.format(tableData.harga_order)}
+                                  Rp. {IDRFormatter.format(tableData.harga_order)}</a
+                                >
                           </td>
                           <td
                             class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
@@ -1785,6 +1736,9 @@
       </Route>
       <Route path="edit/:edit" let:params>
         <CardEditLaporanTransaksiOrder id={params.edit} />
+      </Route>
+      <Route path="mutasi/:id/add" let:params>
+        <CardInputDetailTransaksi/>
       </Route>
     </Router>
   </div>

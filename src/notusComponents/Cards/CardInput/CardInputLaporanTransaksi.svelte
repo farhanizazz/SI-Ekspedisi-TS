@@ -127,9 +127,7 @@
               </label>
               <select
                 id="grid-about-me"
-                type="number"
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                rows="4"
                 bind:value={data.master_sopir_id}
               >
               <option>Silahkan Pilih Sopir</option>
@@ -154,7 +152,6 @@
             </label>
             <textarea
               id="grid-about-me"
-              type="text"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               rows="4"
               bind:value={data.ket_trans}
