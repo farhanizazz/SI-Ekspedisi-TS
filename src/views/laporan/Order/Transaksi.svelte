@@ -47,6 +47,8 @@
     "Ket",
   ];
 
+  let listTotal = [];
+
   function fetchData() {
     fetch(`${mainUrl}/api/transaksi/order`, {
       headers: {
@@ -55,37 +57,6 @@
     }).then((res) => {
       res.json().then((res) => {
         res.data.forEach((e) => {
-          // delete e.created_at;
-          // delete e.updated_at;
-          // delete e.m_penyewa_id;
-          // delete e.m_armada_id;
-          // delete e.m_sopir_id;
-          // delete e.m_subkon_id;
-          // delete e.tambahan;
-
-          // // e.biaya_lain_harga_order_arr = e.biaya_lain_harga_order_arr.map(
-          // //   (e) => {
-          // //     return ` ${e.nama} | ${e.nominal}`;
-          // //   }
-          // // );
-
-          // // e.biaya_lain_uang_jalan_arr = e.biaya_lain_uang_jalan_arr.map((e) => {
-          // //   return ` ${e.nama}`;
-          // // });
-          // // e.biaya_lain_harga_jual_arr = e.biaya_lain_harga_jual_arr.map((e) => {
-          // //   return ` ${e.nama}`;
-          // // });
-          // e.penyewa = e.penyewa.nama_perusahaan;
-          // e.armada = e.armada.nopol;
-          // e.sopir = e.sopir.nama;
-          // if (e.subkon != null) {
-          //   e.subkon = e.subkon.nama_perusahaan;
-          // } else {
-          //   e.subkon = "Bukan kendaraan subkon";
-          // }
-          // if (e.status_kendaraan_sendiri == null) {
-          //   e.status_kendaraan_sendiri = "Bukan kendaraan sendiri";
-          // }
           if (e.biaya_lain_harga_jual == null) {
             e.biaya_lain_harga_jual = [];
           }
@@ -95,8 +66,16 @@
           if (e.biaya_lain_harga_order == null) {
             e.biaya_lain_harga_order = [];
           }
+          fetchMutasi(e.id).then((res) => {
+            let total = 0;
+            res.forEach((mutasi) => {
+              total += mutasi.nominal;
+            });
+            e.mutasi_total = total;
+          });
         });
         data = res.data;
+        console.log(data);
       });
     });
   }
@@ -108,7 +87,15 @@
       },
     });
     dataTambahan = res.data.data;
-    console.log(dataTambahan);
+  }
+
+  async function fetchMutasi(id) {
+    let res = await axios.get(`${mainUrl}/api/master/rekening/mutasi?transaksi_order_id=${id}`, {
+      headers: {
+        Authorization: `bearer ${getCookie("token")}`,
+      },
+    });
+    return res.data.data;
   }
 
   let search = "";
@@ -133,7 +120,6 @@
           },
         })
         .then((res) => {
-          console.log(res);
           fetchData();
         });
     } catch (error) {
@@ -150,7 +136,6 @@
           },
         })
         .then((res) => {
-          console.log(res);
           fetchData();
         });
     } catch (error) {
@@ -167,7 +152,6 @@
           },
         })
         .then((res) => {
-          console.log(res);
           sifat = 0;
           jenis = 0;
           biaya = null;
@@ -184,7 +168,6 @@
     fetchData();
     fetchRekeningData();
     const updatePosition = () => {
-      console.log(popoverDropdownRefStatusHargaOrder);
       if (popoverDropdownRefStatusHargaOrder) {
         popoverDropdownRefStatusHargaOrder.style.left = `${window.scrollX}px`;
       }
@@ -910,7 +893,6 @@
                                         class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
-                                          console.log(tableData.id);
                                           if (jenis == 0 || sifat == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
@@ -1379,12 +1361,13 @@
                           <td
                             class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                           >
+                          Rp. {IDRFormatter.format(tableData.harga_order)}
                             <a
                                   use:link
                                   href={`/transaksi/order/mutasi/${tableData.id}`}
                                   class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
-                                  Rp. {IDRFormatter.format(tableData.harga_order)}</a
+                                  Rp. {IDRFormatter.format(tableData.mutasi_total)}</a
                                 >
                           </td>
                           <td
@@ -1579,7 +1562,6 @@
                                         class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
-                                          console.log(tableData.id);
                                           if (jenis == 0 || sifat == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
