@@ -4,6 +4,8 @@
   import { mainUrl } from "../../../environment";
   import { onMount } from "svelte";
 
+  export let id;
+
   let error = {
     transaksi_order_id: "",
     master_rekening_id: "",
@@ -12,7 +14,7 @@
     keterangan: "",
   };
   let data = {
-    transaksi_order_id: "",
+    transaksi_order_id: Number(id),
     master_rekening_id: "",
     tanggal_pembayaran: "",
     nominal: "",
@@ -33,7 +35,7 @@
       res.json().then((res) => {
         console.log(res);
         if (res.status != "error") {
-          navigate("/admin/penyewa");
+          navigate(`/transaksi/order/mutasi/${id}`);
         } else {
           error = res.message;
         }
@@ -102,24 +104,24 @@
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-about-me"
+              for="grid-rekening"
             >
-              Pilih Sopir
+              Pilih Rekening
             </label>
             <select
-              id="grid-about-me"
+              id="grid-rekening"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              bind:value={data.master_sopir_id}
+              bind:value={data.master_rekening_id}
             >
-              <option>Silahkan Pilih Sopir</option>
-              {#each rekenings as sopir}
-                <option value={sopir.id}
-                  >{`Nama Rekening: ${sopir.nama_bank} | Nomor Rekening: ${sopir.nomor_rekening}`}</option
+              <option>Silahkan Pilih Rekening</option>
+              {#each rekenings as rekening}
+                <option value={rekening.id}
+                  >{`Nama Rekening: ${rekening.nama_bank} | Nomor Rekening: ${rekening.nomor_rekening}`}</option
                 >
               {/each}
             </select>
-            {#if "master_sopir_id" in error}
-              <p class="text-red-500 text-sm">{error.master_sopir_id}</p>
+            {#if "master_rekening_id" in error}
+              <p class="text-red-500 text-sm">{error.master_rekening_id}</p>
             {/if}
           </div>
         </div>
@@ -127,41 +129,20 @@
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-penanggung-jawab"
+              for="grid-nominal"
             >
-              Penanggung Jawab
+              Nominal pembayaran
             </label>
             <input
-              id="grid-penanggung-jawab"
-              type="text"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan nama penanggung jawab"
-              name="penanggung-jawab"
-              bind:value={data.penanggung_jawab}
-            />
-            {#if "penanggung_jawab" in error}
-              <p class="text-red-500 text-sm">{error.penanggung_jawab}</p>
-            {/if}
-          </div>
-        </div>
-        <div class="w-full lg:w-6/12 px-4">
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-cp"
-            >
-              Kontak Person
-            </label>
-            <input
-              id="grid-cp"
+              id="grid-nominal"
               type="number"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan nomor yang bisa dihubungi"
-              name="contact-person"
-              bind:value={data.contact_person}
+              placeholder="Masukkan nominal pembayaran"
+              name="nominal"
+              bind:value={data.nominal}
             />
-            {#if "contact_person" in error}
-              <p class="text-red-500 text-sm">{error.contact_person}</p>
+            {#if "nominal" in error}
+              <p class="text-red-500 text-sm">{error.nominal}</p>
             {/if}
           </div>
         </div>

@@ -51,11 +51,12 @@
     <CardTable
       tableHeading={headingPengeluaran}
       href="/transaksi/order/mutasi/{id}"
-      deleteApi={undefined}
+      deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
       heading="Detail Transaksi"
       {data}
       withEdit={false}
       addData={true}
+      onLoad={fetchData}
     />
   </Route>
   <Route path="add" component={CardInputDetailTransaksi}/>
