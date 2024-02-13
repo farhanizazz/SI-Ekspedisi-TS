@@ -6,10 +6,11 @@
   import { onMount } from "svelte";
 
   export let id;
-  let data = [{
+  let data = {
+    id,
     status_kendaraan: "",
-  }];
-  const headingPengeluaran = ["ID Rekening", "Jumlah", "Sifat"];
+  };
+  const headingPengeluaran = ["ID Rekening", "Jumlah", "Sifat", "Keterangan"];
   console.log(data);
 
   function fetchData() {
@@ -24,7 +25,8 @@
             e.biaya_lain_harga_jual = [];
           }
         });
-        data = res.data;
+        data = res.data.find((e) => e.id == id);
+        console.log(data);
       });
     });
   }
@@ -38,11 +40,11 @@
   on:delete={(event) => {
     const index = event.detail.index;
     console.log(index);
-    data[id].biaya_lain_harga_order.splice(index, 1);
+    data.biaya_lain_harga_order.splice(index, 1);
     axios
-      .put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
-        biaya_lain_harga_order: data[id].biaya_lain_harga_order,
-        ...data[id],
+      .put(`${mainUrl}/api/transaksi/order/${data.id}`, {
+        biaya_lain_harga_order: data.biaya_lain_harga_order,
+        ...data,
       })
       .then((res) => {
         console.log(res);
@@ -55,28 +57,28 @@
   href="/transaksi/pengeluaran"
   deleteApi={undefined}
   heading="Biaya Lain Harga Order"
-  data={data && data[id] && data[id].biaya_lain_harga_order_arr}
+  data={data && data.biaya_lain_harga_order_arr}
   withEdit={false}
   addData={false}
 />
 
-{#if data[id].status_kendaraan == "Sendiri"}
+{#if data.status_kendaraan == "Sendiri"}
   <CardTable
     tableHeading={headingPengeluaran}
     href="/transaksi/pengeluaran"
     deleteApi={undefined}
     heading="Biaya Lain Uang Jalan"
-    data={data && data[id] && data[id].biaya_lain_uang_jalan_arr}
+    data={data && data.biaya_lain_uang_jalan_arr}
     withEdit={false}
     addData={false}
     on:delete={(event) => {
       const index = event.detail.index;
       console.log(index);
-      data[id].biaya_lain_uang_jalan.splice(index, 1);
+      data.biaya_lain_uang_jalan.splice(index, 1);
       axios
-        .put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
-          biaya_lain_uang_jalan: data[id].biaya_lain_uang_jalan,
-          ...data[id],
+        .put(`${mainUrl}/api/transaksi/order/${data.id}`, {
+          biaya_lain_uang_jalan: data.biaya_lain_uang_jalan,
+          ...data,
         })
         .then((res) => {
           if (res.data.status == "success") {
@@ -87,13 +89,13 @@
   />
 {/if}
 
-{#if data[id].status_kendaraan == "Subkon"}
+{#if data.status_kendaraan == "Subkon"}
 <CardTable
   tableHeading={headingPengeluaran}
   href="/transaksi/pengeluaran"
   deleteApi={`${mainUrl}/api/transaksi/`}
   heading="Data Lain Harga Jual"
-  data={data && data[id] && data[id].biaya_lain_harga_jual_arr}
+  data={data && data.biaya_lain_harga_jual_arr}
   withEdit={false}
   addData={false}
   on:delete={(event) => {
@@ -101,9 +103,9 @@
     console.log(index);
     data[id].biaya_lain_harga_jual.splice(index, 1);
     axios
-      .put(`${mainUrl}/api/transaksi/order/${data[id].id}`, {
-        biaya_lain_harga_jual: data[id].biaya_lain_harga_jual,
-        ...data[id],
+      .put(`${mainUrl}/api/transaksi/order/${data.id}`, {
+        biaya_lain_harga_jual: data.biaya_lain_harga_jual,
+        ...data,
       })
       .then((res) => {
         if (res.data.status == "success") {

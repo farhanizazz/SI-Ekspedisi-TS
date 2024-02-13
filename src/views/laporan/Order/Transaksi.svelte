@@ -773,7 +773,7 @@
                               <div>
                                 Total Biaya Tambahan: <a
                                   use:link
-                                  href={`/transaksi/order/detail-biaya-tambahan/${index}`}
+                                  href={`/transaksi/order/detail-biaya-tambahan/${tableData.id}`}
                                   class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
                                   Rp. {IDRFormatter.format(
