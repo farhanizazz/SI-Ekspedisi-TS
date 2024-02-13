@@ -819,7 +819,7 @@
                                       class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t"
                                     >
                                       <h3 class="text-3xl font-semibold">
-                                        Modal Title
+                                        Tambahan biaya
                                       </h3>
                                       <button
                                         class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -898,7 +898,7 @@
                                       class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
                                     >
                                       <button
-                                        class="text-red-500 background-transparent font-bold uppercase  py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="px-6 text-red-500 background-transparent font-bold uppercase  py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() =>
                                           toggleHargaOrderModal(index)}
@@ -906,7 +906,7 @@
                                         Close
                                       </button>
                                       <button
-                                        class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm  py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm  py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
                                           if (jenis == 0 || sifat == 0) {
@@ -1358,7 +1358,7 @@
                                       class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t"
                                     >
                                       <h3 class="text-3xl font-semibold">
-                                        Modal Title
+                                        Tambahkan Biaya
                                       </h3>
                                       <button
                                         class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -1437,7 +1437,7 @@
                                       class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
                                     >
                                       <button
-                                        class="text-red-500 background-transparent font-bold uppercase  py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="px-6 text-red-500 background-transparent font-bold uppercase  py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() =>
                                           toggleHargaOrderModal(index)}
@@ -1445,7 +1445,7 @@
                                         Close
                                       </button>
                                       <button
-                                        class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm  py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm  py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
                                           if (jenis == 0 || sifat == 0) {
