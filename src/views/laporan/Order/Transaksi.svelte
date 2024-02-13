@@ -1,5 +1,5 @@
 <script>
-	import CardInputDetailTransaksi from './../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte';
+  import CardInputDetailTransaksi from "./../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte";
   import DetailTransaksi from "./DetailTransaksi.svelte";
   import DetailBiayaTambahan from "./DetailBiayaTambahan.svelte";
   // core components
@@ -49,36 +49,43 @@
 
   let listTotal = [];
 
-  function fetchData() {
-    fetch(`${mainUrl}/api/transaksi/order`, {
+  async function fetchData() {
+    const res = await fetch(`${mainUrl}/api/transaksi/order`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
-    }).then((res) => {
-      res.json().then((res) => {
-        res.data.forEach((e) => {
-          if (e.biaya_lain_harga_jual == null) {
-            e.biaya_lain_harga_jual = [];
-          }
-          if (e.biaya_lain_uang_jalan == null) {
-            e.biaya_lain_uang_jalan = [];
-          }
-          if (e.biaya_lain_harga_order == null) {
-            e.biaya_lain_harga_order = [];
-          }
-          fetchMutasi(e.id).then((res) => {
-            let total = 0;
-            res.forEach((mutasi) => {
-              total += mutasi.nominal;
-            });
-            e.mutasi_total = total;
-          });
-        });
-        data = res.data;
-        console.log(data);
-      });
     });
+
+    const json = await res.json();
+
+    const dataWithMutasi = await Promise.all(
+      json.data.map(async (e) => {
+        if (e.biaya_lain_harga_jual == null) {
+          e.biaya_lain_harga_jual = [];
+        }
+        if (e.biaya_lain_uang_jalan == null) {
+          e.biaya_lain_uang_jalan = [];
+        }
+        if (e.biaya_lain_harga_order == null) {
+          e.biaya_lain_harga_order = [];
+        }
+
+        const mutasi = await fetchMutasi(e.id);
+        let total = 0;
+        mutasi.forEach((mutasi) => {
+          total += mutasi.nominal;
+        });
+        e.mutasi_total = total;
+
+        return e;
+      })
+    );
+
+    data = dataWithMutasi;
+    console.log(data);
   }
+
+  $: data = data;
 
   async function fetchRekeningData() {
     let res = await axios.get(`${mainUrl}/api/master/tambahan`, {
@@ -90,11 +97,14 @@
   }
 
   async function fetchMutasi(id) {
-    let res = await axios.get(`${mainUrl}/api/master/rekening/mutasi?transaksi_order_id=${id}`, {
-      headers: {
-        Authorization: `bearer ${getCookie("token")}`,
-      },
-    });
+    let res = await axios.get(
+      `${mainUrl}/api/master/rekening/mutasi?transaksi_order_id=${id}`,
+      {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+        },
+      }
+    );
     return res.data.data;
   }
 
@@ -301,7 +311,7 @@
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <a
                   href="#"
-                  class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
+                  class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
                   1
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
@@ -313,7 +323,7 @@
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <a
                   href="#"
-                  class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
+                  class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
                   2
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
@@ -362,7 +372,7 @@
 
                   <a use:link href={`/transaksi/order/add`}>
                     <p
-                      class="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      class="bg-indigo-500 text-white active:bg-indigo-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     >
                       Tambah Data
                     </p>
@@ -379,9 +389,9 @@
               >
                 <thead>
                   <tr>
-                    {#each headingTransaksiOrder as data}
+                    {#each headingTransaksiOrder as data, index}
                       <th
-                        class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+                        class="{index == 0 ? "pl-3" : ''} align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
                         'light'
                           ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                           : 'bg-red-700 text-red-200 border-red-600'}"
@@ -390,7 +400,7 @@
                       </th>
                     {/each}
                     <th
-                      class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+                      class="align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
                       'light'
                         ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                         : 'bg-red-700 text-red-200 border-red-600'}"
@@ -406,38 +416,38 @@
                       {#each Object.keys(data[0]) as header}
                         {#if tableData[header] == "aktif"}
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <p
-                              class="text-center bg-emerald-500 text-white text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
+                              class="text-center bg-emerald-500 text-white text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
                             >
                               {tableData[header]}
                             </p>
                           </td>
                         {:else if tableData[header] == "nonaktif"}
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <p
-                              class="text-center bg-red-500 text-white text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
+                              class="text-center bg-red-500 text-white text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
                             >
                               {tableData[header]}
                             </p>
                           </td>
                         {:else}
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData[header]}
                           </td>
                         {/if}
                       {/each}
                       <td
-                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                        class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                       >
                         <a use:link href={`/transaksi/order/edit/${tableData.id}`}>
                           <p
-                            class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
+                            class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
                           >
                             Edit
                           </p>
@@ -457,7 +467,7 @@
                           class="w-full"
                         >
                           <p
-                            class="text-center bg-red-500 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+                            class="text-center bg-red-500 text-white active:bg-red-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
                           >
                             Hapus Data
                           </p>
@@ -469,7 +479,7 @@
                       {#if tableData.status_kendaraan == "Sendiri"}
                         <tr>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <div class="container mx-autoflex flex-row mb-2">
                               <button
@@ -510,7 +520,7 @@
                                   : ''};"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {tableData.status_kendaraan_sendiri}
                                 </div>
@@ -588,7 +598,7 @@
                             </div>
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <div class="container mx-autoflex flex-row mb-2">
                               <button
@@ -619,7 +629,7 @@
                                   : ''};"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {tableData.status_surat_jalan}
                                 </div>
@@ -678,31 +688,37 @@
                             {tableData.no_transaksi}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData.penyewa.nama_perusahaan} / {tableData.muatan}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData.armada.nopol} / {tableData.sopir.nama}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData.asal} / {tableData.tujuan}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.harga_order)}
                             <br />
-                            <a href="/transaksi/order/mutasi/{tableData.id}"
-                              >Rp. {IDRFormatter.format(tableData.harga_order)}
-                            </a>
+                            <a
+                              use:link
+                              href={`/transaksi/order/mutasi/${tableData.id}`}
+                              class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                            >
+                              Rp. {IDRFormatter.format(
+                                tableData.mutasi_total
+                              )}</a
+                            >
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <button
                               on:click={() =>
@@ -711,13 +727,13 @@
                               style="background-color: #bbf7d0; color: #16a34a;"
                             >
                               <div
-                                class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                class="flex-initial max-w-full leading-none text-sm font-semibold"
                               >
                                 Tambahkan Biaya
                               </div>
                             </button>
                             {#if tableData.biaya_lain_harga_order_arr.length == 0 && tableData.biaya_lain_harga_jual_arr.length == 0 && tableData.biaya_lain_uang_jalan_arr.length == 0}
-                              <p class="text-center">
+                              <p class="pl-1">
                                 Tidak ada biaya tambahan
                               </p>
                             {:else}
@@ -726,7 +742,7 @@
                                 class="bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {biaya.nominal} | {biaya.sifat}
                                 </div>
@@ -737,7 +753,7 @@
                                 class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {biaya.nominal} | {biaya.sifat}
                                 </div>
@@ -748,7 +764,7 @@
                                 class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {biaya.nominal} | {biaya.sifat}
                                 </div>
@@ -882,7 +898,7 @@
                                       class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
                                     >
                                       <button
-                                        class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="text-red-500 background-transparent font-bold uppercase  py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() =>
                                           toggleHargaOrderModal(index)}
@@ -890,7 +906,7 @@
                                         Close
                                       </button>
                                       <button
-                                        class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm  py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
                                           if (jenis == 0 || sifat == 0) {
@@ -959,29 +975,69 @@
                             {/if}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.total_pajak)}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.setor)}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.uang_jalan)}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.potongan_wajib)}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.sisa_tagihan)}
+                          </td>
+                          <td
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                          >
+                            <a
+                              use:link
+                              href={`/transaksi/order/edit/${tableData.id}`}
+                            >
+                              <p
+                                class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
+                              >
+                                Edit
+                              </p>
+                            </a>
+                            <button
+                              on:click={() => {
+                                fetch(
+                                  mainUrl +
+                                    "/api/transaksi/order/" +
+                                    `${tableData.id}`,
+                                  {
+                                    method: "delete",
+                                    headers: {
+                                      Authorization: `bearer ${getCookie(
+                                        "token"
+                                      )}`,
+                                    },
+                                  }
+                                ).then(() => {
+                                  fetchData();
+                                });
+                              }}
+                              class="w-full"
+                            >
+                              <p
+                                class="text-center bg-red-500 text-white active:bg-red-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+                              >
+                                Hapus Data
+                              </p>
+                            </button>
                           </td>
                         </tr>
                       {/if}
@@ -1037,7 +1093,7 @@
 
                   <a use:link href={`/transaksi/order/add`}>
                     <p
-                      class="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      class="bg-indigo-500 text-white active:bg-indigo-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     >
                       Tambah Data
                     </p>
@@ -1048,12 +1104,12 @@
 
             <div class="block w-full overflow-x-auto">
               <!-- Projects table -->
-              <table class="items-center w-full bg-transparent border-collapse">
+              <table class="table-fixed items-center bg-transparent border-collapse">
                 <thead>
                   <tr>
-                    {#each headingTransaksiOrderSubkon as data}
+                    {#each headingTransaksiOrderSubkon as data, index}
                       <th
-                        class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+                        class="{index == 0 ? "pl-3" : ''} align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
                         'light'
                           ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                           : 'bg-red-700 text-red-200 border-red-600'}"
@@ -1062,7 +1118,7 @@
                       </th>
                     {/each}
                     <th
-                      class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+                      class="align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
                       'light'
                         ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                         : 'bg-red-700 text-red-200 border-red-600'}"
@@ -1073,188 +1129,16 @@
                 </thead>
                 {#if data.length > 0}
                   <tbody>
-                    <!-- {#each dataSearch as tableData}
-                    <tr>
-                      {#each Object.keys(data[0]) as header}
-                        {#if tableData[header] == "aktif"}
-                          <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                          >
-                            <p
-                              class="text-center bg-emerald-500 text-white text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                            >
-                              {tableData[header]}
-                            </p>
-                          </td>
-                        {:else if tableData[header] == "nonaktif"}
-                          <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                          >
-                            <p
-                              class="text-center bg-red-500 text-white text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                            >
-                              {tableData[header]}
-                            </p>
-                          </td>
-                        {:else}
-                          <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                          >
-                            {tableData[header]}
-                          </td>
-                        {/if}
-                      {/each}
-                      <td
-                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                      >
-                        <a use:link href={`/transaksi/order/edit/${tableData.id}`}>
-                          <p
-                            class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                          >
-                            Edit
-                          </p>
-                        </a>
-
-                        <button
-                          on:click={() => {
-                            fetch(`${mainUrl}/api/transaksi/order/` + `${tableData.id}`, {
-                              method: "delete",
-                              headers: {
-                                Authorization: `bearer ${getCookie("token")}`,
-                              },
-                            }).then(() => {
-                              fetchData();
-                            });
-                          }}
-                          class="w-full"
-                        >
-                          <p
-                            class="text-center bg-red-500 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
-                          >
-                            Hapus Data
-                          </p>
-                        </button></td
-                      >
-                    </tr>
-                  {/each} -->
                     {#each dataSearch as tableData, index}
                       {#if tableData.status_kendaraan == "Subkon"}
                         <tr>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="pl-3 border-t-0 align-middle border-l-0 border-r-0 text-sm"
                           >
-                            {#if tableData.status_kendaraan == "Sendiri"}
-                              <div class="container mx-autoflex flex-row mb-2">
-                                <button
-                                  bind:this={btnDropdownRefStatusKendaraanSendiri}
-                                  on:click={() =>
-                                    toggleDropdownStatusKendaraanSendiri(index)}
-                                  class="flex justify-center items-center m-1 px-2 py-1 rounded-full bg-orange-200 text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                                  style="
-                              background-color: 
-                                {tableData.status_kendaraan_sendiri ==
-                                  'Berangkat'
-                                    ? '#bbf7d0'
-                                    : ''}
-                                {tableData.status_kendaraan_sendiri == 'Pulang'
-                                    ? '#fecaca'
-                                    : ''}
-                                {tableData.status_kendaraan_sendiri == 'Kontrak'
-                                    ? '#fef08a'
-                                    : ''}
-                                {tableData.status_kendaraan_sendiri ==
-                                  'Kota-Kota'
-                                    ? '#bfdbfe'
-                                    : ''};
-                              color: 
-                                {tableData.status_kendaraan_sendiri ==
-                                  'Berangkat'
-                                    ? '#16a34a'
-                                    : ''}
-                                {tableData.status_kendaraan_sendiri == 'Pulang'
-                                    ? '#dc2626'
-                                    : ''}
-                                {tableData.status_kendaraan_sendiri == 'Kontrak'
-                                    ? '#d97706'
-                                    : ''}
-                                {tableData.status_kendaraan_sendiri ==
-                                  'Kota-Kota'
-                                    ? '#2563eb'
-                                    : ''};"
-                                >
-                                  <div
-                                    class="flex-initial max-w-full leading-none text-xs font-semibold"
-                                  >
-                                    {tableData.status_kendaraan_sendiri}
-                                  </div>
-                                </button>
-                                <div
-                                  bind:this={popoverDropdownRefStatusKendaraanSendiri}
-                                  class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusKendaraanSendiri[
-                                    index
-                                  ]
-                                    ? 'absolute'
-                                    : 'hidden'}"
-                                >
-                                  <Chips
-                                    onClick={() =>
-                                      changeStatusKendaraanSendiri({
-                                        data: {
-                                          ...tableData,
-                                          status_kendaraan_sendiri: "Berangkat",
-                                        },
-                                        id: tableData.id,
-                                      })}
-                                    text="Berangkat"
-                                    bgColor="#bbf7d0"
-                                    textColor="#16a34a"
-                                  />
-                                  <Chips
-                                    onClick={() =>
-                                      changeStatusKendaraanSendiri({
-                                        data: {
-                                          ...tableData,
-                                          status_kendaraan_sendiri: "Pulang",
-                                        },
-                                        id: tableData.id,
-                                      })}
-                                    text="Pulang"
-                                    bgColor="#fecaca"
-                                    textColor="#dc2626"
-                                  />
-                                  <Chips
-                                    onClick={() =>
-                                      changeStatusKendaraanSendiri({
-                                        data: {
-                                          ...tableData,
-                                          status_kendaraan_sendiri: "Kontrak",
-                                        },
-                                        id: tableData.id,
-                                      })}
-                                    text="Kontrak"
-                                    bgColor="#fef08a"
-                                    textColor="#d97706"
-                                  />
-                                  <Chips
-                                    onClick={() =>
-                                      changeStatusKendaraanSendiri({
-                                        data: {
-                                          ...tableData,
-                                          status_kendaraan_sendiri: "Kota-Kota",
-                                        },
-                                        id: tableData.id,
-                                      })}
-                                    text="Kota-Kota"
-                                    bgColor="#bfdbfe"
-                                    textColor="#2563eb"
-                                  />
-                                </div>
-                              </div>
-                            {/if}
                             {tableData.tanggal_awal}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm "
                           >
                             <div class="container mx-autoflex flex-row mb-2">
                               <button
@@ -1285,7 +1169,7 @@
                                   : ''};"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {tableData.status_surat_jalan}
                                 </div>
@@ -1344,34 +1228,36 @@
                             {tableData.no_transaksi}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm"
                           >
                             {tableData.penyewa.nama_perusahaan} / {tableData.muatan}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData.nopol_subkon} / {tableData.sopir_subkon}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData.asal} / {tableData.tujuan}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
-                          Rp. {IDRFormatter.format(tableData.harga_order)}
+                            Rp. {IDRFormatter.format(tableData.harga_order)}
                             <a
-                                  use:link
-                                  href={`/transaksi/order/mutasi/${tableData.id}`}
-                                  class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                                >
-                                  Rp. {IDRFormatter.format(tableData.mutasi_total)}</a
-                                >
+                              use:link
+                              href={`/transaksi/order/mutasi/${tableData.id}`}
+                              class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                            >
+                              Rp. {IDRFormatter.format(
+                                tableData.mutasi_total
+                              )}</a
+                            >
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <button
                               on:click={() =>
@@ -1380,13 +1266,13 @@
                               style="background-color: #bbf7d0; color: #16a34a;"
                             >
                               <div
-                                class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                class="flex-initial max-w-full leading-none text-sm font-semibold"
                               >
                                 Tambahkan Biaya
                               </div>
                             </button>
                             {#if tableData.biaya_lain_harga_order_arr.length == 0 && tableData.biaya_lain_harga_jual_arr.length == 0 && tableData.biaya_lain_uang_jalan_arr.length == 0}
-                              <p class="text-center">
+                              <p class="pl-1">
                                 Tidak ada biaya tambahan
                               </p>
                             {:else}
@@ -1395,7 +1281,7 @@
                                 class="bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {biaya.nominal} | {biaya.sifat}
                                 </div>
@@ -1406,7 +1292,7 @@
                                 class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {biaya.nominal} | {biaya.sifat}
                                 </div>
@@ -1417,7 +1303,7 @@
                                 class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                               >
                                 <div
-                                  class="flex-initial max-w-full leading-none text-xs font-semibold"
+                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
                                 >
                                   {biaya.nominal} | {biaya.sifat}
                                 </div>
@@ -1551,7 +1437,7 @@
                                       class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
                                     >
                                       <button
-                                        class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="text-red-500 background-transparent font-bold uppercase  py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() =>
                                           toggleHargaOrderModal(index)}
@@ -1559,7 +1445,7 @@
                                         Close
                                       </button>
                                       <button
-                                        class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm  py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
                                           if (jenis == 0 || sifat == 0) {
@@ -1628,62 +1514,67 @@
                             {/if}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.total_pajak)}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Sisa Piutang
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.harga_jual)}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(
                               tableData.sisa_hutang_ke_subkon
                             )}
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Ket
                           </td>
                           <td
-                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <a
                               use:link
                               href={`/transaksi/order/edit/${tableData.id}`}
                             >
                               <p
-                                class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
+                                class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
                               >
                                 Edit
                               </p>
                             </a>
                             <button
                               on:click={() => {
-                                fetch(mainUrl + '/api/transaksi/order/' + `${tableData.id}`, {
-                                  method: "delete",
-                                  headers: {
-                                    Authorization: `bearer ${getCookie(
-                                      "token"
-                                    )}`,
-                                  },
-                                }).then(() => {
+                                fetch(
+                                  mainUrl +
+                                    "/api/transaksi/order/" +
+                                    `${tableData.id}`,
+                                  {
+                                    method: "delete",
+                                    headers: {
+                                      Authorization: `bearer ${getCookie(
+                                        "token"
+                                      )}`,
+                                    },
+                                  }
+                                ).then(() => {
                                   fetchData();
                                 });
                               }}
                               class="w-full"
                             >
                               <p
-                                class="text-center bg-red-500 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+                                class="text-center bg-red-500 text-white active:bg-red-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
                               >
                                 Hapus Data
                               </p>
@@ -1720,7 +1611,7 @@
         <CardEditLaporanTransaksiOrder id={params.edit} />
       </Route>
       <Route path="mutasi/:id/add" let:params>
-        <CardInputDetailTransaksi id={params.id}/>
+        <CardInputDetailTransaksi id={params.id} />
       </Route>
     </Router>
   </div>

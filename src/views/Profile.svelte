@@ -7,6 +7,8 @@
   export let location;
 </script>
 
+
+
 <div>
   <AuthNavbar />
   <main class="profile-page">

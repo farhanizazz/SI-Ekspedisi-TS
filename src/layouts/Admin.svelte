@@ -17,7 +17,7 @@
   import Penyewa from "../views/admin/Penyewa.svelte";
   import Sopir from "../views/admin/Sopir.svelte";
   import Armada from "../views/admin/Armada.svelte";
-  import Rekening from "../views/admin/Rekening.svelte";
+  import Rekening from "../views/admin/Rekening/Rekening.svelte";
   import Subkon from "../views/admin/Subkon.svelte";
   import HutangSopir from "../views/admin/HutangSopir.svelte";
   import Pengeluaran from "../views/laporan/Pengeluaran.svelte";
@@ -86,7 +86,7 @@
   <HeaderStats {location} />
   <div class="relative bg-blueGray-100">
     <!-- <AdminNavbar /> -->
-    <div class="px-4 md:px-10 mx-auto w-full -m-24">
+    <div class="px-4 mx-auto w-full -m-24">
       <Router url="admin">
         <Route path="dashboard" component={Dashboard} />
         <Route path="settings" component={Settings} />

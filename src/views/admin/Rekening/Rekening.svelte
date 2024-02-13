@@ -1,11 +1,12 @@
 <script>
-	import CardTableRekening from './../../notusComponents/Cards/CardTableRekening.svelte';
-  import CardTable from "../../notusComponents/Cards/CardTable.svelte";
+	import CardTableRekening from '../../../notusComponents/Cards/CardTableRekening.svelte';
+  import CardTable from "../../../notusComponents/Cards/CardTable.svelte";
   import { Router, Route } from "svelte-routing";
-  import CardInputRekening from "../../notusComponents/Cards/CardInput/CardInputRekening.svelte";
-  import CardEditRekening from "../../notusComponents/Cards/CardInput/CardEdit/CardEditRekening.svelte";
+  import CardInputRekening from "../../../notusComponents/Cards/CardInput/CardInputRekening.svelte";
+  import CardEditRekening from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditRekening.svelte";
   import { getCookie } from "svelte-cookie";
-  import { mainUrl } from "../../environment";
+  import { mainUrl } from "../../../environment";
+  import MutasiRekening from './MutasiRekening.svelte';
   export let location;
 
   let data = [];
@@ -60,6 +61,9 @@
           {data}
           onLoad={fetchData}
         />
+      </Route>
+      <Route path="mutasi/:id" let:params>
+        <MutasiRekening id={params.id} />
       </Route>
       <Route path="add">
         <CardInputRekening />

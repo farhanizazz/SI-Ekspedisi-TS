@@ -1,5 +1,4 @@
 <script>
-  import Rekening from "./../../views/admin/Rekening.svelte";
   import { link, navigate } from "svelte-routing";
   import { library } from "@fortawesome/fontawesome-svg-core";
   import {
