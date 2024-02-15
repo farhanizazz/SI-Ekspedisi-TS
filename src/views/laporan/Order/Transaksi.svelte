@@ -28,6 +28,7 @@
     "PPH/PPN",
     "Setor",
     "Uang Jalan",
+    "Biaya Tambahan / Kurang Uang Jalan",
     "Potongan Wajib",
     "Sisa Tagihan",
   ];
@@ -39,10 +40,11 @@
     "Kendaraan / Sopir",
     "Asal / Tujuan",
     "Harga Order",
-    "Biaya Tambah / Kurang",
+    "Biaya Tambah / Kurang Harga Order",
     "PPH/PPN",
     "Sisa Piutang Tagihan",
     "Harga Jual",
+    "Biaya Tambahan / Kurang Harga Jual",
     "Sisa Hutang ke Subkon",
     "Ket",
   ];
@@ -185,7 +187,20 @@
   });
 
   let showHargaOrderModal = [];
-  $: showHargaOrderModal = data.map(() => false);
+  let showUangJalanModal = [];
+
+  $: {
+    showHargaOrderModal = data.map(() => false);
+    showUangJalanModal = data.map(() => false);
+  }
+
+  function toggleHargaOrderModal(id) {
+    showHargaOrderModal[id] = !showHargaOrderModal[id];
+  }
+
+  function toggleUangJalanModal(id) {
+    showUangJalanModal[id] = !showUangJalanModal[id];
+  }
 
   let dropdownPopoverShowStatusKendaraanSendiri = [];
   $: dropdownPopoverShowStatusKendaraanSendiri = dataSearch.map(() => false);
@@ -270,10 +285,6 @@
       );
     }
   };
-
-  function toggleHargaOrderModal(id) {
-    showHargaOrderModal[id] = !showHargaOrderModal[id];
-  }
 
   let sifat = 0;
   let jenis = 0;
@@ -391,7 +402,9 @@
                   <tr>
                     {#each headingTransaksiOrder as data, index}
                       <th
-                        class="{index == 0 ? "pl-3" : ''} align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
+                        class="{index == 0
+                          ? 'pl-3'
+                          : ''} align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
                         'light'
                           ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                           : 'bg-red-700 text-red-200 border-red-600'}"
@@ -479,7 +492,7 @@
                       {#if tableData.status_kendaraan == "Sendiri"}
                         <tr>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <div class="container mx-autoflex flex-row mb-2">
                               <button
@@ -598,7 +611,7 @@
                             </div>
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <div class="container mx-autoflex flex-row mb-2">
                               <button
@@ -685,25 +698,75 @@
                                 />
                               </div>
                             </div>
-                            {tableData.no_transaksi}
+                            {tableData.no_transaksi} <br />
+                            {tableData.no_sj == null
+                              ? ""
+                              : tableData.no_sj + " / "}
+                            {tableData.no_po == null
+                              ? ""
+                              : tableData.no_po + " / "}
+                            {tableData.no_do == null ? "" : tableData.no_do}
+                            <form
+                              on:submit|preventDefault={() => {
+                                tableData.statusLoadingCatatan = true;
+                                axios
+                                  .put(
+                                    `${mainUrl}/api/transaksi/order/${tableData.id}`,
+                                    {
+                                      catatan_surat_jalan:
+                                        tableData.catatan_surat_jalan,
+                                      ...tableData,
+                                    },
+                                    {
+                                      headers: {
+                                        Authorization: `bearer ${getCookie(
+                                          "token"
+                                        )}`,
+                                      },
+                                    }
+                                  )
+                                  .then((res) => {
+                                    fetchData();
+                                    tableData.statusLoadingCatatan = false;
+                                  });
+                              }}
+                            >
+                              <div
+                                class="relative flex w-full flex-wrap items-stretch mb-3"
+                              >
+                                <input
+                                  bind:value={tableData.catatan_surat_jalan}
+                                  type="text"
+                                  placeholder="Keterangan"
+                                  class="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:shadow-outline w-full pr-10"
+                                />
+                                <span
+                                  class="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3"
+                                >
+                                  <button type="submit">
+                                    <i class="{ tableData.statusLoadingCatatan ? "fas fa-spinner fa-pulse" : "fas fa-save" }"></i>
+                                  </button>
+                                </span>
+                              </div>
+                            </form>
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData.penyewa.nama_perusahaan} / {tableData.muatan}
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData.armada.nopol} / {tableData.sopir.nama}
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             {tableData.asal} / {tableData.tujuan}
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.harga_order)}
                             <br />
@@ -718,7 +781,7 @@
                             >
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <button
                               on:click={() =>
@@ -732,44 +795,10 @@
                                 Tambahkan Biaya
                               </div>
                             </button>
-                            {#if tableData.biaya_lain_harga_order_arr.length == 0 && tableData.biaya_lain_harga_jual_arr.length == 0 && tableData.biaya_lain_uang_jalan_arr.length == 0}
-                              <p class="pl-1">
-                                Tidak ada biaya tambahan
-                              </p>
+                            {#if tableData.biaya_lain_harga_order_arr.length == 0}
+                              <p class="pl-1">Tidak ada biaya tambahan</p>
                             {:else}
-                              <!-- {#each tableData.biaya_lain_harga_order_arr as biaya}
-                              <div
-                                class="bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
-                                >
-                                  {biaya.nominal} | {biaya.sifat}
-                                </div>
-                              </div>
-                            {/each}
-                            {#each tableData.biaya_lain_harga_jual_arr as biaya}
-                              <div
-                                class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
-                                >
-                                  {biaya.nominal} | {biaya.sifat}
-                                </div>
-                              </div>
-                            {/each}
-                            {#each tableData.biaya_lain_uang_jalan_arr as biaya}
-                              <div
-                                class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
-                                >
-                                  {biaya.nominal} | {biaya.sifat}
-                                </div>
-                              </div>
-                            {/each} -->
+                              <!-- Biaya lain harga order sendiri -->
                               <div>
                                 Total Biaya Tambahan: <a
                                   use:link
@@ -777,27 +806,27 @@
                                   class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
                                   Rp. {IDRFormatter.format(
-                                    tableData.biaya_lain_harga_jual_arr.reduce(
+                                    // tableData.biaya_lain_harga_jual_arr.reduce(
+                                    //   (acc, curr) =>
+                                    //     curr.sifat === "Menambahkan"
+                                    //       ? acc + curr.nominal
+                                    //       : acc - curr.nominal,
+                                    //   0
+                                    // ) +
+                                    // tableData.biaya_lain_uang_jalan_arr.reduce(
+                                    //   (acc, curr) =>
+                                    //     curr.sifat === "Menambahkan"
+                                    //       ? acc + curr.nominal
+                                    //       : acc - curr.nominal,
+                                    //   0
+                                    // )+
+                                    tableData.biaya_lain_harga_order_arr.reduce(
                                       (acc, curr) =>
                                         curr.sifat === "Menambahkan"
                                           ? acc + curr.nominal
                                           : acc - curr.nominal,
                                       0
-                                    ) +
-                                      tableData.biaya_lain_uang_jalan_arr.reduce(
-                                        (acc, curr) =>
-                                          curr.sifat === "Menambahkan"
-                                            ? acc + curr.nominal
-                                            : acc - curr.nominal,
-                                        0
-                                      ) +
-                                      tableData.biaya_lain_harga_order_arr.reduce(
-                                        (acc, curr) =>
-                                          curr.sifat === "Menambahkan"
-                                            ? acc + curr.nominal
-                                            : acc - curr.nominal,
-                                        0
-                                      )
+                                    )
                                   )}</a
                                 >
                               </div>
@@ -861,27 +890,6 @@
                                               bind:value={biaya}
                                               placeholder="Masukkan biaya tambahan"
                                             />
-                                            <select
-                                              bind:value={jenis}
-                                              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                            >
-                                              <option selected value={0}
-                                                >Silahkan pilih jenis biaya</option
-                                              >
-                                              <option value="1"
-                                                >Harga tambahan biaya order</option
-                                              >
-                                              {#if tableData.status_kendaraan == "Sendiri"}
-                                                <option value="2"
-                                                  >Harga tambahan uang jalan</option
-                                                >
-                                              {/if}
-                                              {#if tableData.status_kendaraan == "Subkon"}
-                                                <option value="3"
-                                                  >Harga tambahan harga jual</option
-                                                >
-                                              {/if}
-                                            </select>
                                             {#if errorModalMsg}
                                               <div class="text-red-500 pt-6">
                                                 <p>
@@ -898,7 +906,7 @@
                                       class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
                                     >
                                       <button
-                                        class="px-6 text-red-500 background-transparent font-bold uppercase  py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="px-6 text-red-500 background-transparent font-bold uppercase py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() =>
                                           toggleHargaOrderModal(index)}
@@ -906,59 +914,59 @@
                                         Close
                                       </button>
                                       <button
-                                        class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm  py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
-                                          if (jenis == 0 || sifat == 0) {
+                                          console.log("harga order");
+                                          if (sifat == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
                                             return;
                                           }
-                                          if (jenis == 1) {
-                                            addBiaya({
-                                              data: {
-                                                ...tableData,
-                                                biaya_lain_harga_order:
-                                                  tableData.biaya_lain_harga_order.concat(
-                                                    {
-                                                      m_tambahan_id: sifat,
-                                                      nominal: biaya,
-                                                    }
-                                                  ),
-                                              },
-                                              id: tableData.id,
-                                            });
-                                          }
-                                          if (jenis == 2) {
-                                            addBiaya({
-                                              data: {
-                                                ...tableData,
-                                                biaya_lain_uang_jalan:
-                                                  tableData.biaya_lain_uang_jalan.concat(
-                                                    {
-                                                      m_tambahan_id: sifat,
-                                                      nominal: biaya,
-                                                    }
-                                                  ),
-                                              },
-                                              id: tableData.id,
-                                            });
-                                          }
-                                          if (jenis == 3) {
-                                            addBiaya({
-                                              data: {
-                                                ...tableData,
-                                                biaya_lain_harga_jual:
-                                                  tableData.biaya_lain_harga_jual.concat(
-                                                    {
-                                                      m_tambahan_id: sifat,
-                                                      nominal: biaya,
-                                                    }
-                                                  ),
-                                              },
-                                              id: tableData.id,
-                                            });
-                                          }
+                                          addBiaya({
+                                            data: {
+                                              ...tableData,
+                                              biaya_lain_harga_order:
+                                                tableData.biaya_lain_harga_order.concat(
+                                                  {
+                                                    m_tambahan_id: sifat,
+                                                    nominal: biaya,
+                                                  }
+                                                ),
+                                            },
+                                            id: tableData.id,
+                                          });
+
+                                          // if (jenis == 2) {
+                                          //   addBiaya({
+                                          //     data: {
+                                          //       ...tableData,
+                                          //       biaya_lain_uang_jalan:
+                                          //         tableData.biaya_lain_uang_jalan.concat(
+                                          //           {
+                                          //             m_tambahan_id: sifat,
+                                          //             nominal: biaya,
+                                          //           }
+                                          //         ),
+                                          //     },
+                                          //     id: tableData.id,
+                                          //   });
+                                          // }
+                                          // if (jenis == 3) {
+                                          //   addBiaya({
+                                          //     data: {
+                                          //       ...tableData,
+                                          //       biaya_lain_harga_jual:
+                                          //         tableData.biaya_lain_harga_jual.concat(
+                                          //           {
+                                          //             m_tambahan_id: sifat,
+                                          //             nominal: biaya,
+                                          //           }
+                                          //         ),
+                                          //     },
+                                          //     id: tableData.id,
+                                          //   });
+                                          // }
                                           toggleHargaOrderModal(index);
                                         }}
                                       >
@@ -975,27 +983,227 @@
                             {/if}
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.total_pajak)}
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.setor)}
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.uang_jalan)}
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                          >
+                            <button
+                              on:click={() =>
+                                (showUangJalanModal[index] = true)}
+                              class="flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                              style="background-color: #bbf7d0; color: #16a34a;"
+                            >
+                              <div
+                                class="flex-initial max-w-full leading-none text-sm font-semibold"
+                              >
+                                Tambahkan Biaya
+                              </div>
+                            </button>
+                            {#if tableData.biaya_lain_uang_jalan_arr.length == 0}
+                              <p class="pl-1">Tidak ada biaya tambahan</p>
+                            {:else}
+                              <div>
+                                Total Biaya Tambahan: <a
+                                  use:link
+                                  href={`/transaksi/order/detail-biaya-tambahan/${tableData.id}`}
+                                  class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                                >
+                                  Rp. {IDRFormatter.format(
+                                    // tableData.biaya_lain_harga_jual_arr.reduce(
+                                    //   (acc, curr) =>
+                                    //     curr.sifat === "Menambahkan"
+                                    //       ? acc + curr.nominal
+                                    //       : acc - curr.nominal,
+                                    //   0
+                                    // ) +
+                                    //   tableData.biaya_lain_uang_jalan_arr.reduce(
+                                    //     (acc, curr) =>
+                                    //       curr.sifat === "Menambahkan"
+                                    //         ? acc + curr.nominal
+                                    //         : acc - curr.nominal,
+                                    //     0
+                                    //   ) +
+                                    tableData.biaya_lain_uang_jalan_arr.reduce(
+                                      (acc, curr) =>
+                                        curr.sifat === "Menambahkan"
+                                          ? acc + curr.nominal
+                                          : acc - curr.nominal,
+                                      0
+                                    )
+                                  )}</a
+                                >
+                              </div>
+                            {/if}
+
+                            {#if showUangJalanModal[index]}
+                              <div
+                                class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
+                              >
+                                <div
+                                  class="relative w-auto my-6 mx-auto max-w-6xl"
+                                >
+                                  <!--content-->
+                                  <div
+                                    class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
+                                  >
+                                    <!--header-->
+                                    <div
+                                      class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t"
+                                    >
+                                      <h3 class="text-3xl font-semibold">
+                                        Tambahan biaya
+                                      </h3>
+                                      <button
+                                        class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                        on:click={() =>
+                                          toggleHargaOrderModal(index)}
+                                      >
+                                        <span
+                                          class="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none"
+                                        >
+                                          ×
+                                        </span>
+                                      </button>
+                                    </div>
+                                    <!--body-->
+                                    <div class="relative py-6 px-2 flex-auto">
+                                      <div
+                                        class="flex justify-center items-center"
+                                      >
+                                        <div class="relative flex-auto">
+                                          <div
+                                            class="flex flex-col justify-center items-center"
+                                          >
+                                            <select
+                                              bind:value={sifat}
+                                              class="mb-5 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                            >
+                                              <option selected value={0}
+                                                >Silahkan pilih sifat biaya</option
+                                              >
+                                              {#each dataTambahan as tambahan}
+                                                <option value={tambahan.id}>
+                                                  {tambahan.nama} | {tambahan.sifat}
+                                                </option>
+                                              {/each}
+                                            </select>
+                                            <input
+                                              class="mb-5 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                              type="number"
+                                              bind:value={biaya}
+                                              placeholder="Masukkan biaya tambahan"
+                                            />
+                                            {#if errorModalMsg}
+                                              <div class="text-red-500 pt-6">
+                                                <p>
+                                                  {errorModalMsg}
+                                                </p>
+                                              </div>
+                                            {/if}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--footer-->
+                                    <div
+                                      class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
+                                    >
+                                      <button
+                                        class="px-6 text-red-500 background-transparent font-bold uppercase py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        type="button"
+                                        on:click={() =>
+                                          toggleHargaOrderModal(index)}
+                                      >
+                                        Close
+                                      </button>
+                                      <button
+                                        class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        type="button"
+                                        on:click={() => {
+                                          if (sifat == 0) {
+                                            errorModalMsg =
+                                              "Mohon pilih jenis dan sifat terlebih dahulu";
+                                            return;
+                                          }
+                                          addBiaya({
+                                            data: {
+                                              ...tableData,
+                                              biaya_lain_uang_jalan:
+                                                tableData.biaya_lain_uang_jalan.concat(
+                                                  {
+                                                    m_tambahan_id: sifat,
+                                                    nominal: biaya,
+                                                  }
+                                                ),
+                                            },
+                                            id: tableData.id,
+                                          });
+
+                                          // if (jenis == 2) {
+                                          //   addBiaya({
+                                          //     data: {
+                                          //       ...tableData,
+                                          //       biaya_lain_uang_jalan:
+                                          //         tableData.biaya_lain_uang_jalan.concat(
+                                          //           {
+                                          //             m_tambahan_id: sifat,
+                                          //             nominal: biaya,
+                                          //           }
+                                          //         ),
+                                          //     },
+                                          //     id: tableData.id,
+                                          //   });
+                                          // }
+                                          // if (jenis == 3) {
+                                          //   addBiaya({
+                                          //     data: {
+                                          //       ...tableData,
+                                          //       biaya_lain_harga_jual:
+                                          //         tableData.biaya_lain_harga_jual.concat(
+                                          //           {
+                                          //             m_tambahan_id: sifat,
+                                          //             nominal: biaya,
+                                          //           }
+                                          //         ),
+                                          //     },
+                                          //     id: tableData.id,
+                                          //   });
+                                          // }
+                                          toggleHargaOrderModal(index);
+                                        }}
+                                      >
+                                        Save Changes
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="opacity-25 fixed inset-0 z-40 bg-black"
+                                on:click={() => toggleHargaOrderModal(index)}
+                              ></div>
+                            {/if}
+                          </td>
+                          <td
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.potongan_wajib)}
                           </td>
                           <td
-                            class="border-t-0  align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.sisa_tagihan)}
                           </td>
@@ -1104,12 +1312,16 @@
 
             <div class="block w-full overflow-x-auto">
               <!-- Projects table -->
-              <table class="table-fixed items-center bg-transparent border-collapse">
+              <table
+                class="table-fixed items-center bg-transparent border-collapse"
+              >
                 <thead>
                   <tr>
                     {#each headingTransaksiOrderSubkon as data, index}
                       <th
-                        class="{index == 0 ? "pl-3" : ''} align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
+                        class="{index == 0
+                          ? 'pl-3'
+                          : ''} align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
                         'light'
                           ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                           : 'bg-red-700 text-red-200 border-red-600'}"
@@ -1138,7 +1350,7 @@
                             {tableData.tanggal_awal}
                           </td>
                           <td
-                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm "
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm"
                           >
                             <div class="container mx-autoflex flex-row mb-2">
                               <button
@@ -1225,7 +1437,57 @@
                                 />
                               </div>
                             </div>
-                            {tableData.no_transaksi}
+                            {tableData.no_transaksi} <br />
+                            {tableData.no_sj == null
+                              ? ""
+                              : tableData.no_sj + " / "}
+                            {tableData.no_po == null
+                              ? ""
+                              : tableData.no_po + " / "}
+                            {tableData.no_do == null ? "" : tableData.no_do}
+                            <form
+                              on:submit|preventDefault={() => {
+                                tableData.statusLoadingCatatan = true;
+                                axios
+                                  .put(
+                                    `${mainUrl}/api/transaksi/order/${tableData.id}`,
+                                    {
+                                      catatan_surat_jalan:
+                                        tableData.catatan_surat_jalan,
+                                      ...tableData,
+                                    },
+                                    {
+                                      headers: {
+                                        Authorization: `bearer ${getCookie(
+                                          "token"
+                                        )}`,
+                                      },
+                                    }
+                                  )
+                                  .then((res) => {
+                                    fetchData();
+                                    tableData.statusLoadingCatatan = false;
+                                  });
+                              }}
+                            >
+                              <div
+                                class="relative flex w-full flex-wrap items-stretch mb-3"
+                              >
+                                <input
+                                  bind:value={tableData.catatan_surat_jalan}
+                                  type="text"
+                                  placeholder="Keterangan"
+                                  class="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:shadow-outline w-full pr-10"
+                                />
+                                <span
+                                  class="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3"
+                                >
+                                <button type="submit">
+                                  <i class="{ tableData.statusLoadingCatatan ? "fas fa-spinner fa-pulse" : "fas fa-save" }"></i>
+                                </button>
+                                </span>
+                              </div>
+                            </form>
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm"
@@ -1271,72 +1533,37 @@
                                 Tambahkan Biaya
                               </div>
                             </button>
-                            {#if tableData.biaya_lain_harga_order_arr.length == 0 && tableData.biaya_lain_harga_jual_arr.length == 0 && tableData.biaya_lain_uang_jalan_arr.length == 0}
-                              <p class="pl-1">
-                                Tidak ada biaya tambahan
-                              </p>
+                            {#if tableData.biaya_lain_harga_order_arr.length == 0}
+                              <p class="pl-1">Tidak ada biaya tambahan</p>
                             {:else}
-                              <!-- {#each tableData.biaya_lain_harga_order_arr as biaya}
-                              <div
-                                class="bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
-                                >
-                                  {biaya.nominal} | {biaya.sifat}
-                                </div>
-                              </div>
-                            {/each}
-                            {#each tableData.biaya_lain_harga_jual_arr as biaya}
-                              <div
-                                class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
-                                >
-                                  {biaya.nominal} | {biaya.sifat}
-                                </div>
-                              </div>
-                            {/each}
-                            {#each tableData.biaya_lain_uang_jalan_arr as biaya}
-                              <div
-                                class="bg-sky-300 text-sky-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
-                                >
-                                  {biaya.nominal} | {biaya.sifat}
-                                </div>
-                              </div>
-                            {/each} -->
                               <div>
                                 Total Biaya Tambahan: <a
                                   use:link
-                                  href={`/transaksi/order/detail-biaya-tambahan/${index}`}
+                                  href={`/transaksi/order/detail-biaya-tambahan/${tableData.id}`}
                                   class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
                                   Rp. {IDRFormatter.format(
-                                    tableData.biaya_lain_harga_jual_arr.reduce(
+                                    // tableData.biaya_lain_harga_jual_arr.reduce(
+                                    //   (acc, curr) =>
+                                    //     curr.sifat === "Menambahkan"
+                                    //       ? acc + curr.nominal
+                                    //       : acc - curr.nominal,
+                                    //   0
+                                    // ) +
+                                    // tableData.biaya_lain_uang_jalan_arr.reduce(
+                                    //   (acc, curr) =>
+                                    //     curr.sifat === "Menambahkan"
+                                    //       ? acc + curr.nominal
+                                    //       : acc - curr.nominal,
+                                    //   0
+                                    // ) +
+                                    tableData.biaya_lain_harga_order_arr.reduce(
                                       (acc, curr) =>
                                         curr.sifat === "Menambahkan"
                                           ? acc + curr.nominal
                                           : acc - curr.nominal,
                                       0
-                                    ) +
-                                      tableData.biaya_lain_uang_jalan_arr.reduce(
-                                        (acc, curr) =>
-                                          curr.sifat === "Menambahkan"
-                                            ? acc + curr.nominal
-                                            : acc - curr.nominal,
-                                        0
-                                      ) +
-                                      tableData.biaya_lain_harga_order_arr.reduce(
-                                        (acc, curr) =>
-                                          curr.sifat === "Menambahkan"
-                                            ? acc + curr.nominal
-                                            : acc - curr.nominal,
-                                        0
-                                      )
+                                    )
                                   )}</a
                                 >
                               </div>
@@ -1400,7 +1627,7 @@
                                               bind:value={biaya}
                                               placeholder="Masukkan biaya tambahan"
                                             />
-                                            <select
+                                            <!-- <select
                                               bind:value={jenis}
                                               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                             >
@@ -1420,7 +1647,7 @@
                                                   >Harga tambahan harga jual</option
                                                 >
                                               {/if}
-                                            </select>
+                                            </select> -->
                                             {#if errorModalMsg}
                                               <div class="text-red-500 pt-6">
                                                 <p>
@@ -1437,7 +1664,7 @@
                                       class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
                                     >
                                       <button
-                                        class="px-6 text-red-500 background-transparent font-bold uppercase  py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="px-6 text-red-500 background-transparent font-bold uppercase py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() =>
                                           toggleHargaOrderModal(index)}
@@ -1445,59 +1672,59 @@
                                         Close
                                       </button>
                                       <button
-                                        class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm  py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
-                                          if (jenis == 0 || sifat == 0) {
+                                          if (sifat == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
                                             return;
                                           }
-                                          if (jenis == 1) {
-                                            addBiaya({
-                                              data: {
-                                                ...tableData,
-                                                biaya_lain_harga_order:
-                                                  tableData.biaya_lain_harga_order.concat(
-                                                    {
-                                                      m_tambahan_id: sifat,
-                                                      nominal: biaya,
-                                                    }
-                                                  ),
-                                              },
-                                              id: tableData.id,
-                                            });
-                                          }
-                                          if (jenis == 2) {
-                                            addBiaya({
-                                              data: {
-                                                ...tableData,
-                                                biaya_lain_uang_jalan:
-                                                  tableData.biaya_lain_uang_jalan.concat(
-                                                    {
-                                                      m_tambahan_id: sifat,
-                                                      nominal: biaya,
-                                                    }
-                                                  ),
-                                              },
-                                              id: tableData.id,
-                                            });
-                                          }
-                                          if (jenis == 3) {
-                                            addBiaya({
-                                              data: {
-                                                ...tableData,
-                                                biaya_lain_harga_jual:
-                                                  tableData.biaya_lain_harga_jual.concat(
-                                                    {
-                                                      m_tambahan_id: sifat,
-                                                      nominal: biaya,
-                                                    }
-                                                  ),
-                                              },
-                                              id: tableData.id,
-                                            });
-                                          }
+                                          // if (jenis == 1) {
+                                          addBiaya({
+                                            data: {
+                                              ...tableData,
+                                              biaya_lain_harga_order:
+                                                tableData.biaya_lain_harga_order.concat(
+                                                  {
+                                                    m_tambahan_id: sifat,
+                                                    nominal: biaya,
+                                                  }
+                                                ),
+                                            },
+                                            id: tableData.id,
+                                          });
+                                          // }
+                                          // if (jenis == 2) {
+                                          //   addBiaya({
+                                          //     data: {
+                                          //       ...tableData,
+                                          //       biaya_lain_uang_jalan:
+                                          //         tableData.biaya_lain_uang_jalan.concat(
+                                          //           {
+                                          //             m_tambahan_id: sifat,
+                                          //             nominal: biaya,
+                                          //           }
+                                          //         ),
+                                          //     },
+                                          //     id: tableData.id,
+                                          //   });
+                                          // }
+                                          // if (jenis == 3) {
+                                          //   addBiaya({
+                                          //     data: {
+                                          //       ...tableData,
+                                          //       biaya_lain_harga_jual:
+                                          //         tableData.biaya_lain_harga_jual.concat(
+                                          //           {
+                                          //             m_tambahan_id: sifat,
+                                          //             nominal: biaya,
+                                          //           }
+                                          //         ),
+                                          //     },
+                                          //     id: tableData.id,
+                                          //   });
+                                          // }
                                           toggleHargaOrderModal(index);
                                         }}
                                       >
@@ -1527,6 +1754,207 @@
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.harga_jual)}
+                          </td>
+                          <td
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                          >
+                            <button
+                              on:click={() =>
+                                (showUangJalanModal[index] = true)}
+                              class="flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                              style="background-color: #bbf7d0; color: #16a34a;"
+                            >
+                              <div
+                                class="flex-initial max-w-full leading-none text-sm font-semibold"
+                              >
+                                Tambahkan Biaya
+                              </div>
+                            </button>
+                            {#if tableData.biaya_lain_harga_jual_arr.length == 0}
+                              <p class="pl-1">Tidak ada biaya tambahan</p>
+                            {:else}
+                              <div>
+                                Total Biaya Tambahan: <a
+                                  use:link
+                                  href={`/transaksi/order/detail-biaya-tambahan/${tableData.id}`}
+                                  class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                                >
+                                  Rp. {IDRFormatter.format(
+                                    tableData.biaya_lain_harga_jual_arr.reduce(
+                                      (acc, curr) =>
+                                        curr.sifat === "Menambahkan"
+                                          ? acc + curr.nominal
+                                          : acc - curr.nominal,
+                                      0
+                                    ) //+
+                                    // tableData.biaya_lain_uang_jalan_arr.reduce(
+                                    //   (acc, curr) =>
+                                    //     curr.sifat === "Menambahkan"
+                                    //       ? acc + curr.nominal
+                                    //       : acc - curr.nominal,
+                                    //   0
+                                    // ) +
+                                    // tableData.biaya_lain_harga_order_arr.reduce(
+                                    //   (acc, curr) =>
+                                    //     curr.sifat === "Menambahkan"
+                                    //       ? acc + curr.nominal
+                                    //       : acc - curr.nominal,
+                                    //   0
+                                    // )
+                                  )}</a
+                                >
+                              </div>
+                            {/if}
+
+                            {#if showUangJalanModal[index]}
+                              <div
+                                class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
+                              >
+                                <div
+                                  class="relative w-auto my-6 mx-auto max-w-6xl"
+                                >
+                                  <!--content-->
+                                  <div
+                                    class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
+                                  >
+                                    <!--header-->
+                                    <div
+                                      class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t"
+                                    >
+                                      <h3 class="text-3xl font-semibold">
+                                        Tambahkan Biaya
+                                      </h3>
+                                      <button
+                                        class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                        on:click={() =>
+                                          toggleHargaOrderModal(index)}
+                                      >
+                                        <span
+                                          class="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none"
+                                        >
+                                          ×
+                                        </span>
+                                      </button>
+                                    </div>
+                                    <!--body-->
+                                    <div class="relative py-6 px-2 flex-auto">
+                                      <div
+                                        class="flex justify-center items-center"
+                                      >
+                                        <div class="relative flex-auto">
+                                          <div
+                                            class="flex flex-col justify-center items-center"
+                                          >
+                                            <select
+                                              bind:value={sifat}
+                                              class="mb-5 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                            >
+                                              <option selected value={0}
+                                                >Silahkan pilih sifat biaya</option
+                                              >
+                                              {#each dataTambahan as tambahan}
+                                                <option value={tambahan.id}>
+                                                  {tambahan.nama} | {tambahan.sifat}
+                                                </option>
+                                              {/each}
+                                            </select>
+                                            <input
+                                              class="mb-5 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                              type="number"
+                                              bind:value={biaya}
+                                              placeholder="Masukkan biaya tambahan"
+                                            />
+                                            {#if errorModalMsg}
+                                              <div class="text-red-500 pt-6">
+                                                <p>
+                                                  {errorModalMsg}
+                                                </p>
+                                              </div>
+                                            {/if}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--footer-->
+                                    <div
+                                      class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
+                                    >
+                                      <button
+                                        class="px-6 text-red-500 background-transparent font-bold uppercase py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        type="button"
+                                        on:click={() =>
+                                          toggleHargaOrderModal(index)}
+                                      >
+                                        Close
+                                      </button>
+                                      <button
+                                        class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        type="button"
+                                        on:click={() => {
+                                          if (sifat == 0) {
+                                            errorModalMsg =
+                                              "Mohon pilih jenis dan sifat terlebih dahulu";
+                                            return;
+                                          }
+                                          // if (jenis == 1) {
+                                          //   addBiaya({
+                                          //     data: {
+                                          //       ...tableData,
+                                          //       biaya_lain_harga_order:
+                                          //         tableData.biaya_lain_harga_order.concat(
+                                          //           {
+                                          //             m_tambahan_id: sifat,
+                                          //             nominal: biaya,
+                                          //           }
+                                          //         ),
+                                          //     },
+                                          //     id: tableData.id,
+                                          //   });
+                                          // }
+                                          // if (jenis == 2) {
+                                          //   addBiaya({
+                                          //     data: {
+                                          //       ...tableData,
+                                          //       biaya_lain_uang_jalan:
+                                          //         tableData.biaya_lain_uang_jalan.concat(
+                                          //           {
+                                          //             m_tambahan_id: sifat,
+                                          //             nominal: biaya,
+                                          //           }
+                                          //         ),
+                                          //     },
+                                          //     id: tableData.id,
+                                          //   });
+                                          // }
+                                          // if (jenis == 3) {
+                                          addBiaya({
+                                            data: {
+                                              ...tableData,
+                                              biaya_lain_harga_jual:
+                                                tableData.biaya_lain_harga_jual.concat(
+                                                  {
+                                                    m_tambahan_id: sifat,
+                                                    nominal: biaya,
+                                                  }
+                                                ),
+                                            },
+                                            id: tableData.id,
+                                          });
+                                          // }
+                                          toggleHargaOrderModal(index);
+                                        }}
+                                      >
+                                        Save Changes
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="opacity-25 fixed inset-0 z-40 bg-black"
+                                on:click={() => toggleHargaOrderModal(index)}
+                              ></div>
+                            {/if}
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
