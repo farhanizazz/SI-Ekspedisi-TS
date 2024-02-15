@@ -744,7 +744,11 @@
                                   class="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3"
                                 >
                                   <button type="submit">
-                                    <i class="{ tableData.statusLoadingCatatan ? "fas fa-spinner fa-pulse" : "fas fa-save" }"></i>
+                                    <i
+                                      class={tableData.statusLoadingCatatan
+                                        ? "fas fa-spinner fa-pulse"
+                                        : "fas fa-save"}
+                                    ></i>
                                   </button>
                                 </span>
                               </div>
@@ -1482,9 +1486,13 @@
                                 <span
                                   class="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3"
                                 >
-                                <button type="submit">
-                                  <i class="{ tableData.statusLoadingCatatan ? "fas fa-spinner fa-pulse" : "fas fa-save" }"></i>
-                                </button>
+                                  <button type="submit">
+                                    <i
+                                      class={tableData.statusLoadingCatatan
+                                        ? "fas fa-spinner fa-pulse"
+                                        : "fas fa-save"}
+                                    ></i>
+                                  </button>
                                 </span>
                               </div>
                             </form>
@@ -1748,7 +1756,18 @@
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
-                            Sisa Piutang
+                            Rp. {IDRFormatter.format(
+                              tableData.harga_order -
+                                tableData.mutasi_total -
+                                tableData.total_pajak -
+                                tableData.biaya_lain_harga_order_arr.reduce(
+                                  (acc, curr) =>
+                                    curr.sifat === "Menambahkan"
+                                      ? acc + curr.nominal
+                                      : acc - curr.nominal,
+                                  0
+                                )
+                            )}
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
