@@ -12,6 +12,7 @@
   export let tableHeading = [];
   export let data = [{}];
   export let href;
+  export let afterHref = '';
   export let withEdit = true;
   export let onLoad = () => {};
   export let addData = true;
@@ -73,7 +74,7 @@
         </div>
 
         {#if addData === true}
-          <a use:link href={`${href}/add`}>
+          <a use:link href={`${href}/add/${afterHref}`}>
             <p
               class="bg-indigo-500 text-white active:bg-indigo-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
             >
@@ -147,7 +148,7 @@
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
               >
                 {#if withEdit === true}
-                  <a use:link href={`${href}/edit/${tableData.id}`}>
+                  <a use:link href={`${href}/edit/${tableData.id}/${afterHref}`}>
                     <p
                       class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
                     >

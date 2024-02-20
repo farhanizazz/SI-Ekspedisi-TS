@@ -778,11 +778,11 @@
                             <br />
                             <a
                               use:link
-                              href={`/transaksi/order/mutasi/${tableData.id}`}
+                              href={`/transaksi/order/mutasi/${tableData.id}/order`}
                               class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                             >
                               Rp. {IDRFormatter.format(
-                                tableData.mutasi_total
+                                tableData.total_mutasi_order
                               )}</a
                             >
                           </td>
@@ -1002,6 +1002,15 @@
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.uang_jalan)}
+                            <a
+                              use:link
+                              href={`/transaksi/order/mutasi/${tableData.id}/jual`}
+                              class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                            >
+                              Rp. {IDRFormatter.format(
+                                tableData.total_mutasi_jual
+                              )}</a
+                            >
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
@@ -1131,7 +1140,7 @@
                                         class="px-6 text-red-500 background-transparent font-bold uppercase py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() =>
-                                          toggleHargaOrderModal(index)}
+                                          toggleUangJalanModal(index)}
                                       >
                                         Close
                                       </button>
@@ -1520,11 +1529,11 @@
                             Rp. {IDRFormatter.format(tableData.harga_order)}
                             <a
                               use:link
-                              href={`/transaksi/order/mutasi/${tableData.id}`}
+                              href={`/transaksi/order/mutasi/${tableData.id}/order`}
                               class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                             >
                               Rp. {IDRFormatter.format(
-                                tableData.mutasi_total
+                                tableData.total_mutasi_order
                               )}</a
                             >
                           </td>
@@ -1760,7 +1769,7 @@
                           >
                             Rp. {IDRFormatter.format(
                               tableData.harga_order -
-                                tableData.mutasi_total -
+                                tableData.total_mutasi_order -
                                 tableData.total_pajak -
                                 tableData.biaya_lain_harga_order_arr.reduce(
                                   (acc, curr) =>
@@ -1775,6 +1784,17 @@
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(tableData.harga_jual)}
+                            <!-- Mutasi Harga Jual -->
+                            <a
+                              use:link
+                              href={`/transaksi/order/mutasi/${tableData.id}/jual`}
+                              class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                            >
+                            <!-- Mutasi total -->
+                              Rp. {IDRFormatter.format(
+                                tableData.total_mutasi_jual
+                              )}</a
+                            >
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
@@ -1904,7 +1924,7 @@
                                         class="px-6 text-red-500 background-transparent font-bold uppercase py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() =>
-                                          toggleHargaOrderModal(index)}
+                                          toggleUangJalanModal(index)}
                                       >
                                         Close
                                       </button>
@@ -1981,7 +2001,13 @@
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(
-                              tableData.sisa_hutang_ke_subkon
+                              tableData.harga_jual + tableData.biaya_lain_harga_jual_arr.reduce(
+                                      (acc, curr) =>
+                                        curr.sifat === "Menambahkan"
+                                          ? acc + curr.nominal
+                                          : acc - curr.nominal,
+                                      0
+                                    ) - tableData.total_mutasi_jual
                             )}
                           </td>
                           <td
@@ -2047,8 +2073,8 @@
           </div>
         {/if}
       </Route>
-      <Route path="mutasi/:id" let:params>
-        <DetailTransaksi id={params.id} />
+      <Route path="mutasi/:id/:jenis" let:params>
+        <DetailTransaksi id={params.id} jenis={params.jenis}/>
       </Route>
       <Route path="add">
         <CardInputLaporanTransaksiOrder />
@@ -2059,8 +2085,8 @@
       <Route path="edit/:edit" let:params>
         <CardEditLaporanTransaksiOrder id={params.edit} />
       </Route>
-      <Route path="mutasi/:id/add" let:params>
-        <CardInputDetailTransaksi id={params.id} />
+      <Route path="mutasi/:id/:jenis/add/" let:params>
+        <CardInputDetailTransaksi onSuccess={fetchData} id={params.id} jenis={params.jenis} />
       </Route>
     </Router>
   </div>

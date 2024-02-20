@@ -5,6 +5,8 @@
   import { onMount } from "svelte";
 
   export let id;
+  export let jenis;
+  export let onSuccess;
 
   let error = {
     transaksi_order_id: "",
@@ -19,6 +21,7 @@
     tanggal_pembayaran: "",
     nominal: "",
     keterangan: "",
+    jenis_transaksi: jenis,
   };
 
   let rekenings = [];
@@ -35,6 +38,7 @@
       res.json().then((res) => {
         console.log(res);
         if (res.status != "error") {
+          onSuccess();
           navigate(`/transaksi/order/mutasi/${id}`);
         } else {
           error = res.message;
@@ -44,6 +48,7 @@
   }
 
   onMount(async () => {
+    console.log(jenis)
     fetch(`${mainUrl}/api/master/rekening/`, {
       headers: {
         Authorization: `bearer ${getCookie('token')}`,

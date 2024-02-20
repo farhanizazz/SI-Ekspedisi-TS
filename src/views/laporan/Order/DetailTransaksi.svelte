@@ -6,8 +6,11 @@
   import { mainUrl } from "../../../environment";
   import axios from "axios";
   import { onMount } from "svelte";
+  import { computeStyles } from '@popperjs/core';
 
   export let id;
+  export let jenis;
+
   let data = [];
   let dataOriginal = [];
   const headingPengeluaran = [
@@ -25,12 +28,16 @@
       },
     }).then((res) => {
       res.json().then((res) => {
+        res.data = res.data.filter(e => e.jenis_transaksi == jenis)
+        console.log(jenis)
+        
         data = res.data.map((e) => {
           let copy = { ...e };
           delete copy.created_at;
           delete copy.updated_at;
           delete copy.transaksi_order_id;
           delete copy.master_rekening_id;
+          delete copy.jenis_transaksi;
           if (copy.keterangan == null) {
             copy.keterangan = "Tidak ada keterangan";
           }
@@ -50,7 +57,7 @@
   <Route path="">
     <CardTable
       tableHeading={headingPengeluaran}
-      href="/transaksi/order/mutasi/{id}"
+      href="/transaksi/order/mutasi/{id}/{jenis}"
       deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
       heading="Detail Transaksi"
       {data}
@@ -59,5 +66,5 @@
       onLoad={fetchData}
     />
   </Route>
-  <Route path="add" component={CardInputDetailTransaksi}/>
+
 </Router>

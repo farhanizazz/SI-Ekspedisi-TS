@@ -4,6 +4,7 @@
   import { mainUrl } from "../../../environment";
   import { getCookie } from "svelte-cookie";
 
+
   const date = new Date();
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so we need to add 1
