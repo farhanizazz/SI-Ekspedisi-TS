@@ -1,4 +1,5 @@
 <script>
+  import { notificationsStore } from "./stores/AdminStore.js";
   import Transaksi from "../views/laporan/Order/Transaksi.svelte";
   import { Router, Route, navigate } from "svelte-routing";
   import Toastify from "toastify-js";
@@ -27,6 +28,7 @@
   import Users from "../views/admin/Users.svelte";
   import Roles from "../views/admin/Roles.svelte";
   import Tambahan from "../views/admin/Tambahan.svelte";
+  import { get } from "svelte/store";
 
   export let location;
   export let admin = "";
@@ -49,33 +51,36 @@
         navigate("/auth/login");
       }
 
-      let notifications = await fetch(
-        `${mainUrl}/api/notifikasi/getReminderPajak`,
-        {
-          headers: {
-            Authorization: `bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      notifications = await notifications.json();
+      if (get(notificationsStore).length == 0) {
+        let notifications = await fetch(
+          `${mainUrl}/api/notifikasi/getReminderPajak`,
+          {
+            headers: {
+              Authorization: `bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
+        notificationsStore.set(await notifications.json());
+        let notif = get(notificationsStore);
 
-      notifications.data.forEach((e) => {
-        Toastify({
-          text: e.message,
-          duration: -1,
-          close: true,
-          gravity: "top", // `top` or `bottom`
-          position: "right", // `left`, `center` or `right`
-          stopOnFocus: true, // Prevents dismissing of toast on hover
-          style: {
-            background: `${
-              e.selisih.includes("terlewati") ? "#ef4444" : "#f59e0b"
-            }`,
-          },
-          onClick: function () {}, // Callback after click
-        }).showToast();
-      });
+        notif.data.forEach((e) => {
+          Toastify({
+            text: e.message,
+            duration: -1,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+              background: `${
+                e.selisih.includes("terlewati") ? "#ef4444" : "#f59e0b"
+              }`,
+            },
+            onClick: function () {}, // Callback after click
+          }).showToast();
+        });
+      }
       isMounted = true;
     }
   });
@@ -83,7 +88,7 @@
 
 <div>
   <!-- <Sidebar {location} {userData}/> -->
-  <HeaderStats {location} />
+  <HeaderStats {location} {userData} />
   <div class="relative bg-blueGray-100">
     <!-- <AdminNavbar /> -->
     <div class="px-4 mx-auto w-full -m-24">

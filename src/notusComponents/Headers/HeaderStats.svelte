@@ -2,10 +2,14 @@
   import { link } from "svelte-routing";
   // core components
   import CardStats from "../Cards/CardStats.svelte";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { getCookie } from "svelte-cookie";
   import { mainUrl } from "../../environment";
+  import { selectedStore } from "./HeaderStore/Store.js";
+  import { derived, writable } from "svelte/store";
 
+  export let location;
+  console.log(location);
   let data;
   fetch(`${mainUrl}/api/master/rekening/total`, {
     headers: {
@@ -18,8 +22,18 @@
     });
   });
 
-  let selected = 1;
-  export let location;
+  let selected;
+  const unsubscribe = selectedStore.subscribe((value) => {
+    selected = value;
+  });
+
+  function selectTab(index) {
+    selectedStore.set(index);
+  }
+
+  onDestroy(() => {
+    unsubscribe;
+  });
 </script>
 
 <!-- Header -->
@@ -28,33 +42,45 @@
     <div class="px-4">
       <!-- Card stats -->
       <ul class="flex">
+        <a use:link href="/admin/dashboard">
+          <li
+            class="px-6 py-3 {location.href.indexOf('/admin/dashboard') !== -1
+              ? 'active'
+              : ''}"
+            on:click={() => {
+              selectTab(1);
+            }}
+          >
+            Dashboard
+          </li>
+        </a>
         <li
-          class={`${selected == 1 ? "active" : ""} px-6 py-3`}
+          class={`${selected == 2 ? "active" : ""} px-6 py-3`}
           on:click={() => {
-            selected = 1;
+            selectTab(2);
           }}
         >
           Master
         </li>
         <li
-          class={`${selected == 2 ? "active" : ""} px-6 py-3`}
+          class={`${selected == 3 ? "active" : ""} px-6 py-3`}
           on:click={() => {
-            selected = 2;
+            selectTab(3);
           }}
         >
           Transaksi
         </li>
         <li
-          class={`${selected == 3 ? "active" : ""} px-6 py-3`}
+          class={`${selected == 4 ? "active" : ""} px-6 py-3`}
           on:click={() => {
-            selected = 3;
+            selectTab(4);
           }}
         >
           Laporan
         </li>
       </ul>
 
-      {#if selected == 1}
+      {#if selected == 2}
         <ul class="flex text-center">
           <a use:link href="/admin/sopir">
             <li
@@ -139,7 +165,7 @@
         </ul>
       {/if}
 
-      {#if selected == 2}
+      {#if selected == 3}
         <ul class="flex">
           <a use:link href="/transaksi/hutangSopir">
             <li
@@ -165,9 +191,7 @@
           </a>
           <a use:link href="/transaksi/order">
             <li
-              class="px-6 py-3 {location.href.indexOf(
-                '/transaksi/order'
-              ) !== -1
+              class="px-6 py-3 {location.href.indexOf('/transaksi/order') !== -1
                 ? 'active'
                 : ''}"
             >

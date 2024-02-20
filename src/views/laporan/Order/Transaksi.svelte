@@ -13,6 +13,7 @@
   import { createPopper } from "@popperjs/core";
   import Chips from "../../../notusComponents/Chips/Chips.svelte";
   import axios from "axios";
+  import { get } from "svelte/store";
   // import "../../app.css";
 
   let data = [];
@@ -85,8 +86,33 @@
     dataWithMutasi.sort((a, b) => new Date(b.created_at).getTime() / 1000 - new Date(a.created_at).getTime() / 1000);
     dataWithMutasi = dataWithMutasi;
 
-    data = dataWithMutasi;
+    return dataWithMutasi;
     console.log(data);
+  }
+
+  let isDataValid = true;
+
+  const getdata = async () => {
+  // set cache lifetime in seconds
+  var cachelife = 5000; 
+   //get cached data from local storage
+    var localStorageData = localStorage.getItem('order'); 
+    var cacheddata = await JSON.parse(localStorageData);
+    if(cacheddata){
+      data = cacheddata.data;
+     var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
+    }
+    //If cached data available and not expired return them. 
+    if (cacheddata  && (!expired && isDataValid)){
+      data = cacheddata.data;
+    }else{
+    //otherwise fetch data from api then save the data in localstorage 
+     fetchData().then((res) => {
+      var json = {data: res, cachetime: Date.now() / 1000};
+      localStorage.setItem('order', JSON.stringify(json));
+      data = res;
+     })
+    }
   }
 
   $: data = data;
@@ -134,7 +160,8 @@
           },
         })
         .then((res) => {
-          fetchData();
+          isDataValid = false;
+          getdata();
         });
     } catch (error) {
       console.log(error);
@@ -169,7 +196,8 @@
           sifat = 0;
           jenis = 0;
           biaya = null;
-          fetchData();
+          isDataValid = false;
+          getdata();
         });
     } catch (error) {
       console.log(error);
@@ -179,7 +207,7 @@
   let tableSendiri;
   let tableSubkon;
   onMount(() => {
-    fetchData();
+    getdata();
     fetchRekeningData();
     const updatePosition = () => {
       if (popoverDropdownRefStatusHargaOrder) {
@@ -728,7 +756,8 @@
                                     }
                                   )
                                   .then((res) => {
-                                    fetchData();
+                                    isDataValid = false;
+                                    getdata();
                                     tableData.statusLoadingCatatan = false;
                                   });
                               }}
@@ -1250,7 +1279,8 @@
                                     },
                                   }
                                 ).then(() => {
-                                  fetchData();
+                                  isDataValid = false;
+                                  getdata();
                                 });
                               }}
                               class="w-full"
@@ -1480,7 +1510,8 @@
                                     }
                                   )
                                   .then((res) => {
-                                    fetchData();
+                                    isDataValid = false;
+                                    getdata();
                                     tableData.statusLoadingCatatan = false;
                                   });
                               }}
@@ -2043,7 +2074,8 @@
                                     },
                                   }
                                 ).then(() => {
-                                  fetchData();
+                                  isDataValid = false;
+                                  getdata();
                                 });
                               }}
                               class="w-full"
@@ -2086,7 +2118,7 @@
         <CardEditLaporanTransaksiOrder id={params.edit} />
       </Route>
       <Route path="mutasi/:id/:jenis/add/" let:params>
-        <CardInputDetailTransaksi onSuccess={fetchData} id={params.id} jenis={params.jenis} />
+        <CardInputDetailTransaksi onSuccess={() => {isDataValid = false; getdata();}} id={params.id} jenis={params.jenis} />
       </Route>
     </Router>
   </div>
