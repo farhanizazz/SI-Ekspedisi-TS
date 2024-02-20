@@ -99,7 +99,6 @@
     var localStorageData = localStorage.getItem('order'); 
     var cacheddata = await JSON.parse(localStorageData);
     if(cacheddata){
-      data = cacheddata.data;
      var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
     }
     //If cached data available and not expired return them. 
@@ -757,8 +756,9 @@
                                   )
                                   .then((res) => {
                                     isDataValid = false;
-                                    getdata();
-                                    tableData.statusLoadingCatatan = false;
+                                    getdata().then(() => {
+                                      tableData.statusLoadingCatatan = false;
+                                    });
                                   });
                               }}
                             >
@@ -2115,7 +2115,7 @@
         <DetailBiayaTambahan id={params.id} />
       </Route>
       <Route path="edit/:edit" let:params>
-        <CardEditLaporanTransaksiOrder id={params.edit} />
+        <CardEditLaporanTransaksiOrder id={params.edit} onSuccess={() => {isDataValid = false; getdata();}}/>
       </Route>
       <Route path="mutasi/:id/:jenis/add/" let:params>
         <CardInputDetailTransaksi onSuccess={() => {isDataValid = false; getdata();}} id={params.id} jenis={params.jenis} />

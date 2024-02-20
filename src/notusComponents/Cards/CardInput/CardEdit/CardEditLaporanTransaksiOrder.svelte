@@ -5,6 +5,7 @@
   import { getCookie } from "svelte-cookie";
 
   export let id;
+  export let onSuccess;
   let error = {};
   let data = {
     
@@ -150,6 +151,7 @@
       res.json().then((res) => {
         console.log(res);
         if (res.status != "error") {
+          onSuccess();
           navigate("/transaksi/order");
         } else {
           error = res.message;

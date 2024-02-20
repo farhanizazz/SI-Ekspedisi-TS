@@ -9,6 +9,7 @@
   import { derived, writable } from "svelte/store";
 
   export let location;
+  export let userData;
   console.log(location);
   let data;
   fetch(`${mainUrl}/api/master/rekening/total`, {
