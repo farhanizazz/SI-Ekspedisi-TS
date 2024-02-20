@@ -114,28 +114,31 @@
       });
     });
 
-    fetch(`${mainUrl}/api/transaksi/order`, {
-      headers: {
-        Authorization: `bearer ${getCookie("token")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: "GET",
-    }).then((res) => {
-      res.json().then((res) => {
-        data = res.data[res.data.indexOf(res.data.find((e) => e.id == id))];
-        if (data.biaya_lain_harga_order == null) {
-          data.biaya_lain_harga_order = [];
-        }
-        if (data.biaya_lain_uang_jalan == null) {
-          data.biaya_lain_uang_jalan = [];
-        }
-        if (data.biaya_lain_harga_jual == null) {
-          data.biaya_lain_harga_jual = [];
-        }
-      });
-    });
+    // fetch(`${mainUrl}/api/transaksi/order`, {
+    //   headers: {
+    //     Authorization: `bearer ${getCookie("token")}`,
+    //     "Content-Type": "application/json",
+    //     Accept: "application/json",
+    //     // 'Content-Type': 'application/x-www-form-urlencoded',
+    //   },
+    //   method: "GET",
+    // }).then((res) => {
+    //   res.json().then((res) => {
+    //     data = res.data[res.data.indexOf(res.data.find((e) => e.id == id))];
+    //     if (data.biaya_lain_harga_order == null) {
+    //       data.biaya_lain_harga_order = [];
+    //     }
+    //     if (data.biaya_lain_uang_jalan == null) {
+    //       data.biaya_lain_uang_jalan = [];
+    //     }
+    //     if (data.biaya_lain_harga_jual == null) {
+    //       data.biaya_lain_harga_jual = [];
+    //     }
+    //   });
+    // });
+
+    data = await JSON.parse(await localStorage.getItem("order")).data;
+    data = data[data.indexOf(data.find((e) => e.id == id))];
   });
 
   function handleSubmit() {

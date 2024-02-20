@@ -728,13 +728,13 @@
                               </div>
                             </div>
                             {tableData.no_transaksi} <br />
-                            {tableData.no_sj == null
+                            {tableData.nomor_sj == null
                               ? ""
-                              : tableData.no_sj + " / "}
-                            {tableData.no_po == null
+                              : tableData.nomor_sj + " / "}
+                            {tableData.nomor_po == null
                               ? ""
-                              : tableData.no_po + " / "}
-                            {tableData.no_do == null ? "" : tableData.no_do}
+                              : tableData.nomor_po + " / "}
+                            {tableData.nomor_do == null ? "" : tableData.nomor_do}
                             <form
                               on:submit|preventDefault={() => {
                                 tableData.statusLoadingCatatan = true;
@@ -1483,13 +1483,13 @@
                               </div>
                             </div>
                             {tableData.no_transaksi} <br />
-                            {tableData.no_sj == null
+                            {tableData.nomor_sj == null
                               ? ""
-                              : tableData.no_sj + " / "}
-                            {tableData.no_po == null
+                              : tableData.nomor_sj + " / "}
+                            {tableData.nomor_po == null
                               ? ""
-                              : tableData.no_po + " / "}
-                            {tableData.no_do == null ? "" : tableData.no_do}
+                              : tableData.nomor_po + " / "}
+                            {tableData.nomor_do == null ? "" : tableData.nomor_do}
                             <form
                               on:submit|preventDefault={() => {
                                 tableData.statusLoadingCatatan = true;
