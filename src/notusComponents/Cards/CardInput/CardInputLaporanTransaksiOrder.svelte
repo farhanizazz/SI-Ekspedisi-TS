@@ -406,47 +406,6 @@
         <div class="relative w-full mb-3">
           <label
             class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-            for="grid-Bayar_Harga_Order"
-          >
-            Bayar Harga Order
-          </label>
-          <input
-            id="grid-Bayar_Harga_Order"
-            type="number"
-            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-            placeholder="Masukkan Bayar Harga Order"
-            name="Bayar_Harga_Order"
-            bind:value={data.bayar_harga_order}
-          />
-          {#if "bayar_harga_order" in error}
-            <p class="text-red-500 text-sm">{error.bayar_harga_order}</p>
-          {/if}
-        </div>
-
-        <div class="relative w-full mb-3">
-          <label
-            class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-            for="grid-status_harga_order"
-          >
-            Status Harga Order
-          </label>
-          <select
-            id="grid-status_harga_order"
-            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-            bind:value={data.status_harga_order}
-          >
-            <option>Silahkan Pilih Status Order</option>
-            <option value="Dp">DP</option>
-            <option value="Pelunasan">Pelunasan</option>
-          </select>
-          {#if "status_harga_order" in error}
-            <p class="text-red-500 text-sm">{error.status_harga_order}</p>
-          {/if}
-        </div>
-
-        <div class="relative w-full mb-3">
-          <label
-            class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
             for="grid-status_pajak"
           >
             Status Pajak
@@ -682,47 +641,6 @@
             />
             {#if "harga_jual" in error}
               <p class="text-red-500 text-sm">{error.harga_jual}</p>
-            {/if}
-          </div>
-
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-bayar_harga_jual"
-            >
-              Bayar Harga Jual
-            </label>
-            <input
-              id="grid-bayar_harga_jual"
-              type="number"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan Bayar Harga Jual"
-              name="bayar_harga_jual"
-              bind:value={data.bayar_harga_jual}
-            />
-            {#if "bayar_harga_jual" in error}
-              <p class="text-red-500 text-sm">{error.bayar_harga_jual}</p>
-            {/if}
-          </div>
-
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              for="grid-status_harga_jual"
-            >
-              Status Harga Jual
-            </label>
-            <select
-              id="grid-status_harga_jual"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              bind:value={data.status_harga_jual}
-            >
-              <option>Silahkan Pilih Status Order</option>
-              <option value="Dp">DP</option>
-              <option value="Pelunasan">Pelunasan</option>
-            </select>
-            {#if "status_harga_jual" in error}
-              <p class="text-red-500 text-sm">{error.status_harga_jual}</p>
             {/if}
           </div>
         {/if}
