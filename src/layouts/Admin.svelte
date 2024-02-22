@@ -21,7 +21,7 @@
   import Rekening from "../views/admin/Rekening/Rekening.svelte";
   import Subkon from "../views/admin/Subkon.svelte";
   import HutangSopir from "../views/admin/HutangSopir.svelte";
-  import Pengeluaran from "../views/laporan/Pengeluaran.svelte";
+  import Pengeluaran from "../views/laporan/Pengeluaran/Pengeluaran.svelte";
   import { onMount } from "svelte";
   import { mainUrl } from "../environment";
   import { getCookie } from "svelte-cookie";

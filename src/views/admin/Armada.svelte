@@ -26,34 +26,80 @@
     "Keterangan",
   ];
 
-  function fetchData() {
-    fetch(`${mainUrl}/api/getProfile`, {
+  async function fetchData() {
+    var data;
+    // fetch(`${mainUrl}/api/getProfile`, {
+    //   headers: {
+    //     Authorization: `bearer ${getCookie("token")}`,
+    //   },
+    // }).then((res) => {
+    //   res.json().then((res) => {
+    //     data = res.data;
+    //     console.log(data);
+    //     if (data.role.akses.master_armada.view != true) {
+    //       navigate("/admin/dashboard");
+    //     } else {
+    //       fetch(`${mainUrl}/api/master/armada`, {
+    //         headers: {
+    //           Authorization: `bearer ${getCookie("token")}`,
+    //         },
+    //       }).then((res) => {
+    //         res.json().then((res) => {
+    //           res.data.forEach((e) => {
+    //             delete e.created_at;
+    //             delete e.updated_at;
+    //           });
+    //           data = res.data;
+    //         });
+    //       });
+    //     }
+    //   });
+    // });
+    // return data;
+    const permission = await axios.get(`${mainUrl}/api/getProfile`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
-    }).then((res) => {
-      res.json().then((res) => {
-        data = res.data;
-        console.log(data);
-        if (data.role.akses.master_armada.view != true) {
-          navigate("/admin/dashboard");
-        } else {
-          fetch(`${mainUrl}/api/master/armada`, {
-            headers: {
-              Authorization: `bearer ${getCookie("token")}`,
-            },
-          }).then((res) => {
-            res.json().then((res) => {
-              res.data.forEach((e) => {
-                delete e.created_at;
-                delete e.updated_at;
-              });
-              data = res.data;
-            });
-          });
-        }
-      });
     });
+
+    if(permission.data.data.role.akses.master_armada.view != true){
+      navigate("/admin/dashboard");
+    }
+
+    const response = await axios.get(`${mainUrl}/api/master/armada`, {
+      headers: {
+        Authorization: `bearer ${getCookie("token")}`,
+      },
+    });
+    response.data.data.forEach((e) => {
+      delete e.created_at;
+      delete e.updated_at;
+    });
+    console.log(response)
+    return response.data.data;
+  }
+
+  var isDataValid = true;
+
+  async function getData() {
+    var cachelife = 5000;
+    var localStorageData = localStorage.getItem('armada'); 
+    var cacheddata = await JSON.parse(localStorageData);
+    if(cacheddata){
+     var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
+    }
+    if (cacheddata  && (!expired && isDataValid)){
+      data = cacheddata.data;
+      isDataValid = true;
+    }else{
+    //otherwise fetch data from api then save the data in localstorage 
+     fetchData().then((res) => {
+      var json = {data: res, cachetime: Date.now() / 1000};
+      localStorage.setItem('armada', JSON.stringify(json));
+      data = res;
+      isDataValid = true;
+     })
+    }
   }
 </script>
 
@@ -67,14 +113,14 @@
           deleteApi={`${mainUrl}/api/master/armada/`}
           heading="Data Armada"
           {data}
-          onLoad={fetchData}
+          onLoad={getData}
         />
       </Route>
       <Route path="add">
-        <CardInputArmada />
+        <CardInputArmada onSuccess={() => isDataValid = false} />
       </Route>
       <Route path="edit/:edit" let:params>
-        <CardEditArmada id={params.edit} />
+        <CardEditArmada onSuccess={() => isDataValid = false} id={params.edit} />
       </Route>
     </Router>
   </div>

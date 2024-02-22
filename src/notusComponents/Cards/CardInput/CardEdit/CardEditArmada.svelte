@@ -5,6 +5,7 @@
   import { mainUrl } from "../../../../environment";
 
   export let id;
+  export let onSuccess;
   let error = {};
   let data = {
     nama_perusahaan: "",
@@ -38,6 +39,7 @@
       response.json().then((res) => {
         console.log(res)
         if (res.status != "error") {
+          onSuccess();
           navigate("/admin/armada");
         } else {
           error = res.message;

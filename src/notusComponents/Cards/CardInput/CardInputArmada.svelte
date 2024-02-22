@@ -3,6 +3,8 @@
   import { navigate } from "svelte-routing";
   import { mainUrl } from "../../../environment";
 
+  export let onSuccess;
+
   let error = {
     nopol: "",
     merk: "",
@@ -34,6 +36,7 @@
       res.json().then((res) => {
         console.log(res);
         if (res.status != "error") {
+          onSuccess();
           navigate("/admin/armada");
         } else {
           error = res.message;
