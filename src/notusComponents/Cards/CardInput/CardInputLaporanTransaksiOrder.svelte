@@ -4,6 +4,7 @@
   import { mainUrl } from "../../../environment";
   import { getCookie } from "svelte-cookie";
 
+  export let onSuccess;
 
   const date = new Date();
   const day = String(date.getDate()).padStart(2, "0");
@@ -135,7 +136,7 @@
     } else {
       data.uang_jalan = null;
     }
-    const response = fetch(`${mainUrl}/api/transaksi/order`, {
+    fetch(`${mainUrl}/api/transaksi/order`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -147,6 +148,7 @@
       res.json().then((res) => {
         console.log(res);
         if (res.status != "error") {
+          onSuccess();
           navigate("/transaksi/order");
         } else {
           error = res.message;
