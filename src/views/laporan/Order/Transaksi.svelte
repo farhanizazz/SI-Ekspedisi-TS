@@ -2123,7 +2123,10 @@
         <DetailTransaksi id={params.id} jenis={params.jenis} />
       </Route>
       <Route path="add">
-        <CardInputLaporanTransaksiOrder />
+        <CardInputLaporanTransaksiOrder onSuccess={() => {
+          isDataValid = false;
+          getdata();
+        }}/>
       </Route>
       <Route path="detail-biaya-tambahan/:id" let:params>
         <DetailBiayaTambahan id={params.id} />
