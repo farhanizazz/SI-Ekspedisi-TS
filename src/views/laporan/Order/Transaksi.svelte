@@ -79,11 +79,15 @@
           total += mutasi.nominal;
         });
         e.mutasi_total = total;
-        
+
         return e;
       })
-      );
-    dataWithMutasi.sort((a, b) => new Date(b.created_at).getTime() / 1000 - new Date(a.created_at).getTime() / 1000);
+    );
+    dataWithMutasi.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() / 1000 -
+        new Date(a.created_at).getTime() / 1000
+    );
     dataWithMutasi = dataWithMutasi;
 
     return dataWithMutasi;
@@ -93,26 +97,26 @@
   let isDataValid = true;
 
   const getdata = async () => {
-  // set cache lifetime in seconds
-  var cachelife = 5000; 
-   //get cached data from local storage
-    var localStorageData = localStorage.getItem('order'); 
+    // set cache lifetime in seconds
+    var cachelife = 5000;
+    //get cached data from local storage
+    var localStorageData = localStorage.getItem("order");
     var cacheddata = await JSON.parse(localStorageData);
-    if(cacheddata){
-     var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
+    if (cacheddata) {
+      var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
     }
-    //If cached data available and not expired return them. 
-    if (cacheddata  && (!expired && isDataValid)){
+    //If cached data available and not expired return them.
+    if (cacheddata && !expired && isDataValid) {
       data = cacheddata.data;
-    }else{
-    //otherwise fetch data from api then save the data in localstorage 
-     fetchData().then((res) => {
-      var json = {data: res, cachetime: Date.now() / 1000};
-      localStorage.setItem('order', JSON.stringify(json));
-      data = res;
-     })
+    } else {
+      //otherwise fetch data from api then save the data in localstorage
+      fetchData().then((res) => {
+        var json = { data: res, cachetime: Date.now() / 1000 };
+        localStorage.setItem("order", JSON.stringify(json));
+        data = res;
+      });
     }
-  }
+  };
 
   $: data = data;
 
@@ -734,7 +738,9 @@
                             {tableData.nomor_po == null
                               ? ""
                               : tableData.nomor_po + " / "}
-                            {tableData.nomor_do == null ? "" : tableData.nomor_do}
+                            {tableData.nomor_do == null
+                              ? ""
+                              : tableData.nomor_do}
                             <form
                               on:submit|preventDefault={() => {
                                 tableData.statusLoadingCatatan = true;
@@ -1249,7 +1255,25 @@
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
-                            Rp. {IDRFormatter.format(tableData.sisa_tagihan)}
+                            Rp. {IDRFormatter.format(
+                              tableData.harga_order +
+                                (tableData.biaya_lain_harga_jual_arr.reduce(
+                                  (acc, curr) =>
+                                    curr.sifat === "Menambahkan"
+                                      ? acc + curr.nominal
+                                      : acc - curr.nominal,
+                                  0
+                                ) +
+                                  tableData.biaya_lain_harga_order_arr.reduce(
+                                    (acc, curr) =>
+                                      curr.sifat === "Menambahkan"
+                                        ? acc + curr.nominal
+                                        : acc - curr.nominal,
+                                    0
+                                  )) - (
+                                    tableData.total_mutasi_jual + tableData.total_mutasi_order
+                                  ) - tableData.total_pajak
+                            )}
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
@@ -1489,7 +1513,9 @@
                             {tableData.nomor_po == null
                               ? ""
                               : tableData.nomor_po + " / "}
-                            {tableData.nomor_do == null ? "" : tableData.nomor_do}
+                            {tableData.nomor_do == null
+                              ? ""
+                              : tableData.nomor_do}
                             <form
                               on:submit|preventDefault={() => {
                                 tableData.statusLoadingCatatan = true;
@@ -1593,20 +1619,6 @@
                                   class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
                                   Rp. {IDRFormatter.format(
-                                    // tableData.biaya_lain_harga_jual_arr.reduce(
-                                    //   (acc, curr) =>
-                                    //     curr.sifat === "Menambahkan"
-                                    //       ? acc + curr.nominal
-                                    //       : acc - curr.nominal,
-                                    //   0
-                                    // ) +
-                                    // tableData.biaya_lain_uang_jalan_arr.reduce(
-                                    //   (acc, curr) =>
-                                    //     curr.sifat === "Menambahkan"
-                                    //       ? acc + curr.nominal
-                                    //       : acc - curr.nominal,
-                                    //   0
-                                    // ) +
                                     tableData.biaya_lain_harga_order_arr.reduce(
                                       (acc, curr) =>
                                         curr.sifat === "Menambahkan"
@@ -1821,7 +1833,7 @@
                               href={`/transaksi/order/mutasi/${tableData.id}/jual`}
                               class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                             >
-                            <!-- Mutasi total -->
+                              <!-- Mutasi total -->
                               Rp. {IDRFormatter.format(
                                 tableData.total_mutasi_jual
                               )}</a
@@ -2032,13 +2044,15 @@
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             Rp. {IDRFormatter.format(
-                              tableData.harga_jual + tableData.biaya_lain_harga_jual_arr.reduce(
-                                      (acc, curr) =>
-                                        curr.sifat === "Menambahkan"
-                                          ? acc + curr.nominal
-                                          : acc - curr.nominal,
-                                      0
-                                    ) - tableData.total_mutasi_jual
+                              tableData.harga_jual +
+                                tableData.biaya_lain_harga_jual_arr.reduce(
+                                  (acc, curr) =>
+                                    curr.sifat === "Menambahkan"
+                                      ? acc + curr.nominal
+                                      : acc - curr.nominal,
+                                  0
+                                ) -
+                                tableData.total_mutasi_jual
                             )}
                           </td>
                           <td
@@ -2106,7 +2120,7 @@
         {/if}
       </Route>
       <Route path="mutasi/:id/:jenis" let:params>
-        <DetailTransaksi id={params.id} jenis={params.jenis}/>
+        <DetailTransaksi id={params.id} jenis={params.jenis} />
       </Route>
       <Route path="add">
         <CardInputLaporanTransaksiOrder />
@@ -2115,10 +2129,23 @@
         <DetailBiayaTambahan id={params.id} />
       </Route>
       <Route path="edit/:edit" let:params>
-        <CardEditLaporanTransaksiOrder id={params.edit} onSuccess={() => {isDataValid = false; getdata();}}/>
+        <CardEditLaporanTransaksiOrder
+          id={params.edit}
+          onSuccess={() => {
+            isDataValid = false;
+            getdata();
+          }}
+        />
       </Route>
       <Route path="mutasi/:id/:jenis/add/" let:params>
-        <CardInputDetailTransaksi onSuccess={() => {isDataValid = false; getdata();}} id={params.id} jenis={params.jenis} />
+        <CardInputDetailTransaksi
+          onSuccess={() => {
+            isDataValid = false;
+            getdata();
+          }}
+          id={params.id}
+          jenis={params.jenis}
+        />
       </Route>
     </Router>
   </div>

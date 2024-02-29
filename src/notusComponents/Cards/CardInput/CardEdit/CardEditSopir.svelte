@@ -21,7 +21,8 @@
     sim: "",
     nomor_hp: "",
     keterangan: "",
-    tanggal_gabung: ""
+    tanggal_gabung: "",
+    status: '',
   };
 
   onMount(async () => {
@@ -137,6 +138,32 @@
             {/if}
           </div>
         </div>
+        
+        <div class="w-full lg:w-6/12 px-4">
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              for="grid-status"
+            >
+              Status Sopir
+            </label>
+            <select
+              id="grid-status"
+              type="text"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              rows="4"
+              bind:value={data.status}
+            >
+              <option>Silahkan Pilih Status Sopir</option>
+              <option value="aktif">Aktif</option>
+              <option value="tidak_aktif">Tidak Aktif</option>
+            </select>
+            {#if "status" in error}
+              <p class="text-red-500 text-sm">{error.status}</p>
+            {/if}
+          </div>
+        </div>
+
         <div class="w-full lg:w-6/12 px-4">
           <div class="relative w-full mb-3">
             <label
@@ -215,7 +242,6 @@
             </label>
             <textarea
               id="grid-about-me"
-              type="text"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               rows="4"
               bind:value={data.keterangan}

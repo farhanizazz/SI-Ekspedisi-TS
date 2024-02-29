@@ -93,7 +93,7 @@
         <tr>
           {#each tableHeading as data}
             <th
-              class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+              class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
               'light'
                 ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                 : 'bg-red-700 text-red-200 border-red-600'}"
@@ -102,7 +102,7 @@
             </th>
           {/each}
           <th
-            class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+            class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
             'light'
               ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
               : 'bg-red-700 text-red-200 border-red-600'}"
@@ -118,7 +118,7 @@
               {#each Object.keys(data[0]) as header}
                 {#if tableData[header] == "aktif"}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
                   >
                     <p
                       class="text-center bg-emerald-500 text-white text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
@@ -128,7 +128,7 @@
                   </td>
                 {:else if tableData[header] == "nonaktif"}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
                   >
                     <p
                       class="text-center bg-red-500 text-white text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
@@ -138,14 +138,14 @@
                   </td>
                 {:else}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
                   >
                     {typeof tableData[header] == "number" && (header != 'id' && header != 'm_rekening_id') ? 'Rp. ' + IDRFormatter.format(tableData[header]) : tableData[header]}
                   </td>
                 {/if}
               {/each}
               <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
               >
                 {#if withEdit === true}
                   <a use:link href={`${href}/edit/${tableData.id}/${afterHref}`}>

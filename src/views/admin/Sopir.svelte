@@ -20,6 +20,7 @@
     "Nomor HP",
     "Keterangan",
     "Tanggal bergabung",
+    "Status Sopir"
   ];
 
   function fetchData() {
@@ -30,7 +31,6 @@
     }).then((res) => {
       res.json().then((res) => {
         data = res.data;
-        console.log(data);
         if (data.role.akses.master_sopir.view != true) {
           navigate("/admin/dashboard");
         } else {
@@ -43,6 +43,9 @@
               res.data.forEach((e) => {
                 delete e.created_at;
                 delete e.updated_at;
+                if(e.status == 'tidak_aktif') {
+                  e.status = "nonaktif"
+                }
               });
               data = res.data;
             });
