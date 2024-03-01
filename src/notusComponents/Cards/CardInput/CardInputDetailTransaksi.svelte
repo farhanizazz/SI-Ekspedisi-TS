@@ -26,7 +26,7 @@
 
   let rekenings = [];
   function handleSubmit() {
-    const response = fetch(`${mainUrl}/api/master/rekening/mutasi/`, {
+    const response = fetch(`${mainUrl}/api/master/rekening/mutasi`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@
 
   onMount(async () => {
     console.log(jenis)
-    fetch(`${mainUrl}/api/master/rekening/`, {
+    fetch(`${mainUrl}/api/master/rekening`, {
       headers: {
         Authorization: `bearer ${getCookie('token')}`,
         "Content-Type": "application/json",
