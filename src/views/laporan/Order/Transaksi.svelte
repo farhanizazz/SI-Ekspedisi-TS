@@ -1257,22 +1257,13 @@
                           >
                             Rp. {IDRFormatter.format(
                               tableData.harga_order +
-                                (tableData.biaya_lain_harga_jual_arr.reduce(
-                                  (acc, curr) =>
-                                    curr.sifat === "Menambahkan"
-                                      ? acc + curr.nominal
-                                      : acc - curr.nominal,
-                                  0
-                                ) +
-                                  tableData.biaya_lain_harga_order_arr.reduce(
+                                (tableData.biaya_lain_harga_order_arr.reduce(
                                     (acc, curr) =>
                                       curr.sifat === "Menambahkan"
                                         ? acc + curr.nominal
                                         : acc - curr.nominal,
                                     0
-                                  )) - (
-                                    tableData.total_mutasi_jual + tableData.total_mutasi_order
-                                  ) - tableData.total_pajak
+                                  )) - tableData.total_mutasi_order - tableData.total_pajak
                             )}
                           </td>
                           <td

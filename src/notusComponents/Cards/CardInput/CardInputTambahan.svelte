@@ -89,7 +89,7 @@
             >
               <option>Silahkan Pilih Sifat Rekening</option>
               <option value="Menambahkan">Menambahkan</option>
-              <option value="Menambahkan">Mengurangi</option>
+              <option value="Mengurangi">Mengurangi</option>
 
             </select>
             {#if "sifat" in error}
