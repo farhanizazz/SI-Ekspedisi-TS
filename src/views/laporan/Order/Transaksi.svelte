@@ -60,38 +60,48 @@
     });
 
     const json = await res.json();
-
-    let dataWithMutasi = await Promise.all(
-      json.data.map(async (e) => {
-        if (e.biaya_lain_harga_jual == null) {
-          e.biaya_lain_harga_jual = [];
-        }
-        if (e.biaya_lain_uang_jalan == null) {
-          e.biaya_lain_uang_jalan = [];
-        }
-        if (e.biaya_lain_harga_order == null) {
-          e.biaya_lain_harga_order = [];
-        }
-
-        const mutasi = await fetchMutasi(e.id);
-        let total = 0;
-        mutasi.forEach((mutasi) => {
-          total += mutasi.nominal;
-        });
-        e.mutasi_total = total;
-
-        return e;
-      })
-    );
-    dataWithMutasi.sort(
+    json.data.forEach((e) => {
+      e.biaya_lain_harga_jual = [];
+      e.biaya_lain_uang_jalan = [];
+      e.biaya_lain_harga_order = [];
+    });
+    json.data.sort(
       (a, b) =>
-        new Date(b.created_at).getTime() / 1000 -
-        new Date(a.created_at).getTime() / 1000
+        new Date(b.tanggal_awal).getTime() / 1000 -
+        new Date(a.tanggal_awal).getTime() / 1000
     );
-    dataWithMutasi = dataWithMutasi;
+    return json.data;
+    // let dataWithMutasi = await Promise.all(
+    //   json.data.map(async (e) => {
+    //     if (e.biaya_lain_harga_jual == null) {
+    //       e.biaya_lain_harga_jual = [];
+    //     }
+    //     if (e.biaya_lain_uang_jalan == null) {
+    //       e.biaya_lain_uang_jalan = [];
+    //     }
+    //     if (e.biaya_lain_harga_order == null) {
+    //       e.biaya_lain_harga_order = [];
+    //     }
 
-    return dataWithMutasi;
-    console.log(data);
+    //     const mutasi = await fetchMutasi(e.id);
+    //     let total = 0;
+    //     mutasi.forEach((mutasi) => {
+    //       total += mutasi.nominal;
+    //     });
+    //     e.mutasi_total = total;
+
+    //     return e;
+    //   })
+    // );
+    // dataWithMutasi.sort(
+    //   (a, b) =>
+    //     new Date(b.created_at).getTime() / 1000 -
+    //     new Date(a.created_at).getTime() / 1000
+    // );
+    // dataWithMutasi = dataWithMutasi;
+
+    // return dataWithMutasi;
+    // console.log(data);
   }
 
   let isDataValid = true;
@@ -180,7 +190,10 @@
           },
         })
         .then((res) => {
-          fetchData();
+          fetchData().then(() => {
+            isDataValid = false;
+            getdata();
+          });
         });
     } catch (error) {
       console.log(error);

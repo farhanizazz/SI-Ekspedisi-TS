@@ -16,7 +16,7 @@
   };
 
   async function handleSubmit() {
-    const res = fetch(`${mainUrl}/api/register/`, {
+    const res = fetch(`${mainUrl}/api/register`, {
       headers: {
         "Content-Type": "application/json",
       },
