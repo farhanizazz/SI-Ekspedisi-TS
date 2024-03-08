@@ -1,5 +1,5 @@
 <script>
-	import { debounce } from './../../../helper/Debounce.js';
+  import { debounce } from "./../../../helper/Debounce.js";
   import Pagination from "./../../../notusComponents/Pagination/Pagination.svelte";
   import CardInputDetailTransaksi from "./../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte";
   import DetailTransaksi from "./DetailTransaksi.svelte";
@@ -308,7 +308,9 @@
   let handleSearch = debounce(() => {
     isDataValid = false;
     currentPage = 0;
-    getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`);
+    getdata(
+      `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+    );
   }, 500);
 
   let sifat = 0;
@@ -375,13 +377,22 @@
         </div>
         <div class="w-full px-4 max-w-full flex justify-center items-center">
           <Pagination
+            onSeek={(page) => {
+              currentPage = page;
+              isDataValid = false;
+              getdata(
+                `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+              );
+            }}
             pageCount={metaData.links.length}
             onNext={() => {
               if (currentPage + 1 <= metaData.links.length - 1) {
                 currentPage = currentPage + 1;
-                console.log("next",currentPage, metaData.links[currentPage]);
+                console.log("next", currentPage, metaData.links[currentPage]);
                 isDataValid = false;
-                getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`);
+                getdata(
+                  `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                );
               }
             }}
             onPrev={() => {
@@ -389,7 +400,9 @@
                 currentPage = currentPage - 1;
                 console.log("prev", currentPage, metaData.links[currentPage]);
                 isDataValid = false;
-                getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`);
+                getdata(
+                  `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                );
               }
             }}
           />

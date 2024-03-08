@@ -2,6 +2,7 @@
   export let onPrev;
   export let onNext;
   export let pageCount;
+  export let onSeek;
 
   let currentPage = 0;
 </script>
@@ -22,14 +23,17 @@
       </li>
       {#each Array(pageCount) as _, i}
         <li>
-          <a
-            href="#pablo"
+          <button
+            on:click={() => {
+              onSeek(i);
+              currentPage = i;
+            }}
             class={currentPage == i
               ? "first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 text-white bg-orange-500"
               : "first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"}
           >
             {i + 1}
-          </a>
+          </button>
         </li>
       {/each}
       <!-- <li>
