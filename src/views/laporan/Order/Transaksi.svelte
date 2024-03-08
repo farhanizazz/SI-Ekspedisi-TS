@@ -1,4 +1,6 @@
 <script>
+	import { debounce } from './../../../helper/Debounce.js';
+  import Pagination from "./../../../notusComponents/Pagination/Pagination.svelte";
   import CardInputDetailTransaksi from "./../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte";
   import DetailTransaksi from "./DetailTransaksi.svelte";
   import DetailBiayaTambahan from "./DetailBiayaTambahan.svelte";
@@ -17,6 +19,7 @@
   // import "../../app.css";
 
   let data = [];
+  let metaData = { links: [] };
   let dataTambahan = [];
   const headingTransaksiOrder = [
     "TGL",
@@ -52,61 +55,30 @@
 
   let listTotal = [];
 
-  async function fetchData() {
-    const res = await fetch(`${mainUrl}/api/transaksi/order`, {
+  async function fetchData(url = `${mainUrl}/api/transaksi/order`) {
+    const res = await fetch(url, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
     });
 
-    const json = await res.json();
-    json.data.forEach((e) => {
+    const json = (await res.json()).data;
+    json.list.forEach((e) => {
       e.biaya_lain_harga_jual = [];
       e.biaya_lain_uang_jalan = [];
       e.biaya_lain_harga_order = [];
     });
-    json.data.sort(
+    json.list.sort(
       (a, b) =>
         new Date(b.tanggal_awal).getTime() / 1000 -
         new Date(a.tanggal_awal).getTime() / 1000
     );
-    return json.data;
-    // let dataWithMutasi = await Promise.all(
-    //   json.data.map(async (e) => {
-    //     if (e.biaya_lain_harga_jual == null) {
-    //       e.biaya_lain_harga_jual = [];
-    //     }
-    //     if (e.biaya_lain_uang_jalan == null) {
-    //       e.biaya_lain_uang_jalan = [];
-    //     }
-    //     if (e.biaya_lain_harga_order == null) {
-    //       e.biaya_lain_harga_order = [];
-    //     }
-
-    //     const mutasi = await fetchMutasi(e.id);
-    //     let total = 0;
-    //     mutasi.forEach((mutasi) => {
-    //       total += mutasi.nominal;
-    //     });
-    //     e.mutasi_total = total;
-
-    //     return e;
-    //   })
-    // );
-    // dataWithMutasi.sort(
-    //   (a, b) =>
-    //     new Date(b.created_at).getTime() / 1000 -
-    //     new Date(a.created_at).getTime() / 1000
-    // );
-    // dataWithMutasi = dataWithMutasi;
-
-    // return dataWithMutasi;
-    // console.log(data);
+    return json;
   }
 
-  let isDataValid = true;
+  let isDataValid = false;
 
-  const getdata = async () => {
+  const getdata = async (url) => {
     // set cache lifetime in seconds
     var cachelife = 5000;
     //get cached data from local storage
@@ -120,10 +92,11 @@
       data = cacheddata.data;
     } else {
       //otherwise fetch data from api then save the data in localstorage
-      fetchData().then((res) => {
-        var json = { data: res, cachetime: Date.now() / 1000 };
+      fetchData(url).then((res) => {
+        var json = { data: res.list, cachetime: Date.now() / 1000 };
         localStorage.setItem("order", JSON.stringify(json));
-        data = res;
+        data = res.list;
+        metaData = res.meta;
       });
     }
   };
@@ -153,16 +126,16 @@
 
   let search = "";
   let color = "light";
-  let dataSearch = [];
+  // let data = [];
 
-  $: dataSearch = search
-    ? data.filter((item) =>
-        Object.keys(item).some(
-          (key) =>
-            String(item[key]).toLowerCase().indexOf(search.toLowerCase()) > -1
-        )
-      )
-    : data;
+  // $: data = search
+  //   ? data.filter((item) =>
+  //       Object.keys(item).some(
+  //         (key) =>
+  //           String(item[key]).toLowerCase().indexOf(search.toLowerCase()) > -1
+  //       )
+  //     )
+  //   : data;
 
   const changeStatusKendaraanSendiri = ({ data, id }) => {
     try {
@@ -249,17 +222,17 @@
   }
 
   let dropdownPopoverShowStatusKendaraanSendiri = [];
-  $: dropdownPopoverShowStatusKendaraanSendiri = dataSearch.map(() => false);
+  $: dropdownPopoverShowStatusKendaraanSendiri = data.map(() => false);
   let btnDropdownRefStatusKendaraanSendiri;
   let popoverDropdownRefStatusKendaraanSendiri;
 
   let dropdownPopoverShowStatusSuratJalan = [];
-  $: dropdownPopoverShowStatusSuratJalan = dataSearch.map(() => false);
+  $: dropdownPopoverShowStatusSuratJalan = data.map(() => false);
   let btnDropdownRefStatusSuratJalan;
   let popoverDropdownRefStatusSuratJalan;
 
   let dropdownPopoverShowStatusHargaOrder = [];
-  $: dropdownPopoverShowStatusHargaOrder = dataSearch.map(() => false);
+  $: dropdownPopoverShowStatusHargaOrder = data.map(() => false);
   let btnDropdownRefStatusHargaOrder;
   let popoverDropdownRefStatusHargaOrder;
 
@@ -332,6 +305,12 @@
     }
   };
 
+  let handleSearch = debounce(() => {
+    isDataValid = false;
+    currentPage = 0;
+    getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`);
+  }, 500);
+
   let sifat = 0;
   let jenis = 0;
   let biaya;
@@ -347,6 +326,8 @@
   function toggleTabs(tabNumber) {
     openTab = tabNumber;
   }
+
+  let currentPage = 0;
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -392,7 +373,27 @@
             </ul>
           </div>
         </div>
-
+        <div class="w-full px-4 max-w-full flex justify-center items-center">
+          <Pagination
+            pageCount={metaData.links.length}
+            onNext={() => {
+              if (currentPage + 1 <= metaData.links.length - 1) {
+                currentPage = currentPage + 1;
+                console.log("next",currentPage, metaData.links[currentPage]);
+                isDataValid = false;
+                getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`);
+              }
+            }}
+            onPrev={() => {
+              if (currentPage - 1 >= 0) {
+                currentPage = currentPage - 1;
+                console.log("prev", currentPage, metaData.links[currentPage]);
+                isDataValid = false;
+                getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`);
+              }
+            }}
+          />
+        </div>
         {#if openTab == 1}
           <div
             class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded {color ===
@@ -421,6 +422,7 @@
                     </span>
                     <input
                       bind:value={search}
+                      on:input={handleSearch}
                       type="text"
                       placeholder="Cari"
                       class="px-2 py-1 placeholder-blueGray-300 text-blueGray-600 relative bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:shadow-outline w-full pl-10"
@@ -470,7 +472,7 @@
                 </thead>
                 {#if data.length > 0}
                   <tbody>
-                    <!-- {#each dataSearch as tableData}
+                    <!-- {#each data as tableData}
                     <tr>
                       {#each Object.keys(data[0]) as header}
                         {#if tableData[header] == "aktif"}
@@ -534,7 +536,7 @@
                       >
                     </tr>
                   {/each} -->
-                    {#each dataSearch as tableData, index}
+                    {#each data as tableData, index}
                       {#if tableData.status_kendaraan == "Sendiri"}
                         <tr>
                           <td
@@ -971,7 +973,6 @@
                                         class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
-                                          console.log("harga order");
                                           if (sifat == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
@@ -1270,13 +1271,15 @@
                           >
                             Rp. {IDRFormatter.format(
                               tableData.harga_order +
-                                (tableData.biaya_lain_harga_order_arr.reduce(
-                                    (acc, curr) =>
-                                      curr.sifat === "Menambahkan"
-                                        ? acc + curr.nominal
-                                        : acc - curr.nominal,
-                                    0
-                                  )) - tableData.total_mutasi_order - tableData.total_pajak
+                                tableData.biaya_lain_harga_order_arr.reduce(
+                                  (acc, curr) =>
+                                    curr.sifat === "Menambahkan"
+                                      ? acc + curr.nominal
+                                      : acc - curr.nominal,
+                                  0
+                                ) -
+                                tableData.total_mutasi_order -
+                                tableData.total_pajak
                             )}
                           </td>
                           <td
@@ -1414,7 +1417,7 @@
                 </thead>
                 {#if data.length > 0}
                   <tbody>
-                    {#each dataSearch as tableData, index}
+                    {#each data as tableData, index}
                       {#if tableData.status_kendaraan == "Subkon"}
                         <tr>
                           <td
@@ -2127,10 +2130,12 @@
         <DetailTransaksi id={params.id} jenis={params.jenis} />
       </Route>
       <Route path="add">
-        <CardInputLaporanTransaksiOrder onSuccess={() => {
-          isDataValid = false;
-          getdata();
-        }}/>
+        <CardInputLaporanTransaksiOrder
+          onSuccess={() => {
+            isDataValid = false;
+            getdata();
+          }}
+        />
       </Route>
       <Route path="detail-biaya-tambahan/:id" let:params>
         <DetailBiayaTambahan id={params.id} />

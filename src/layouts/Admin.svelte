@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
   import { notificationsStore } from "./stores/AdminStore.js";
   import Transaksi from "../views/laporan/Order/Transaksi.svelte";
   import { Router, Route, navigate } from "svelte-routing";
