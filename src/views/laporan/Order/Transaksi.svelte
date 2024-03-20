@@ -65,9 +65,12 @@
 
     const json = (await res.json()).data;
     json.list.forEach((e) => {
-      e.biaya_lain_harga_jual = [];
-      e.biaya_lain_uang_jalan = [];
-      e.biaya_lain_harga_order = [];
+      if(e.biaya_lain_harga_jual == null)
+        e.biaya_lain_harga_jual = [];
+      if(e.biaya_lain_uang_jalan == null)
+        e.biaya_lain_uang_jalan = [];
+      if(e.biaya_lain_harga_order == null)
+        e.biaya_lain_harga_order = [];
     });
     json.list.sort(
       (a, b) =>
@@ -395,7 +398,6 @@
             onNext={() => {
               if (currentPage + 1 <= metaData.links.length - 1) {
                 currentPage = currentPage + 1;
-                console.log("next", currentPage, metaData.links[currentPage]);
                 isDataValid = false;
                 getdata(
                   `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
@@ -405,7 +407,6 @@
             onPrev={() => {
               if (currentPage - 1 >= 0) {
                 currentPage = currentPage - 1;
-                console.log("prev", currentPage, metaData.links[currentPage]);
                 isDataValid = false;
                 getdata(
                   `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
@@ -984,6 +985,7 @@
                                         class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
+                                          
                                           if (sifat == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
@@ -1002,37 +1004,6 @@
                                             },
                                             id: tableData.id,
                                           });
-
-                                          // if (jenis == 2) {
-                                          //   addBiaya({
-                                          //     data: {
-                                          //       ...tableData,
-                                          //       biaya_lain_uang_jalan:
-                                          //         tableData.biaya_lain_uang_jalan.concat(
-                                          //           {
-                                          //             m_tambahan_id: sifat,
-                                          //             nominal: biaya,
-                                          //           }
-                                          //         ),
-                                          //     },
-                                          //     id: tableData.id,
-                                          //   });
-                                          // }
-                                          // if (jenis == 3) {
-                                          //   addBiaya({
-                                          //     data: {
-                                          //       ...tableData,
-                                          //       biaya_lain_harga_jual:
-                                          //         tableData.biaya_lain_harga_jual.concat(
-                                          //           {
-                                          //             m_tambahan_id: sifat,
-                                          //             nominal: biaya,
-                                          //           }
-                                          //         ),
-                                          //     },
-                                          //     id: tableData.id,
-                                          //   });
-                                          // }
                                           toggleHargaOrderModal(index);
                                         }}
                                       >
@@ -1226,37 +1197,6 @@
                                             },
                                             id: tableData.id,
                                           });
-
-                                          // if (jenis == 2) {
-                                          //   addBiaya({
-                                          //     data: {
-                                          //       ...tableData,
-                                          //       biaya_lain_uang_jalan:
-                                          //         tableData.biaya_lain_uang_jalan.concat(
-                                          //           {
-                                          //             m_tambahan_id: sifat,
-                                          //             nominal: biaya,
-                                          //           }
-                                          //         ),
-                                          //     },
-                                          //     id: tableData.id,
-                                          //   });
-                                          // }
-                                          // if (jenis == 3) {
-                                          //   addBiaya({
-                                          //     data: {
-                                          //       ...tableData,
-                                          //       biaya_lain_harga_jual:
-                                          //         tableData.biaya_lain_harga_jual.concat(
-                                          //           {
-                                          //             m_tambahan_id: sifat,
-                                          //             nominal: biaya,
-                                          //           }
-                                          //         ),
-                                          //     },
-                                          //     id: tableData.id,
-                                          //   });
-                                          // }
                                           toggleHargaOrderModal(index);
                                         }}
                                       >
@@ -1784,37 +1724,6 @@
                                             },
                                             id: tableData.id,
                                           });
-                                          // }
-                                          // if (jenis == 2) {
-                                          //   addBiaya({
-                                          //     data: {
-                                          //       ...tableData,
-                                          //       biaya_lain_uang_jalan:
-                                          //         tableData.biaya_lain_uang_jalan.concat(
-                                          //           {
-                                          //             m_tambahan_id: sifat,
-                                          //             nominal: biaya,
-                                          //           }
-                                          //         ),
-                                          //     },
-                                          //     id: tableData.id,
-                                          //   });
-                                          // }
-                                          // if (jenis == 3) {
-                                          //   addBiaya({
-                                          //     data: {
-                                          //       ...tableData,
-                                          //       biaya_lain_harga_jual:
-                                          //         tableData.biaya_lain_harga_jual.concat(
-                                          //           {
-                                          //             m_tambahan_id: sifat,
-                                          //             nominal: biaya,
-                                          //           }
-                                          //         ),
-                                          //     },
-                                          //     id: tableData.id,
-                                          //   });
-                                          // }
                                           toggleHargaOrderModal(index);
                                         }}
                                       >
@@ -2008,37 +1917,6 @@
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
                                             return;
                                           }
-                                          // if (jenis == 1) {
-                                          //   addBiaya({
-                                          //     data: {
-                                          //       ...tableData,
-                                          //       biaya_lain_harga_order:
-                                          //         tableData.biaya_lain_harga_order.concat(
-                                          //           {
-                                          //             m_tambahan_id: sifat,
-                                          //             nominal: biaya,
-                                          //           }
-                                          //         ),
-                                          //     },
-                                          //     id: tableData.id,
-                                          //   });
-                                          // }
-                                          // if (jenis == 2) {
-                                          //   addBiaya({
-                                          //     data: {
-                                          //       ...tableData,
-                                          //       biaya_lain_uang_jalan:
-                                          //         tableData.biaya_lain_uang_jalan.concat(
-                                          //           {
-                                          //             m_tambahan_id: sifat,
-                                          //             nominal: biaya,
-                                          //           }
-                                          //         ),
-                                          //     },
-                                          //     id: tableData.id,
-                                          //   });
-                                          // }
-                                          // if (jenis == 3) {
                                           addBiaya({
                                             data: {
                                               ...tableData,
