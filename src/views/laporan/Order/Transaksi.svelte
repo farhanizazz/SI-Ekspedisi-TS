@@ -558,10 +558,12 @@
                   {/each} -->
                     {#each data as tableData, index}
                       {#if tableData.status_kendaraan == "Sendiri"}
-                        <tr>
-                          <td
-                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
-                          >
+                        
+                      <tr>
+                        <td
+                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
+                        >
+                            {tableData.status_kendaraan_sendiri}
                             <div class="text-center">
                               {tableData.tanggal_awal}
                               {#if tableData.status_kendaraan_sendiri == "Kontrak"}
@@ -642,7 +644,9 @@
                                     )
                                     .then((res) => {
                                       isDataValid = false;
-                                      getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`).then(() => {
+                                      getdata(
+                                        `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                                      ).then(() => {
                                         tableData.statusLoadingCatatan = false;
                                       });
                                     });
@@ -1463,7 +1467,9 @@
                                     )
                                     .then((res) => {
                                       isDataValid = false;
-                                      getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`).then(() => {
+                                      getdata(
+                                        `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                                      ).then(() => {
                                         tableData.statusLoadingCatatan = false;
                                       });
                                     });

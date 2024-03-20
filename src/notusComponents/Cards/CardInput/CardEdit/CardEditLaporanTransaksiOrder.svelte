@@ -8,7 +8,6 @@
   export let onSuccess;
   let error = {};
   let data = {
-    
     tanggal_awal: "",
     tanggal_akhir: "",
     status_kendaraan: "",
@@ -44,101 +43,103 @@
   let subkons = [];
 
   onMount(async () => {
-    fetch(`${mainUrl}/api/master/penyewa`, {
-      headers: {
-        Authorization: `bearer ${getCookie("token")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: "GET",
-    }).then((res) => {
-      res.json().then((res) => {
-        penyewas = res.data;
-      });
-    });
+    Promise.all([
+      await fetch(`${mainUrl}/api/master/penyewa`, {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: "GET",
+      }).then((res) => {
+        res.json().then((res) => {
+          penyewas = res.data;
+        });
+      }),
 
-    fetch(`${mainUrl}/api/master/armada`, {
-      headers: {
-        Authorization: `bearer ${getCookie("token")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: "GET",
-    }).then((res) => {
-      res.json().then((res) => {
-        armadas = res.data;
-      });
-    });
+      await fetch(`${mainUrl}/api/master/armada`, {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: "GET",
+      }).then((res) => {
+        res.json().then((res) => {
+          armadas = res.data;
+        });
+      }),
 
-    fetch(`${mainUrl}/api/master/subkon`, {
-      headers: {
-        Authorization: `bearer ${getCookie("token")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: "GET",
-    }).then((res) => {
-      res.json().then((res) => {
-        subkons = res.data;
-      });
-    });
+      await fetch(`${mainUrl}/api/master/subkon`, {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: "GET",
+      }).then((res) => {
+        res.json().then((res) => {
+          subkons = res.data;
+        });
+      }),
 
-    fetch(`${mainUrl}/api/master/sopir`, {
-      headers: {
-        Authorization: `bearer ${getCookie("token")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: "GET",
-    }).then((res) => {
-      res.json().then((res) => {
-        sopirs = res.data;
-      });
-    });
+      await fetch(`${mainUrl}/api/master/sopir`, {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: "GET",
+      }).then((res) => {
+        res.json().then((res) => {
+          sopirs = res.data;
+        });
+      }),
 
-    fetch(`${mainUrl}/api/master/rekening`, {
-      headers: {
-        Authorization: `bearer ${getCookie("token")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: "GET",
-    }).then((res) => {
-      res.json().then((res) => {
-        rekenings = res.data;
-      });
-    });
+      await fetch(`${mainUrl}/api/master/rekening`, {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: "GET",
+      }).then((res) => {
+        res.json().then((res) => {
+          rekenings = res.data;
+        });
+      }),
 
-    // fetch(`${mainUrl}/api/transaksi/order`, {
-    //   headers: {
-    //     Authorization: `bearer ${getCookie("token")}`,
-    //     "Content-Type": "application/json",
-    //     Accept: "application/json",
-    //     // 'Content-Type': 'application/x-www-form-urlencoded',
-    //   },
-    //   method: "GET",
-    // }).then((res) => {
-    //   res.json().then((res) => {
-    //     data = res.data[res.data.indexOf(res.data.find((e) => e.id == id))];
-    //     if (data.biaya_lain_harga_order == null) {
-    //       data.biaya_lain_harga_order = [];
-    //     }
-    //     if (data.biaya_lain_uang_jalan == null) {
-    //       data.biaya_lain_uang_jalan = [];
-    //     }
-    //     if (data.biaya_lain_harga_jual == null) {
-    //       data.biaya_lain_harga_jual = [];
-    //     }
-    //   });
-    // });
+      // fetch(`${mainUrl}/api/transaksi/order`, {
+      //   headers: {
+      //     Authorization: `bearer ${getCookie("token")}`,
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //     // 'Content-Type': 'application/x-www-form-urlencoded',
+      //   },
+      //   method: "GET",
+      // }).then((res) => {
+      //   res.json().then((res) => {
+      //     data = res.data[res.data.indexOf(res.data.find((e) => e.id == id))];
+      //     if (data.biaya_lain_harga_order == null) {
+      //       data.biaya_lain_harga_order = [];
+      //     }
+      //     if (data.biaya_lain_uang_jalan == null) {
+      //       data.biaya_lain_uang_jalan = [];
+      //     }
+      //     if (data.biaya_lain_harga_jual == null) {
+      //       data.biaya_lain_harga_jual = [];
+      //     }
+      //   });
+      // });
 
-    data = await JSON.parse(await localStorage.getItem("order")).data;
-    data = data[data.indexOf(data.find((e) => e.id == id))];
+      (data = await JSON.parse(await localStorage.getItem("order")).data),
+      (data = data[data.indexOf(data.find((e) => e.id == id))]),
+    ]);
   });
 
   function handleSubmit() {
