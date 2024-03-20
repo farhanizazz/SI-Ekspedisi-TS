@@ -558,12 +558,47 @@
                   {/each} -->
                     {#each data as tableData, index}
                       {#if tableData.status_kendaraan == "Sendiri"}
-                        
-                      <tr>
-                        <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
-                        >
-                            {tableData.status_kendaraan_sendiri}
+                        <tr>
+                          <td
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
+                          >
+                            <div
+                              class="flex justify-center items-center m-1 px-2 py-1 rounded-full bg-orange-200 text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                              style="
+                      background-color: 
+                        {tableData.status_kendaraan_sendiri == 'Berangkat'
+                                ? '#bbf7d0'
+                                : ''}
+                        {tableData.status_kendaraan_sendiri == 'Pulang'
+                                ? '#fecaca'
+                                : ''}
+                        {tableData.status_kendaraan_sendiri == 'Kontrak'
+                                ? '#fef08a'
+                                : ''}
+                        {tableData.status_kendaraan_sendiri == 'Kota-Kota'
+                                ? '#bfdbfe'
+                                : ''};
+                      color: 
+                        {tableData.status_kendaraan_sendiri == 'Berangkat'
+                                ? '#16a34a'
+                                : ''}
+                        {tableData.status_kendaraan_sendiri == 'Pulang'
+                                ? '#dc2626'
+                                : ''}
+                        {tableData.status_kendaraan_sendiri == 'Kontrak'
+                                ? '#d97706'
+                                : ''}
+                        {tableData.status_kendaraan_sendiri == 'Kota-Kota'
+                                ? '#2563eb'
+                                : ''};"
+                            >
+                              <div
+                                class="flex-initial max-w-full leading-none text-sm font-semibold"
+                              >
+                                {tableData.status_kendaraan_sendiri}
+                              </div>
+                            </div>
+
                             <div class="text-center">
                               {tableData.tanggal_awal}
                               {#if tableData.status_kendaraan_sendiri == "Kontrak"}
@@ -824,7 +859,7 @@
                               <div
                                 class="flex-initial max-w-full leading-none text-sm font-semibold"
                               >
-                                Tambahkan Biaya
+                                Input
                               </div>
                             </button>
                             {#if tableData.biaya_lain_harga_order_arr.length == 0}
@@ -1049,7 +1084,7 @@
                               <div
                                 class="flex-initial max-w-full leading-none text-sm font-semibold"
                               >
-                                Tambahkan Biaya
+                                Input
                               </div>
                             </button>
                             {#if tableData.biaya_lain_uang_jalan_arr.length == 0}
@@ -1599,7 +1634,7 @@
                               <div
                                 class="flex-initial max-w-full leading-none text-sm font-semibold"
                               >
-                                Tambahkan Biaya
+                                Input
                               </div>
                             </button>
                             {#if tableData.biaya_lain_harga_order_arr.length == 0}
@@ -1640,7 +1675,7 @@
                                       class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t"
                                     >
                                       <h3 class="text-3xl font-semibold">
-                                        Tambahkan Biaya
+                                        Input
                                       </h3>
                                       <button
                                         class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -1844,7 +1879,7 @@
                               <div
                                 class="flex-initial max-w-full leading-none text-sm font-semibold"
                               >
-                                Tambahkan Biaya
+                                Input
                               </div>
                             </button>
                             {#if tableData.biaya_lain_harga_jual_arr.length == 0}
@@ -1899,7 +1934,7 @@
                                       class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t"
                                     >
                                       <h3 class="text-3xl font-semibold">
-                                        Tambahkan Biaya
+                                        Input
                                       </h3>
                                       <button
                                         class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
