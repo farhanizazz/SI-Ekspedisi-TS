@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+  import Modal from "./../../../notusComponents/Modal/Modal.svelte";
   import { debounce } from "./../../../helper/Debounce.js";
   import Pagination from "./../../../notusComponents/Pagination/Pagination.svelte";
   import CardInputDetailTransaksi from "./../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte";
@@ -78,7 +79,7 @@
 
   let isDataValid = false;
 
-  const getdata = async (url) => {
+  const getdata = async (url?) => {
     // set cache lifetime in seconds
     var cachelife = 5000;
     //get cached data from local storage
@@ -207,18 +208,24 @@
 
   let showHargaOrderModal = [];
   let showUangJalanModal = [];
+  let catatanModal: boolean[] = [];
 
   $: {
     showHargaOrderModal = data.map(() => false);
     showUangJalanModal = data.map(() => false);
+    catatanModal = data.map(() => false);
   }
 
-  function toggleHargaOrderModal(id) {
+  function toggleHargaOrderModal(id: number) {
     showHargaOrderModal[id] = !showHargaOrderModal[id];
   }
 
   function toggleUangJalanModal(id) {
     showUangJalanModal[id] = !showUangJalanModal[id];
+  }
+
+  function toggleCatatanModal(id) {
+    catatanModal[id] = !catatanModal[id];
   }
 
   let dropdownPopoverShowStatusKendaraanSendiri = [];
@@ -553,114 +560,8 @@
                       {#if tableData.status_kendaraan == "Sendiri"}
                         <tr>
                           <td
-                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
                           >
-                            <div class="container mx-autoflex flex-row mb-2">
-                              <button
-                                bind:this={btnDropdownRefStatusKendaraanSendiri}
-                                on:click={() =>
-                                  toggleDropdownStatusKendaraanSendiri(index)}
-                                class="flex justify-center items-center m-1 px-2 py-1 rounded-full bg-orange-200 text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                                style="
-                              background-color: 
-                                {tableData.status_kendaraan_sendiri ==
-                                'Berangkat'
-                                  ? '#bbf7d0'
-                                  : ''}
-                                {tableData.status_kendaraan_sendiri == 'Pulang'
-                                  ? '#fecaca'
-                                  : ''}
-                                {tableData.status_kendaraan_sendiri == 'Kontrak'
-                                  ? '#fef08a'
-                                  : ''}
-                                {tableData.status_kendaraan_sendiri ==
-                                'Kota-Kota'
-                                  ? '#bfdbfe'
-                                  : ''};
-                              color: 
-                                {tableData.status_kendaraan_sendiri ==
-                                'Berangkat'
-                                  ? '#16a34a'
-                                  : ''}
-                                {tableData.status_kendaraan_sendiri == 'Pulang'
-                                  ? '#dc2626'
-                                  : ''}
-                                {tableData.status_kendaraan_sendiri == 'Kontrak'
-                                  ? '#d97706'
-                                  : ''}
-                                {tableData.status_kendaraan_sendiri ==
-                                'Kota-Kota'
-                                  ? '#2563eb'
-                                  : ''};"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
-                                >
-                                  {tableData.status_kendaraan_sendiri}
-                                </div>
-                              </button>
-                              <div
-                                bind:this={popoverDropdownRefStatusKendaraanSendiri}
-                                class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusKendaraanSendiri[
-                                  index
-                                ]
-                                  ? 'absolute'
-                                  : 'hidden'}"
-                              >
-                                <Chips
-                                  onClick={() =>
-                                    changeStatusKendaraanSendiri({
-                                      data: {
-                                        ...tableData,
-                                        status_kendaraan_sendiri: "Berangkat",
-                                      },
-                                      id: tableData.id,
-                                    })}
-                                  text="Berangkat"
-                                  bgColor="#bbf7d0"
-                                  textColor="#16a34a"
-                                />
-                                <Chips
-                                  onClick={() =>
-                                    changeStatusKendaraanSendiri({
-                                      data: {
-                                        ...tableData,
-                                        status_kendaraan_sendiri: "Pulang",
-                                      },
-                                      id: tableData.id,
-                                    })}
-                                  text="Pulang"
-                                  bgColor="#fecaca"
-                                  textColor="#dc2626"
-                                />
-                                <Chips
-                                  onClick={() =>
-                                    changeStatusKendaraanSendiri({
-                                      data: {
-                                        ...tableData,
-                                        status_kendaraan_sendiri: "Kontrak",
-                                      },
-                                      id: tableData.id,
-                                    })}
-                                  text="Kontrak"
-                                  bgColor="#fef08a"
-                                  textColor="#d97706"
-                                />
-                                <Chips
-                                  onClick={() =>
-                                    changeStatusKendaraanSendiri({
-                                      data: {
-                                        ...tableData,
-                                        status_kendaraan_sendiri: "Kota-Kota",
-                                      },
-                                      id: tableData.id,
-                                    })}
-                                  text="Kota-Kota"
-                                  bgColor="#bfdbfe"
-                                  textColor="#2563eb"
-                                />
-                              </div>
-                            </div>
                             <div class="text-center">
                               {tableData.tanggal_awal}
                               {#if tableData.status_kendaraan_sendiri == "Kontrak"}
@@ -675,41 +576,99 @@
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
                             <div class="container mx-autoflex flex-row mb-2">
-                              <button
-                                bind:this={btnDropdownRefStatusSuratJalan}
-                                on:click={() =>
-                                  toggleDropdownStatusSuratJalan(index)}
-                                class="flex justify-center items-center m-1 px-2 py-1 rounded-full text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                                style="
+                              <div
+                                class="container flex flex-row justify-between"
+                              >
+                                <button
+                                  bind:this={btnDropdownRefStatusSuratJalan}
+                                  on:click={() =>
+                                    toggleDropdownStatusSuratJalan(index)}
+                                  class="flex justify-center items-center m-1 px-2 py-1 rounded-full text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                                  style="
                             background-color: 
                               {tableData.status_surat_jalan == 'Sopir'
-                                  ? '#bbf7d0'
-                                  : ''}
+                                    ? '#bbf7d0'
+                                    : ''}
                               {tableData.status_surat_jalan == 'Kantor'
-                                  ? '#fef08a'
-                                  : ''}
-                              {tableData.status_surat_jalan == 'Dikirim'
-                                  ? '#fecaca'
-                                  : ''};
+                                    ? '#fef08a'
+                                    : ''}
+                              {tableData.status_surat_jalan == 'Selesai'
+                                    ? '#fecaca'
+                                    : ''};
                             color: 
                               {tableData.status_surat_jalan == 'Sopir'
-                                  ? '#16a34a'
-                                  : ''}
+                                    ? '#16a34a'
+                                    : ''}
                               {tableData.status_surat_jalan == 'Kantor'
-                                  ? '#d97706'
-                                  : ''}
-                              {tableData.status_surat_jalan == 'Dikirim'
-                                  ? '#dc2626'
-                                  : ''};"
-                              >
-                                <div
-                                  class="flex-initial max-w-full leading-none text-sm font-semibold"
+                                    ? '#d97706'
+                                    : ''}
+                              {tableData.status_surat_jalan == 'Selesai'
+                                    ? '#dc2626'
+                                    : ''};"
                                 >
-                                  {tableData.status_surat_jalan}
-                                </div>
-                              </button>
+                                  <div
+                                    class="flex-initial max-w-full leading-none text-sm font-semibold"
+                                  >
+                                    {tableData.status_surat_jalan}
+                                  </div>
+                                </button>
+                                <button
+                                  type="submit"
+                                  on:click={() => toggleCatatanModal(index)}
+                                >
+                                  <i class={"fa-note-sticky fa-regular"}></i>
+                                </button>
+                              </div>
                               <!-- bind:this={popoverDropdownRef} -->
                               <!-- {dropdownPopoverShow ? 'block' : 'hidden'} -->
+                              <form
+                                on:submit|preventDefault={() => {
+                                  tableData.statusLoadingCatatan = true;
+                                  axios
+                                    .put(
+                                      `${mainUrl}/api/transaksi/order/${tableData.id}`,
+                                      {
+                                        catatan_surat_jalan:
+                                          tableData.catatan_surat_jalan,
+                                        ...tableData,
+                                      },
+                                      {
+                                        headers: {
+                                          Authorization: `bearer ${getCookie(
+                                            "token"
+                                          )}`,
+                                        },
+                                      }
+                                    )
+                                    .then((res) => {
+                                      isDataValid = false;
+                                      getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`).then(() => {
+                                        tableData.statusLoadingCatatan = false;
+                                      });
+                                    });
+                                }}
+                              >
+                                <Modal
+                                  bind:showModal={catatanModal[index]}
+                                  bind:isLoading={tableData.statusLoadingCatatan}
+                                >
+                                  <h1
+                                    slot="header"
+                                    class="font-semibold text-lg {color ===
+                                    'light'
+                                      ? 'text-blueGray-700'
+                                      : 'text-white'}"
+                                  >
+                                    Catatan Transaksi
+                                    <small>{tableData.no_transaksi}</small>
+                                  </h1>
+
+                                  <textarea
+                                    bind:value={tableData.catatan_surat_jalan}
+                                    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 h-52"
+                                  />
+                                </Modal>
+                              </form>
                               <div
                                 bind:this={popoverDropdownRefStatusSuratJalan}
                                 class="bg-white px-3 text-base z-50 float-left py-2 list-none text-left rounded w-24 {dropdownPopoverShowStatusSuratJalan[
@@ -769,7 +728,7 @@
                             {tableData.nomor_do == null
                               ? ""
                               : tableData.nomor_do}
-                            <form
+                            <!-- <form
                               on:submit|preventDefault={() => {
                                 tableData.statusLoadingCatatan = true;
                                 axios
@@ -795,8 +754,8 @@
                                     });
                                   });
                               }}
-                            >
-                              <div
+                            > -->
+                            <!-- <div
                                 class="relative flex w-full flex-wrap items-stretch mb-3"
                               >
                                 <input
@@ -816,8 +775,8 @@
                                     ></i>
                                   </button>
                                 </span>
-                              </div>
-                            </form>
+                              </div> -->
+                            <!-- </form> -->
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
@@ -865,7 +824,7 @@
                               </div>
                             </button>
                             {#if tableData.biaya_lain_harga_order_arr.length == 0}
-                              <p class="pl-1">Tidak ada biaya tambahan</p>
+                              <p class="pl-1">-</p>
                             {:else}
                               <!-- Biaya lain harga order sendiri -->
                               <div>
@@ -1066,7 +1025,7 @@
                             Rp. {IDRFormatter.format(tableData.uang_jalan)}
                             <a
                               use:link
-                              href={`/transaksi/order/mutasi/${tableData.id}/jual`}
+                              href={`/transaksi/order/mutasi/${tableData.id}/uang_jalan`}
                               class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                             >
                               Rp. {IDRFormatter.format(
@@ -1090,7 +1049,7 @@
                               </div>
                             </button>
                             {#if tableData.biaya_lain_uang_jalan_arr.length == 0}
-                              <p class="pl-1">Tidak ada biaya tambahan</p>
+                              <p class="pl-1">-</p>
                             {:else}
                               <div>
                                 <a
@@ -1441,7 +1400,9 @@
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm"
                           >
-                            <div class="container mx-autoflex flex-row mb-2">
+                            <div
+                              class="flex container mx-autoflex flex-row mb-2 justify-between"
+                            >
                               <button
                                 bind:this={btnDropdownRefStatusSuratJalan}
                                 on:click={() =>
@@ -1475,6 +1436,60 @@
                                   {tableData.status_surat_jalan}
                                 </div>
                               </button>
+                              <button
+                                type="submit"
+                                on:click={() => toggleCatatanModal(index)}
+                              >
+                                <i class={"fa-note-sticky fa-regular"}></i>
+                              </button>
+                              <form
+                                on:submit|preventDefault={() => {
+                                  tableData.statusLoadingCatatan = true;
+                                  axios
+                                    .put(
+                                      `${mainUrl}/api/transaksi/order/${tableData.id}`,
+                                      {
+                                        catatan_surat_jalan:
+                                          tableData.catatan_surat_jalan,
+                                        ...tableData,
+                                      },
+                                      {
+                                        headers: {
+                                          Authorization: `bearer ${getCookie(
+                                            "token"
+                                          )}`,
+                                        },
+                                      }
+                                    )
+                                    .then((res) => {
+                                      isDataValid = false;
+                                      getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`).then(() => {
+                                        tableData.statusLoadingCatatan = false;
+                                      });
+                                    });
+                                }}
+                              >
+                                <Modal
+                                  bind:showModal={catatanModal[index]}
+                                  bind:isLoading={tableData.statusLoadingCatatan}
+                                >
+                                  <h1
+                                    slot="header"
+                                    class="font-semibold text-lg {color ===
+                                    'light'
+                                      ? 'text-blueGray-700'
+                                      : 'text-white'}"
+                                  >
+                                    Catatan Transaksi
+                                    <small>{tableData.no_transaksi}</small>
+                                  </h1>
+
+                                  <textarea
+                                    bind:value={tableData.catatan_surat_jalan}
+                                    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 h-52"
+                                  />
+                                </Modal>
+                              </form>
                               <!-- bind:this={popoverDropdownRef} -->
                               <!-- {dropdownPopoverShow ? 'block' : 'hidden'} -->
                               <div
@@ -1536,54 +1551,6 @@
                             {tableData.nomor_do == null
                               ? ""
                               : tableData.nomor_do}
-                            <form
-                              on:submit|preventDefault={() => {
-                                tableData.statusLoadingCatatan = true;
-                                axios
-                                  .put(
-                                    `${mainUrl}/api/transaksi/order/${tableData.id}`,
-                                    {
-                                      catatan_surat_jalan:
-                                        tableData.catatan_surat_jalan,
-                                      ...tableData,
-                                    },
-                                    {
-                                      headers: {
-                                        Authorization: `bearer ${getCookie(
-                                          "token"
-                                        )}`,
-                                      },
-                                    }
-                                  )
-                                  .then((res) => {
-                                    isDataValid = false;
-                                    getdata();
-                                    tableData.statusLoadingCatatan = false;
-                                  });
-                              }}
-                            >
-                              <div
-                                class="relative flex w-full flex-wrap items-stretch mb-3"
-                              >
-                                <input
-                                  bind:value={tableData.catatan_surat_jalan}
-                                  type="text"
-                                  placeholder="Keterangan"
-                                  class="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:shadow-outline w-full pr-10"
-                                />
-                                <span
-                                  class="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3"
-                                >
-                                  <button type="submit">
-                                    <i
-                                      class={tableData.statusLoadingCatatan
-                                        ? "fas fa-spinner fa-pulse"
-                                        : "fas fa-save"}
-                                    ></i>
-                                  </button>
-                                </span>
-                              </div>
-                            </form>
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm"
@@ -1630,7 +1597,7 @@
                               </div>
                             </button>
                             {#if tableData.biaya_lain_harga_order_arr.length == 0}
-                              <p class="pl-1">Tidak ada biaya tambahan</p>
+                              <p class="pl-1">-</p>
                             {:else}
                               <div>
                                 <a
@@ -1875,7 +1842,7 @@
                               </div>
                             </button>
                             {#if tableData.biaya_lain_harga_jual_arr.length == 0}
-                              <p class="pl-1">Tidak ada biaya tambahan</p>
+                              <p class="pl-1">-</p>
                             {:else}
                               <div>
                                 <a

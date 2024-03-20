@@ -42,7 +42,7 @@
   <div class="px-4 md:px-10 mx-auto w-full">
     <div class="px-4">
       <!-- Card stats -->
-      <ul class="flex">
+      <ul class="flex flex-col md:flex-row">
         <a use:link href="/admin/dashboard">
           <li
             class="px-6 py-3 {location.href.indexOf('/admin/dashboard') !== -1
@@ -168,17 +168,15 @@
 
       {#if selected == 3}
         <ul class="flex">
-          <a use:link href="/transaksi/hutangSopir">
+          <a use:link href="/transaksi/order">
             <li
-              class="px-6 py-3 {location.href.indexOf(
-                '/transaksi/hutangSopir'
-              ) !== -1
+              class="px-6 py-3 {location.href.indexOf('/transaksi/order') !== -1
                 ? 'active'
                 : ''}"
             >
-              Transaksi Hutang Sopir
-            </li>
-          </a>
+              Transaksi Transaksi Order
+            </li></a
+          >
           <a use:link href="/transaksi/pengeluaran">
             <li
               class="px-6 py-3 {location.href.indexOf(
@@ -190,15 +188,17 @@
               Transaksi Pengeluaran
             </li>
           </a>
-          <a use:link href="/transaksi/order">
+          <a use:link href="/transaksi/hutangSopir">
             <li
-              class="px-6 py-3 {location.href.indexOf('/transaksi/order') !== -1
+              class="px-6 py-3 {location.href.indexOf(
+                '/transaksi/hutangSopir'
+              ) !== -1
                 ? 'active'
                 : ''}"
             >
-              Transaksi Transaksi Order
-            </li></a
-          >
+              Transaksi Hutang Sopir
+            </li>
+          </a>
         </ul>
       {/if}
       <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">

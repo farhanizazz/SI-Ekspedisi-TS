@@ -14,19 +14,15 @@
   console.log(data);
 
   function fetchData() {
-    fetch(`${mainUrl}/api/transaksi/order`, {
+    fetch(`${mainUrl}/api/transaksi/order/${id}`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
     }).then((res) => {
       res.json().then((res) => {
-        res.data.forEach((e) => {
-          if (e.biaya_lain_harga_jual == null) {
-            e.biaya_lain_harga_jual = [];
-          }
-        });
-        data = res.data.find((e) => e.id == id);
-        console.log(data);
+        res.data.biaya_lain_harga_jual = [];
+        console.log(res.data);
+        data = res.data;
       });
     });
   }

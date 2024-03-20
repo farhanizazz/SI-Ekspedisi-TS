@@ -28,8 +28,8 @@
       },
     }).then((res) => {
       res.json().then((res) => {
+        console.log(res.data)
         res.data = res.data.filter(e => e.jenis_transaksi == jenis)
-        console.log(jenis)
         
         data = res.data.map((e) => {
           let copy = { ...e };

@@ -3,6 +3,7 @@
   import { getCookie } from "svelte-cookie";
   import { mainUrl } from "../../../environment";
   import { Router, Route } from "svelte-routing";
+  import { onMount } from "svelte";
 
   export let location;
 
@@ -27,7 +28,9 @@
             },
           }).then((res) => {
             res.json().then((res) => {
-              data = res.data.filter((e) => e.master_rekening_id === 1);
+              data = res.data.filter((e) => {
+                return e.master_rekening_id == id;
+              });
               res.data.forEach((e) => {
                 delete e.created_at;
                 delete e.updated_at;
