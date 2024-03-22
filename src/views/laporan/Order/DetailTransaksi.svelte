@@ -18,6 +18,7 @@
     "Tanggal Pembayaran",
     "Nominal",
     "Keterangan",
+    "Pembuat"
   ];
   console.log(data);
 
@@ -33,6 +34,10 @@
         
         data = res.data.map((e) => {
           let copy = { ...e };
+          if(copy.pembuat == null) {
+            copy.pembuat = "Tidak ada data pembuat";
+          }
+          delete copy.created_by;
           delete copy.created_at;
           delete copy.updated_at;
           delete copy.transaksi_order_id;
