@@ -890,7 +890,7 @@
                             {tableData.asal} / {tableData.tujuan}
                           </td>
                           <td
-                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
                           >
                             Rp. {IDRFormatter.format(tableData.harga_order)}
                             <br />
@@ -927,7 +927,7 @@
                                 <a
                                   use:link
                                   href={`/transaksi/order/detail-biaya-tambahan/${tableData.id}`}
-                                  class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                                  class="whitespace-nowrap font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
                                   Rp. {IDRFormatter.format(
                                     // tableData.biaya_lain_harga_jual_arr.reduce(
@@ -1085,7 +1085,7 @@
                             Rp. {IDRFormatter.format(tableData.setor)}
                           </td>
                           <td
-                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                            class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
                           >
                             Rp. {IDRFormatter.format(tableData.uang_jalan)}
                             <a
@@ -1094,7 +1094,7 @@
                               class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                             >
                               Rp. {IDRFormatter.format(
-                                tableData.total_mutasi_jual
+                                tableData.total_mutasi_jalan
                               )}</a
                             >
                           </td>
@@ -1120,7 +1120,7 @@
                                 <a
                                   use:link
                                   href={`/transaksi/order/detail-biaya-tambahan/${tableData.id}`}
-                                  class="font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                                  class="whitespace-nowrap font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
                                   Rp. {IDRFormatter.format(
                                     // tableData.biaya_lain_harga_jual_arr.reduce(
