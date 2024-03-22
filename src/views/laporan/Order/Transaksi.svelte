@@ -12,14 +12,18 @@
   import { getCookie } from "svelte-cookie";
   import CardInputLaporanTransaksiOrder from "../../../notusComponents/Cards/CardInput/CardInputLaporanTransaksiOrder.svelte";
   import { link } from "svelte-routing";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { createPopper } from "@popperjs/core";
   import Chips from "../../../notusComponents/Chips/Chips.svelte";
   import axios from "axios";
   import { get } from "svelte/store";
+  import { isDataValid, transaksi } from "./stores/TransaksiStores";
   // import "../../app.css";
 
   let data = [];
+  const unsubscribe = transaksi.subscribe((value) => {
+    data = value;
+  });
   let metaData = { links: [] };
   let dataTambahan = [];
   const headingTransaksiOrder = [
@@ -56,6 +60,54 @@
 
   let listTotal = [];
 
+  // async function fetchData(url = `${mainUrl}/api/transaksi/order`) {
+  //   const res = await fetch(url, {
+  //     headers: {
+  //       Authorization: `bearer ${getCookie("token")}`,
+  //     },
+  //   });
+
+  //   const json = (await res.json()).data;
+  //   json.list.forEach((e) => {
+  //     if(e.biaya_lain_harga_jual == null)
+  //       e.biaya_lain_harga_jual = [];
+  //     if(e.biaya_lain_uang_jalan == null)
+  //       e.biaya_lain_uang_jalan = [];
+  //     if(e.biaya_lain_harga_order == null)
+  //       e.biaya_lain_harga_order = [];
+  //   });
+  //   json.list.sort(
+  //     (a, b) =>
+  //       new Date(b.tanggal_awal).getTime() / 1000 -
+  //       new Date(a.tanggal_awal).getTime() / 1000
+  //   );
+  //   return json;
+  // }
+
+  // let           isDataValid.set(false);
+
+  // const getdata = async (url?) => {
+  //   // set cache lifetime in seconds
+  //   var cachelife = 5000;
+  //   //get cached data from local storage
+  //   var localStorageData = localStorage.getItem("order");
+  //   var cacheddata = await JSON.parse(localStorageData);
+  //   if (cacheddata) {
+  //     var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
+  //   }
+  //   //If cached data available and not expired return them.
+  //   if (cacheddata && !expired && isDataValid) {
+  //     data = cacheddata.data;
+  //   } else {
+  //     //otherwise fetch data from api then save the data in localstorage
+  //     fetchData(url).then((res) => {
+  //       var json = { data: res.list, cachetime: Date.now() / 1000 };
+  //       localStorage.setItem("order", JSON.stringify(json));
+  //       data = res.list;
+  //       metaData = res.meta;
+  //     });
+  //   }
+  // };
   async function fetchData(url = `${mainUrl}/api/transaksi/order`) {
     const res = await fetch(url, {
       headers: {
@@ -65,12 +117,9 @@
 
     const json = (await res.json()).data;
     json.list.forEach((e) => {
-      if(e.biaya_lain_harga_jual == null)
-        e.biaya_lain_harga_jual = [];
-      if(e.biaya_lain_uang_jalan == null)
-        e.biaya_lain_uang_jalan = [];
-      if(e.biaya_lain_harga_order == null)
-        e.biaya_lain_harga_order = [];
+      if (e.biaya_lain_harga_jual == null) e.biaya_lain_harga_jual = [];
+      if (e.biaya_lain_uang_jalan == null) e.biaya_lain_uang_jalan = [];
+      if (e.biaya_lain_harga_order == null) e.biaya_lain_harga_order = [];
     });
     json.list.sort(
       (a, b) =>
@@ -79,8 +128,6 @@
     );
     return json;
   }
-
-  let isDataValid = false;
 
   const getdata = async (url?) => {
     // set cache lifetime in seconds
@@ -92,20 +139,22 @@
       var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
     }
     //If cached data available and not expired return them.
-    if (cacheddata && !expired && isDataValid) {
-      data = cacheddata.data;
-    } else {
-      //otherwise fetch data from api then save the data in localstorage
-      fetchData(url).then((res) => {
-        var json = { data: res.list, cachetime: Date.now() / 1000 };
-        localStorage.setItem("order", JSON.stringify(json));
-        data = res.list;
-        metaData = res.meta;
-      });
-    }
+    isDataValid.subscribe((value) => {
+      if (cacheddata && !expired && value) {
+        transaksi.set(cacheddata.data);
+      } else {
+        //otherwise fetch data from api then save the data in localstorage
+        fetchData(url).then((res) => {
+          var json = { data: res.list, cachetime: Date.now() / 1000 };
+          localStorage.setItem("order", JSON.stringify(json));
+          transaksi.set(res.list);
+          metaData = res.meta;
+        });
+      }
+    });
   };
 
-  $: data = data;
+  // $: data = data;
 
   async function fetchRekeningData() {
     let res = await axios.get(`${mainUrl}/api/master/tambahan`, {
@@ -150,7 +199,7 @@
           },
         })
         .then((res) => {
-          isDataValid = false;
+          isDataValid.set(false);
           getdata();
         });
     } catch (error) {
@@ -168,7 +217,7 @@
         })
         .then((res) => {
           fetchData().then(() => {
-            isDataValid = false;
+            isDataValid.set(false);
             getdata();
           });
         });
@@ -189,7 +238,7 @@
           sifat = 0;
           jenis = 0;
           biaya = null;
-          isDataValid = false;
+          isDataValid.set(false);
           getdata();
         });
     } catch (error) {
@@ -207,6 +256,10 @@
         popoverDropdownRefStatusHargaOrder.style.left = `${window.scrollX}px`;
       }
     };
+  });
+
+  onDestroy(() => {
+    unsubscribe();
   });
 
   let showHargaOrderModal = [];
@@ -316,7 +369,7 @@
   };
 
   let handleSearch = debounce(() => {
-    isDataValid = false;
+    isDataValid.set(false);
     currentPage = 0;
     getdata(
       `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
@@ -359,28 +412,26 @@
           <div class="w-full">
             <ul class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row">
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
-                <a
-                  href="#"
-                  class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
+                <button
+                  class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal w-full {openTab ===
                   1
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
                   on:click={() => toggleTabs(1)}
                 >
                   <i class="fas fa-cog text-base mr-1" /> Transaksi Order Sendiri
-                </a>
+                </button>
               </li>
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
-                <a
-                  href="#"
-                  class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
+                <button
+                  class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal w-full {openTab ===
                   2
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
                   on:click={() => toggleTabs(2)}
                 >
                   <i class="fas fa-briefcase text-base mr-1" /> Transaksi Order Subkon
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -389,7 +440,8 @@
           <Pagination
             onSeek={(page) => {
               currentPage = page;
-              isDataValid = false;
+              isDataValid.set(false);
+
               getdata(
                 `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
               );
@@ -398,7 +450,8 @@
             onNext={() => {
               if (currentPage + 1 <= metaData.links.length - 1) {
                 currentPage = currentPage + 1;
-                isDataValid = false;
+                isDataValid.set(false);
+
                 getdata(
                   `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
                 );
@@ -407,7 +460,8 @@
             onPrev={() => {
               if (currentPage - 1 >= 0) {
                 currentPage = currentPage - 1;
-                isDataValid = false;
+                isDataValid.set(false);
+
                 getdata(
                   `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
                 );
@@ -679,7 +733,8 @@
                                       }
                                     )
                                     .then((res) => {
-                                      isDataValid = false;
+                                      isDataValid.set(false);
+
                                       getdata(
                                         `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
                                       ).then(() => {
@@ -788,7 +843,8 @@
                                     }
                                   )
                                   .then((res) => {
-                                    isDataValid = false;
+                                              isDataValid.set(false);
+
                                     getdata().then(() => {
                                       tableData.statusLoadingCatatan = false;
                                     });
@@ -985,7 +1041,6 @@
                                         class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
-                                          
                                           if (sifat == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
@@ -1261,7 +1316,8 @@
                                     },
                                   }
                                 ).then(() => {
-                                  isDataValid = false;
+                                  isDataValid.set(false);
+
                                   getdata();
                                 });
                               }}
@@ -1441,7 +1497,8 @@
                                       }
                                     )
                                     .then((res) => {
-                                      isDataValid = false;
+                                      isDataValid.set(false);
+
                                       getdata(
                                         `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
                                       ).then(() => {
@@ -1994,7 +2051,8 @@
                                     },
                                   }
                                 ).then(() => {
-                                  isDataValid = false;
+                                  isDataValid.set(false);
+
                                   getdata();
                                 });
                               }}
@@ -2031,7 +2089,8 @@
       <Route path="add">
         <CardInputLaporanTransaksiOrder
           onSuccess={() => {
-            isDataValid = false;
+            isDataValid.set(false);
+
             getdata();
           }}
         />
@@ -2043,7 +2102,8 @@
         <CardEditLaporanTransaksiOrder
           id={params.edit}
           onSuccess={() => {
-            isDataValid = false;
+            isDataValid.set(false);
+
             getdata();
           }}
         />
@@ -2051,7 +2111,8 @@
       <Route path="mutasi/:id/:jenis/add/" let:params>
         <CardInputDetailTransaksi
           onSuccess={() => {
-            isDataValid = false;
+            isDataValid.set(false);
+
             getdata();
           }}
           id={params.id}

@@ -1,18 +1,29 @@
 <script>
+  import { isLoading } from "./store/stores.ts";
   import { mainUrl } from "./../../environment.js";
   import { link, navigate } from "svelte-routing";
   import { setCookie } from "svelte-cookie";
-
+  import { onDestroy } from "svelte";
   // core components
   export let location;
   let error = [];
+  let loadingState;
+
+  const unsubscribe = isLoading.subscribe((value) => {
+    loadingState = value;
+  });
 
   let data = {
     username: "",
     password: "",
   };
 
+  onDestroy(() => {
+    unsubscribe();
+  });
+
   async function handleSubmit() {
+    isLoading.set(true);
     const res = await fetch(`${mainUrl}/api/login`, {
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +35,9 @@
         if (res.status != "error") {
           setCookie("token", res.data.access_token, res.data.expires_in, true);
           navigate("/admin/dashboard");
+          isLoading.set(false);
         } else {
+          isLoading.set(false);
           error = res.message;
         }
       });
@@ -54,7 +67,7 @@
                 placeholder="Username"
                 bind:value={data.username}
               />
-              {#if typeof error == 'object' && "username" in error}
+              {#if typeof error == "object" && "username" in error}
                 <div class="text-center mt-6">
                   <p class="text-red-500 text-sm">{error.username}</p>
                 </div>
@@ -75,7 +88,7 @@
                 placeholder="Password"
                 bind:value={data.password}
               />
-              {#if typeof error == 'object' && "password" in error}
+              {#if typeof error == "object" && "password" in error}
                 <div class="text-center mt-6">
                   <p class="text-red-500 text-sm">{error.password}</p>
                 </div>
@@ -105,7 +118,15 @@
                 class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                 type="submit"
               >
-                Sign In
+                {#if loadingState}
+                  <i
+                    class="fa-solid fa-spinner fa-spin-pulse {loadingState
+                      ? 'hidden'
+                      : ''}"
+                  ></i>
+                {:else}
+                  Sign In
+                {/if}
               </button>
             </div>
           </form>

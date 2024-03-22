@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { navigate } from "svelte-routing";
   import { mainUrl } from "../../../../environment";
@@ -7,11 +7,12 @@
 
   let error = {};
   let data = {
-    tgl_transaksi: "",
     master_armada_id: "",
-    nomor_nota: "",
     nama_toko: "",
-    ket_trans: "",
+    nota_beli_items: [],
+    // nomor_nota: "",
+    // ket_trans: "",
+    tanggal_servis: "",
   };
   const columnTransaksi = [
     "No",
@@ -47,12 +48,14 @@
   let simplifiedDataTransaksi;
 
   $: simplifiedDataTransaksi = dataTransaksi.map((row) => {
-    let simplifiedRow = {};
-    row.forEach((field) => {
-      simplifiedRow[field.column] = field.value;
-    });
-    return simplifiedRow;
-  });
+  
+    let simplifiedRow = {
+    nama_barang: row[1].value,
+    harga: row[2].value,
+    jumlah: row[3].value,
+  };
+  return simplifiedRow;
+});
 
   function deleteRow(index) {
     dataTransaksi = dataTransaksi.filter((e, i) => i != index);
@@ -117,7 +120,8 @@
   });
 
   function handleSubmit() {
-    const response = fetch(`${mainUrl}/api/transaksi/hutang_sopir`, {
+    data.nota_beli_items = simplifiedDataTransaksi;
+    const response = fetch(`${mainUrl}/api/master/laporan/servis`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -199,7 +203,7 @@
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               placeholder="Masukkan Tanggal Transaksi"
               name="nama-supir"
-              bind:value={data.tgl_transaksi}
+              bind:value={data.tanggal_servis}
             />
             {#if "tgl_transaksi" in error}
               <p class="text-red-500 text-sm">{error.tgl_transaksi}</p>
@@ -228,7 +232,7 @@
           </div>
         </div>
 
-        <div class="w-full lg:w-12/12 px-4">
+        <!-- <div class="w-full lg:w-12/12 px-4">
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -248,7 +252,7 @@
               <p class="text-red-500 text-sm">{error.nomor_nota}</p>
             {/if}
           </div>
-        </div>
+        </div> -->
 
         <table class="items-center w-full bg-transparent border-collapse">
           <thead>

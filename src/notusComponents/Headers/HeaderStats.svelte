@@ -1,16 +1,21 @@
-<script>
-  import { link } from "svelte-routing";
+<script lang="ts">
+  import { userStore } from "../../layouts/stores/AdminStore.ts";
+  import { link, navigate } from "svelte-routing";
   // core components
   import CardStats from "../Cards/CardStats.svelte";
   import { onDestroy, onMount } from "svelte";
-  import { getCookie } from "svelte-cookie";
+  import { getCookie} from "svelte-cookie";
   import { mainUrl } from "../../environment";
   import { selectedStore } from "./HeaderStore/Store.js";
   import { derived, writable } from "svelte/store";
+  import { deleteCookie } from "../../helper/deleteCookie.js";
 
   export let location;
-  export let userData;
-  console.log(location);
+  let userData: User;
+
+  const unsubscribeUserData = userStore.subscribe((value) => {
+    userData = value;
+  });
   let data;
   fetch(`${mainUrl}/api/master/rekening/total`, {
     headers: {
@@ -34,6 +39,7 @@
 
   onDestroy(() => {
     unsubscribe;
+    unsubscribeUserData;
   });
 </script>
 
@@ -79,49 +85,67 @@
         >
           Laporan
         </li>
+        <li
+          class={`px-6 py-3`}
+          on:click={async () => {
+            deleteCookie("token");
+            navigate("/auth/login");
+          }}
+        >
+          Logout
+        </li>
       </ul>
 
       {#if selected == 2}
         <ul class="flex text-center">
-          <a use:link href="/admin/sopir">
-            <li
-              class="px-6 py-3 {location.href.indexOf('/admin/sopir') !== -1
-                ? 'active'
-                : ''}"
-            >
-              Master Sopir
-            </li>
-          </a>
+          {#if userData.role.akses.master_sopir.view == true}
+            <a use:link href="/admin/sopir">
+              <li
+                class="px-6 py-3 {location.href.indexOf('/admin/sopir') !== -1
+                  ? 'active'
+                  : ''}"
+              >
+                Master Sopir
+              </li>
+            </a>
+          {/if}
 
-          <a use:link href="/admin/penyewa">
-            <li
-              class="px-6 py-3 {location.href.indexOf('/admin/penyewa') !== -1
-                ? 'active'
-                : ''}"
-            >
-              Master Penyewa
-            </li>
-          </a>
+          {#if userData.role.akses.master_penyewa.view == true}
+            <a use:link href="/admin/penyewa">
+              <li
+                class="px-6 py-3 {location.href.indexOf('/admin/penyewa') !== -1
+                  ? 'active'
+                  : ''}"
+              >
+                Master Penyewa
+              </li>
+            </a>
+          {/if}
 
-          <a use:link href="/admin/armada">
-            <li
-              class="px-6 py-3 {location.href.indexOf('/admin/armada') !== -1
-                ? 'active'
-                : ''}"
-            >
-              Master Armada
-            </li>
-          </a>
+          {#if userData.role.akses.master_armada.view == true}
+            <a use:link href="/admin/armada">
+              <li
+                class="px-6 py-3 {location.href.indexOf('/admin/armada') !== -1
+                  ? 'active'
+                  : ''}"
+              >
+                Master Armada
+              </li>
+            </a>
+          {/if}
 
-          <a use:link href="/admin/rekening">
-            <li
-              class="px-6 py-3 {location.href.indexOf('/admin/rekening') !== -1
-                ? 'active'
-                : ''}"
-            >
-              Master Rekening
-            </li>
-          </a>
+          {#if userData.role.akses.master_rekening.view == true}
+            <a use:link href="/admin/rekening">
+              <li
+                class="px-6 py-3 {location.href.indexOf('/admin/rekening') !==
+                -1
+                  ? 'active'
+                  : ''}"
+              >
+                Master Rekening
+              </li>
+            </a>
+          {/if}
 
           <a use:link href="/admin/tambahan">
             <li
@@ -144,15 +168,17 @@
           </a>
         </ul>
         <ul class="flex text-center">
-          <a use:link href="/admin/users">
-            <li
-              class="px-6 py-3 {location.href.indexOf('/admin/users') !== -1
-                ? 'active'
-                : ''}"
-            >
-              Master Pegawai
-            </li>
-          </a>
+          {#if userData.role.akses.master_user.view == true}
+            <a use:link href="/admin/users">
+              <li
+                class="px-6 py-3 {location.href.indexOf('/admin/users') !== -1
+                  ? 'active'
+                  : ''}"
+              >
+                Master Pegawai
+              </li>
+            </a>
+          {/if}
 
           <a use:link href="/admin/roles">
             <li
