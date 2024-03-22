@@ -13,8 +13,8 @@
   import { onMount } from 'svelte';
 
   const registerBg2 = "../assets/img/register_bg_2.png";
-  export let location;
-  export let auth = "";
+  // export let location;
+  // export let auth = "";
 
   const token = getCookie("token");
   
@@ -25,8 +25,8 @@
         Accept: 'application/json'
       }
     })
-    res = await res.json();
-    if(res.status === 'success') {
+    let resJson = await res.json();
+    if(resJson.status === 'success') {
       navigate('/admin/dashboard');
     }
   })

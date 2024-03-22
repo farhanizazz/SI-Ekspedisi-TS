@@ -1,7 +1,7 @@
 <script>
 // @ts-nocheck
 
-  import { notificationsStore } from "./stores/AdminStore.js";
+  import { notificationsStore, userStore } from "./stores/AdminStore.ts";
   import Transaksi from "../views/laporan/Order/Transaksi.svelte";
   import { Router, Route, navigate } from "svelte-routing";
   import Toastify from "toastify-js";
@@ -48,7 +48,8 @@
         },
       });
       res = await res.json();
-      userData = await res.data;
+      // userData = await res.data;
+      userStore.set(await res.data);
       if (res.status !== "success") {
         navigate("/auth/login");
       }

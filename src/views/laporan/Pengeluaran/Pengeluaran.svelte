@@ -13,17 +13,16 @@
   import CardInputLaporanTransaksiServis from "./add/CardInputLaporanTransaksiServis.svelte";
   import CardInputLaporanTransaksiLainLain from "./add/CardInputLaporanTransaksiLainLain.svelte";
 
-  let data = [];
+  let dataServis = [];
   const headingPengeluaran = [
     "ID",
-    "Nama Perusahaan",
-    "Alamat",
-    "Keterangan",
-    "Penanggung Jawab",
+    "Tanggal Servis",
+    "Nama Toko",
+    "Armada",
   ];
 
-  function fetchData() {
-    fetch(`${mainUrl}/api/pengeluaran`, {
+  function fetchDataServis() {
+    fetch(`${mainUrl}/api/master/laporan/servis`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
@@ -32,8 +31,11 @@
         res.data.forEach((e) => {
           delete e.created_at;
           delete e.updated_at;
+          delete e.master_armada_id;
+          delete e.nota_beli_id;
+          e.master_armada = e.master_armada.nopol;
         });
-        data = res.data;
+        dataServis = res.data;
       });
     });
   }
@@ -86,18 +88,18 @@
             href="/transaksi/pengeluaran/servis"
             deleteApi={`${mainUrl}/api/transaksi/`}
             heading="Data Pengeluaran Servis"
-            {data}
-            onLoad={fetchData}
+            data={dataServis}
+            onLoad={fetchDataServis}
           />
         {:else if openTab === 2}
-          <CardTable
+          <!-- <CardTable
             tableHeading={headingPengeluaran}
             href="/transaksi/pengeluaran/lain-lain"
             deleteApi={`${mainUrl}/api/transaksi/`}
             heading="Data Pengeluaran Lain-Lain"
             {data}
             onLoad={fetchData}
-          />
+          /> -->
         {/if}
       </Route>
       <Route path="servis/add">

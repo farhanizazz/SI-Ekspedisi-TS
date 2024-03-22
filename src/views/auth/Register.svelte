@@ -1,11 +1,17 @@
 <script>
-	import { mainUrl } from './../../environment.js';
+  import { isLoading } from "./store/stores.ts";
+  import { mainUrl } from "./../../environment.js";
   import { link, navigate } from "svelte-routing";
+  import { onDestroy } from "svelte";
   // core components
   const github = "../assets/img/github.svg";
   const google = "../assets/img/google.svg";
   export let location;
+  let loadingState;
 
+  const unsubscribe = isLoading.subscribe((value) => {
+    loadingState = value;
+  });
   let error = {};
 
   let data = {
@@ -20,8 +26,8 @@
       headers: {
         "Content-Type": "application/json",
       },
-      method: 'POST',
-      body: JSON.stringify(data)
+      method: "POST",
+      body: JSON.stringify(data),
     }).then((res) => {
       res.json().then((res) => {
         if (res.status != "error") {
@@ -29,9 +35,13 @@
         } else {
           error = res.message;
         }
-      })
-    })
+      });
+    });
   }
+
+  onDestroy(() => {
+    unsubscribe();
+  });
 </script>
 
 <div class="container mx-auto px-4 h-full">
@@ -126,7 +136,15 @@
                 class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                 type="submit"
               >
-                Create Account
+                {#if loadingState}
+                  <i
+                    class="fa-solid fa-spinner fa-spin-pulse {loadingState
+                      ? 'hidden'
+                      : ''}"
+                  ></i>
+                {:else}
+                  Create Account
+                {/if}
               </button>
             </div>
           </form>
