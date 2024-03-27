@@ -46,7 +46,7 @@
     "TGL",
     "No Transaksi",
     "Penyewa / Muatan",
-    "Kendaraan / Sopir",
+    "Pemilik / Nopol / Sopir",
     "Asal / Tujuan",
     "Harga Order",
     "Biaya Tambah / Kurang Harga Order",
@@ -372,7 +372,7 @@
     isDataValid.set(false);
     currentPage = 0;
     getdata(
-      `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+      `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
     );
   }, 500);
 
@@ -386,10 +386,12 @@
   let detailBiayahargaJualData = [];
   let IDRFormatter = new Intl.NumberFormat("id-ID");
 
-  let openTab = 1;
+  let openTab = "Sendiri";
 
-  function toggleTabs(tabNumber) {
-    openTab = tabNumber;
+  function toggleTabs(tabCategory) {
+    currentPage = 0;
+    getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${tabCategory}`);
+    openTab = tabCategory;
   }
 
   let currentPage = 0;
@@ -414,10 +416,10 @@
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <button
                   class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal w-full {openTab ===
-                  1
+                  "Sendiri"
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
-                  on:click={() => toggleTabs(1)}
+                  on:click={() => toggleTabs("Sendiri")}
                 >
                   <i class="fas fa-cog text-base mr-1" /> Transaksi Order Sendiri
                 </button>
@@ -425,10 +427,10 @@
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <button
                   class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal w-full {openTab ===
-                  2
+                  "Subkon"
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
-                  on:click={() => toggleTabs(2)}
+                  on:click={() => toggleTabs("Subkon")}
                 >
                   <i class="fas fa-briefcase text-base mr-1" /> Transaksi Order Subkon
                 </button>
@@ -443,7 +445,7 @@
               isDataValid.set(false);
 
               getdata(
-                `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
               );
             }}
             pageCount={metaData.links.length}
@@ -453,7 +455,7 @@
                 isDataValid.set(false);
 
                 getdata(
-                  `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                  `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
                 );
               }
             }}
@@ -463,13 +465,13 @@
                 isDataValid.set(false);
 
                 getdata(
-                  `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                  `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
                 );
               }
             }}
           />
         </div>
-        {#if openTab == 1}
+        {#if openTab == "Sendiri"}
           <div
             class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded {color ===
             'light'
@@ -736,7 +738,7 @@
                                       isDataValid.set(false);
 
                                       getdata(
-                                        `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                                        `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
                                       ).then(() => {
                                         tableData.statusLoadingCatatan = false;
                                       });
@@ -1348,7 +1350,7 @@
           </div>
         {/if}
 
-        {#if openTab == 2}
+        {#if openTab == "Subkon"}
           <div
             class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded {color ===
             'light'
@@ -1376,6 +1378,7 @@
                     </span>
                     <input
                       bind:value={search}
+                      on:input={handleSearch}
                       type="text"
                       placeholder="Cari"
                       class="px-2 py-1 placeholder-blueGray-300 text-blueGray-600 relative bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:shadow-outline w-full pl-10"
@@ -1500,7 +1503,7 @@
                                       isDataValid.set(false);
 
                                       getdata(
-                                        `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}`
+                                        `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
                                       ).then(() => {
                                         tableData.statusLoadingCatatan = false;
                                       });
@@ -1598,7 +1601,7 @@
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
-                            {tableData.nopol_subkon} / {tableData.sopir_subkon}
+                            {tableData.subkon.nama_perusahaan}/ {tableData.nopol_subkon} / {tableData.sopir_subkon}
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
