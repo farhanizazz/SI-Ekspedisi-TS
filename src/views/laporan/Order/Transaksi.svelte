@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { currentPage, search } from './stores/TransaksiStores.ts';
   import Modal from "./../../../notusComponents/Modal/Modal.svelte";
   import { debounce } from "./../../../helper/Debounce.js";
   import Pagination from "./../../../notusComponents/Pagination/Pagination.svelte";
@@ -129,7 +130,7 @@
     return json;
   }
 
-  const getdata = async (url?) => {
+  const getdata = async (url = `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`) => {
     // set cache lifetime in seconds
     var cachelife = 5000;
     //get cached data from local storage
@@ -177,7 +178,6 @@
     return res.data.data;
   }
 
-  let search = "";
   let color = "light";
   // let data = [];
 
@@ -259,7 +259,9 @@
   });
 
   onDestroy(() => {
+    currentPageUnsubscribe();
     unsubscribe();
+    searchUnsubscribe();
   });
 
   let showHargaOrderModal = [];
@@ -368,11 +370,14 @@
     }
   };
 
+  let searchValue = "";
+
   let handleSearch = debounce(() => {
     isDataValid.set(false);
-    currentPage = 0;
+    currentPage.set(0);
+    search.set(searchValue);
     getdata(
-      `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
+      `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
     );
   }, 500);
 
@@ -389,12 +394,25 @@
   let openTab = "Sendiri";
 
   function toggleTabs(tabCategory) {
-    currentPage = 0;
-    getdata(`${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${tabCategory}`);
+    currentPage.set(0);
+    getdata(`${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${tabCategory}`);
     openTab = tabCategory;
   }
 
-  let currentPage = 0;
+  const currentPageUnsubscribe = currentPage.subscribe((value) => {
+    if (value == 0) {
+      currentPage.set(0);
+    }
+  });
+
+  let searchUnsubscribe = search.subscribe((value) => {
+    if (value == "") {
+      isDataValid.set(false);
+      getdata();
+    }
+  });
+
+  // let currentPage = 0;
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -441,31 +459,31 @@
         <div class="w-full px-4 max-w-full flex justify-center items-center">
           <Pagination
             onSeek={(page) => {
-              currentPage = page;
+              currentPage.set(page);
               isDataValid.set(false);
 
               getdata(
-                `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
+                `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
               );
             }}
             pageCount={metaData.links.length}
             onNext={() => {
-              if (currentPage + 1 <= metaData.links.length - 1) {
-                currentPage = currentPage + 1;
+              if ($currentPage + 1 <= metaData.links.length - 1) {
+                currentPage.set($currentPage + 1);
                 isDataValid.set(false);
 
                 getdata(
-                  `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
+                  `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
                 );
               }
             }}
             onPrev={() => {
-              if (currentPage - 1 >= 0) {
-                currentPage = currentPage - 1;
+              if ($currentPage - 1 >= 0) {
+                currentPage.set($currentPage - 1);
                 isDataValid.set(false);
 
                 getdata(
-                  `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
+                  `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
                 );
               }
             }}
@@ -498,7 +516,7 @@
                       <i class="fas fa-search" />
                     </span>
                     <input
-                      bind:value={search}
+                      bind:value={searchValue}
                       on:input={handleSearch}
                       type="text"
                       placeholder="Cari"
@@ -738,7 +756,7 @@
                                       isDataValid.set(false);
 
                                       getdata(
-                                        `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
+                                        `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
                                       ).then(() => {
                                         tableData.statusLoadingCatatan = false;
                                       });
@@ -1320,7 +1338,7 @@
                                 ).then(() => {
                                   isDataValid.set(false);
 
-                                  getdata();
+                                  getdata(`${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`);
                                 });
                               }}
                               class="w-full"
@@ -1377,7 +1395,7 @@
                       <i class="fas fa-search" />
                     </span>
                     <input
-                      bind:value={search}
+                      bind:value={searchValue}
                       on:input={handleSearch}
                       type="text"
                       placeholder="Cari"
@@ -1503,7 +1521,7 @@
                                       isDataValid.set(false);
 
                                       getdata(
-                                        `${mainUrl}/api/transaksi/order?cari=${search}&page=${currentPage + 1}&status_kendaraan=${openTab}`
+                                        `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
                                       ).then(() => {
                                         tableData.statusLoadingCatatan = false;
                                       });
@@ -2056,7 +2074,7 @@
                                 ).then(() => {
                                   isDataValid.set(false);
 
-                                  getdata();
+                                  getdata(`${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`);
                                 });
                               }}
                               class="w-full"

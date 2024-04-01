@@ -5,6 +5,9 @@ import { mainUrl } from "../../../../environment";
 
 export const transaksi = writable([]);
 export const isDataValid = writable(false);
+export const currentPage = writable(0);
+export const search = writable("");
+
 let metaData = { links: [] };
 
 async function fetchData(url = `${mainUrl}/api/transaksi/order`) {
