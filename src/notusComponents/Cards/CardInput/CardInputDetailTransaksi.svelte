@@ -39,7 +39,7 @@
         console.log(res);
         if (res.status != "error") {
           onSuccess();
-          navigate(`/transaksi/order/mutasi/${id}/${jenis}`);
+          navigate(`/transaksi/order/`);
         } else {
           error = res.message;
         }
