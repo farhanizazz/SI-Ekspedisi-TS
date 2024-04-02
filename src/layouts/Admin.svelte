@@ -68,8 +68,8 @@
         let notif = get(notificationsStore);
 
         notif.data.forEach((e) => {
-          Toastify({
-            text: e.message,
+          var toast = Toastify({
+            text: e.message + ' ' + e.selisih,
             duration: -1,
             close: true,
             gravity: "top", // `top` or `bottom`
@@ -80,7 +80,9 @@
                 e.selisih.includes("terlewati") ? "#ef4444" : "#f59e0b"
               }`,
             },
-            onClick: function () {}, // Callback after click
+            onClick: function () {
+              toast.hideToast();
+            },
           }).showToast();
         });
       }
