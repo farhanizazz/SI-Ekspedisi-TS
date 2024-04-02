@@ -267,11 +267,13 @@
   let showHargaOrderModal = [];
   let showUangJalanModal = [];
   let catatanModal: boolean[] = [];
+  let deleteModal: boolean[] = [];
 
   $: {
     showHargaOrderModal = data.map(() => false);
     showUangJalanModal = data.map(() => false);
     catatanModal = data.map(() => false);
+    deleteModal = data.map(() => false);
   }
 
   function toggleHargaOrderModal(id: number) {
@@ -284,6 +286,11 @@
 
   function toggleCatatanModal(id) {
     catatanModal[id] = !catatanModal[id];
+  }
+
+  function toggleDeleteModal(id) {
+    console.log(id);
+    deleteModal[id] = !deleteModal[id];
   }
 
   let dropdownPopoverShowStatusKendaraanSendiri = [];
@@ -1322,7 +1329,19 @@
                               </p>
                             </a>
                             <button
-                              on:click={() => {
+                              on:click={() => toggleDeleteModal(index)}
+                              class="w-full"
+                            >
+                              <p
+                                class="text-center bg-red-500 text-white active:bg-red-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+                              >
+                                Hapus Data
+                              </p>
+                            </button>
+                            <Modal
+                              bind:showModal={deleteModal[index]}
+                              isLoading={false}
+                              onAccept={() => {
                                 fetch(
                                   mainUrl +
                                     "/api/transaksi/order/" +
@@ -1336,19 +1355,29 @@
                                     },
                                   }
                                 ).then(() => {
+                                  toggleDeleteModal(index);
                                   isDataValid.set(false);
-
                                   getdata(`${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`);
                                 });
                               }}
-                              class="w-full"
-                            >
-                              <p
-                                class="text-center bg-red-500 text-white active:bg-red-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+                              >
+                              <h1
+                                slot="header"
+                                class="font-semibold text-2xl {color ===
+                                'light'
+                                  ? 'text-blueGray-700'
+                                  : 'text-white'}"
                               >
                                 Hapus Data
-                              </p>
-                            </button>
+                              </h1>
+                              <h3
+                                class="text-lg mt-5 {color === 'light'
+                                  ? 'text-blueGray-700'
+                                  : 'text-white'}"
+                              >
+                                Apakah anda yakin ingin menghapus data ini?
+                              </h3>
+                            </Modal>
                           </td>
                         </tr>
                       {/if}

@@ -89,7 +89,7 @@
 <CardTable
   tableHeading={headingPengeluaran}
   href="/transaksi/pengeluaran"
-  deleteApi={`${mainUrl}/api/transaksi/`}
+  deleteApi={undefined}
   heading="Data Lain Harga Jual"
   data={data && data.biaya_lain_harga_jual_arr}
   withEdit={false}
@@ -97,7 +97,7 @@
   on:delete={(event) => {
     const index = event.detail.index;
     console.log(index);
-    data[id].biaya_lain_harga_jual.splice(index, 1);
+    data.biaya_lain_harga_jual.splice(index, 1);
     axios
       .put(`${mainUrl}/api/transaksi/order/${data.id}`, {
         biaya_lain_harga_jual: data.biaya_lain_harga_jual,
