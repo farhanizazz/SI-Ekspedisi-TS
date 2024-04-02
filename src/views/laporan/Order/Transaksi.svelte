@@ -1828,7 +1828,7 @@
                             Rp. {IDRFormatter.format(
                               tableData.harga_order -
                                 tableData.total_mutasi_order -
-                                tableData.total_pajak -
+                                tableData.total_pajak +
                                 tableData.biaya_lain_harga_order_arr.reduce(
                                   (acc, curr) =>
                                     curr.sifat === "Menambahkan"
