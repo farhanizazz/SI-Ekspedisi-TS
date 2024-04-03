@@ -20,6 +20,19 @@
 <div class="py-2">
   <nav class="block">
     <ul class="flex pl-0 rounded list-none flex-wrap">
+      {#if $currentPage > 0}
+      <li>
+        <button
+          on:click={() => {
+            onNext();
+            currentPage.set(0);
+          }}
+          class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
+        >
+        <i class="fas fa-chevron-left -mr-px"></i>
+        <i class="fas fa-chevron-left -mr-px"></i>
+      </button>
+      </li>
       <li>
         <button
           on:click={() => {
@@ -31,46 +44,45 @@
           <i class="fas fa-chevron-left -ml-px"></i>
         </button>
       </li>
-      {#each Array(pageCount) as _, i}
+      {/if}
+      {#each [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] as i}
+        {#if $currentPage - i >= 0}
         <li>
           <button
             on:click={() => {
-              onSeek(i);
-              currentPage.set(i);
+              onSeek($currentPage - i);
+              currentPage.set($currentPage - i);
             }}
-            class={$currentPage == i
-              ? "first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 text-white bg-orange-500"
-              : "first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"}
+            class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
           >
-            {i + 1}
+            <span>{$currentPage - i + 1}</span>
           </button>
         </li>
+        {/if}
       {/each}
-      <!-- <li>
-          <a href="#pablo" class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500">
-            1
-          </a>
-        </li>
-        <li>
-          <a href="#pablo" class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500">
-            2
-          </a>
-        </li>
-        <li>
-          <a href="#pablo" class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500">
-            3
-          </a>
-        </li>
-        <li>
-          <a href="#pablo" class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500">
-            4
-          </a>
-        </li>
-        <li>
-          <a href="#pablo" class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500">
-            5
-          </a>
-        </li> -->
+      <li>
+        <button
+          class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-orange-500 text-white"
+        >
+          <span>{$currentPage + 1}</span>
+        </button>
+      </li>
+      {#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as i}
+        {#if $currentPage + i < pageCount}
+          <li>
+            <button
+              on:click={() => {
+                onSeek($currentPage + i);
+                currentPage.set($currentPage + i);
+              }}
+              class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
+            >
+              <span>{$currentPage + i + 1}</span>
+            </button>
+          </li>
+        {/if}
+      {/each}
+      {#if $currentPage < pageCount - 1}
       <li>
         <button
           on:click={() => {
@@ -79,9 +91,23 @@
           }}
           class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
         >
-          <i class="fas fa-chevron-right -mr-px"></i>
-        </button>
+        <i class="fas fa-chevron-right -mr-px"></i>
+      </button>
       </li>
+        <li>
+          <button
+            on:click={() => {
+              onNext();
+              currentPage.set(pageCount - 1);
+            }}
+            class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
+          >
+            <i class="fas fa-chevron-right -mr-px"></i>
+            <i class="fas fa-chevron-right -mr-px"></i>
+          </button>
+        </li>
+      {/if}
+      
     </ul>
   </nav>
 </div>
