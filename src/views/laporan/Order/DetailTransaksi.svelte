@@ -1,4 +1,5 @@
 <script>
+	import { IDRFormatter } from './../../../helper/idrFormatter.js';
   import CardInputDetailTransaksi from "../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte";
   import { Router, Route } from "svelte-routing";
   import { getCookie } from "svelte-cookie";
@@ -79,7 +80,7 @@
           Nomor transaksi: {dataOriginal.data[0].detail.no_transaksi}
           {#if jenis == "order"}
             <br />
-            Harga order: {dataOriginal.data[0].detail.harga_order}
+            Harga order: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.harga_order)}
             <br />
             <table class="table-auto">
               <tbody>
@@ -96,14 +97,14 @@
                     </td>
 
                     <td>
-                      Nominal: {#if item.sifat == "Mengurangi"} - {/if}{item.nominal}
+                      Nominal: Rp. {#if item.sifat == "Mengurangi"} - {/if}{IDRFormatter.format(item.nominal)}
                     </td>
                   </tr>
                 {/each}
               </tbody>
             </table>
             <br />
-            Sisa tagihan: {dataOriginal.data[0].detail.sisa_tagihan}
+            Sisa tagihan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.sisa_tagihan)}
             <br />
           {:else if jenis == "uang_jalan"}
           <br />
@@ -111,9 +112,9 @@
           <br />
           Asal - Tujuan: {dataOriginal.data[0].detail.asal} - {dataOriginal.data[0].detail.tujuan}
           <br />
-          Uang jalan: {dataOriginal.data[0].detail.uang_jalan}
+          Uang jalan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.uang_jalan)}
           <br />
-          THR: {dataOriginal.data[0].detail.thr}
+          THR: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.thr)}
           <br />
            {#each dataOriginal.data[0].detail.biaya_lain_uang_jalan_arr as item, index}
                   <tr>
@@ -128,14 +129,14 @@
                     </td>
 
                     <td>
-                      Nominal: {#if item.sifat == "Mengurangi"} - {/if}{item.nominal}
+                      Nominal: Rp. {#if item.sifat == "Mengurangi"} - {/if}{IDRFormatter.format(item.nominal)}
                     </td>
                   </tr>
                 {/each}
             <br />
             <!-- Total mutasi: {dataOriginal.data[0].detail.mutasi}
             <br /> -->
-            Sisa uang jalan: {dataOriginal.data[0].detail.sisa_uang_jalan}
+            Sisa uang jalan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.sisa_uang_jalan)}
             <br />
           {/if}
         </p>
