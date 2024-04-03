@@ -37,7 +37,7 @@
         <button
           on:click={() => {
             onPrev();
-            if($currentPage > 0) currentPage.set($currentPage - 1);
+            if($currentPage > 0) currentPage.set($currentPage);
           }}
           class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
         >
@@ -51,7 +51,7 @@
           <button
             on:click={() => {
               onSeek($currentPage - i);
-              currentPage.set($currentPage - i);
+              currentPage.set($currentPage);
             }}
             class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
           >
@@ -73,7 +73,7 @@
             <button
               on:click={() => {
                 onSeek($currentPage + i);
-                currentPage.set($currentPage + i);
+                currentPage.set($currentPage);
               }}
               class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
             >
@@ -87,7 +87,7 @@
         <button
           on:click={() => {
             onNext();
-            if($currentPage < pageCount - 1) currentPage.set($currentPage + 1);
+            if($currentPage < pageCount - 1) currentPage.set($currentPage);
           }}
           class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
         >
