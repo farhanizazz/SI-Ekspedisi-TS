@@ -4,11 +4,11 @@
   // core components
   import CardStats from "../Cards/CardStats.svelte";
   import { onDestroy, onMount } from "svelte";
-  import { getCookie, deleteCookie } from "svelte-cookie";
+  import { getCookie } from "svelte-cookie";
   import { mainUrl } from "../../environment";
   import { selectedStore } from "./HeaderStore/Store.js";
   import { derived, writable } from "svelte/store";
-  // import { deleteCookie } from "../../helper/deleteCookie.js";
+  import { deleteCookie } from "../../helper/deleteCookie.js";
 
   export let location;
   let userData: User;
