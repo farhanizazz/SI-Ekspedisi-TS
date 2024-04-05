@@ -104,7 +104,7 @@
               </tbody>
             </table>
             <br />
-            Sisa tagihan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.sisa_tagihan)}
+            Sisa tagihan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.sisa_harga_order)}
             <br />
           {:else if jenis == "uang_jalan"}
           <br />
