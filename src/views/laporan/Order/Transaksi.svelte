@@ -60,55 +60,6 @@
   ];
 
   let listTotal = [];
-
-  // async function fetchData(url = `${mainUrl}/api/transaksi/order`) {
-  //   const res = await fetch(url, {
-  //     headers: {
-  //       Authorization: `bearer ${getCookie("token")}`,
-  //     },
-  //   });
-
-  //   const json = (await res.json()).data;
-  //   json.list.forEach((e) => {
-  //     if(e.biaya_lain_harga_jual == null)
-  //       e.biaya_lain_harga_jual = [];
-  //     if(e.biaya_lain_uang_jalan == null)
-  //       e.biaya_lain_uang_jalan = [];
-  //     if(e.biaya_lain_harga_order == null)
-  //       e.biaya_lain_harga_order = [];
-  //   });
-  //   json.list.sort(
-  //     (a, b) =>
-  //       new Date(b.tanggal_awal).getTime() / 1000 -
-  //       new Date(a.tanggal_awal).getTime() / 1000
-  //   );
-  //   return json;
-  // }
-
-  // let           isDataValid.set(false);
-
-  // const getdata = async (url?) => {
-  //   // set cache lifetime in seconds
-  //   var cachelife = 5000;
-  //   //get cached data from local storage
-  //   var localStorageData = localStorage.getItem("order");
-  //   var cacheddata = await JSON.parse(localStorageData);
-  //   if (cacheddata) {
-  //     var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
-  //   }
-  //   //If cached data available and not expired return them.
-  //   if (cacheddata && !expired && isDataValid) {
-  //     data = cacheddata.data;
-  //   } else {
-  //     //otherwise fetch data from api then save the data in localstorage
-  //     fetchData(url).then((res) => {
-  //       var json = { data: res.list, cachetime: Date.now() / 1000 };
-  //       localStorage.setItem("order", JSON.stringify(json));
-  //       data = res.list;
-  //       metaData = res.meta;
-  //     });
-  //   }
-  // };
   async function fetchData(url = `${mainUrl}/api/transaksi/order`) {
     const res = await fetch(url, {
       headers: {
@@ -179,16 +130,6 @@
   }
 
   let color = "light";
-  // let data = [];
-
-  // $: data = search
-  //   ? data.filter((item) =>
-  //       Object.keys(item).some(
-  //         (key) =>
-  //           String(item[key]).toLowerCase().indexOf(search.toLowerCase()) > -1
-  //       )
-  //     )
-  //   : data;
 
   const changeStatusKendaraanSendiri = ({ data, id }) => {
     try {
@@ -249,7 +190,9 @@
   let tableSendiri;
   let tableSubkon;
   onMount(() => {
-    getdata();
+    getdata().then(() => {
+      catatanModal = data.map(() => false);
+    });
     fetchRekeningData();
     const updatePosition = () => {
       if (popoverDropdownRefStatusHargaOrder) {
@@ -272,7 +215,6 @@
   $: {
     showHargaOrderModal = data.map(() => false);
     showUangJalanModal = data.map(() => false);
-    catatanModal = data.map(() => false);
     deleteModal = data.map(() => false);
   }
 
@@ -771,6 +713,7 @@
                                 }}
                               >
                                 <Modal
+                                  onAccept={undefined}
                                   bind:showModal={catatanModal[index]}
                                   bind:isLoading={tableData.statusLoadingCatatan}
                                 >
@@ -1558,6 +1501,7 @@
                                 }}
                               >
                                 <Modal
+                                  onAccept={undefined}
                                   bind:showModal={catatanModal[index]}
                                   bind:isLoading={tableData.statusLoadingCatatan}
                                 >

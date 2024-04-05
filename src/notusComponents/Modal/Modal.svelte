@@ -5,7 +5,7 @@
   export let onAccept: () => void;
 
   let dialog; // HTMLDialogElement
-  $: console.log(showModal);
+  $: console.log(dialog);
   
 
   $: if (dialog && showModal) dialog.showModal();
