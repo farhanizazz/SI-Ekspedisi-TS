@@ -30,6 +30,7 @@
     fetch(`${mainUrl}/api/master/penyewa/${id}`, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `bearer ${getCookie("token")}`,
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: "PUT",
