@@ -76,6 +76,7 @@
       {#await fetchData()}
         <p class="px-4 mt-2">Loading...</p>
       {:then dataOriginal}
+      {#if dataOriginal.data.length > 0}
         <p class="px-4 mt-2">
           Nomor transaksi: {dataOriginal.data[0].detail.no_transaksi}
           {#if jenis == "order"}
@@ -140,6 +141,9 @@
             <br />
           {/if}
         </p>
+      {:else}
+        <p class="px-4 mt-2">Tidak ada data</p>
+      {/if}
       {/await}
     </div>
   </div>
