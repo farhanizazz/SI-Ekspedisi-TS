@@ -1,5 +1,5 @@
 <script>
-	import { IDRFormatter } from './../../../helper/idrFormatter.js';
+  import { IDRFormatter } from "./../../../helper/idrFormatter.js";
   import CardInputDetailTransaksi from "../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte";
   import { Router, Route } from "svelte-routing";
   import { getCookie } from "svelte-cookie";
@@ -76,74 +76,111 @@
       {#await fetchData()}
         <p class="px-4 mt-2">Loading...</p>
       {:then dataOriginal}
-      {#if dataOriginal.data.length > 0}
-        <p class="px-4 mt-2">
-          Nomor transaksi: {dataOriginal.data[0].detail.no_transaksi}
-          {#if jenis == "order"}
-            <br />
-            Harga order: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.harga_order)}
-            <br />
-            <table class="table-auto">
-              <tbody>
-                {#each dataOriginal.data[0].detail.biaya_lain_harga_order_arr as item, index}
-                  <tr>
-                    {#if index == 0}
-                      <td class="pr-3">Biaya Tambah: </td>
-                    {:else}
-                      <td></td>
-                    {/if}
+        {#if dataOriginal.data.length > 0}
+          <p class="px-4 mt-2">
+            Nomor transaksi: {dataOriginal.data[0].detail.no_transaksi}
+            {#if jenis == "order"}
+              <br />
+              Harga order: Rp. {IDRFormatter.format(
+                dataOriginal.data[0].detail.harga_order
+              )}
+              <br />
+              <table class="table-auto">
+                <tbody>
+                  {#each dataOriginal.data[0].detail.biaya_lain_harga_order_arr as item, index}
+                    <tr>
+                      {#if index == 0}
+                        <td class="pr-3">Biaya Tambah: </td>
+                      {:else}
+                        <td></td>
+                      {/if}
 
-                    <td class="pr-3">
-                      Nama: {item.nama}
-                    </td>
+                      <td class="pr-3">
+                        Nama: {item.nama}
+                      </td>
 
-                    <td>
-                      Nominal: Rp. {#if item.sifat == "Mengurangi"} - {/if}{IDRFormatter.format(item.nominal)}
-                    </td>
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-            <br />
-            Sisa tagihan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.sisa_harga_order)}
-            <br />
-          {:else if jenis == "uang_jalan"}
-          <br />
-          Muatan: {dataOriginal.data[0].detail.muatan}
-          <br />
-          Asal - Tujuan: {dataOriginal.data[0].detail.asal} - {dataOriginal.data[0].detail.tujuan}
-          <br />
-          Uang jalan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.uang_jalan)}
-          <br />
-          THR: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.thr)}
-          <br />
-           {#each dataOriginal.data[0].detail.biaya_lain_uang_jalan_arr as item, index}
-                  <tr>
-                    {#if index == 0}
-                      <td class="pr-3">Biaya Tambahan: </td>
-                    {:else}
-                      <td></td>
-                    {/if}
+                      <td>
+                        Nominal: Rp. {#if item.sifat == "Mengurangi"}
+                          -
+                        {/if}{IDRFormatter.format(item.nominal)}
+                      </td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
+              <br />
+              Sisa tagihan: Rp. {IDRFormatter.format(
+                dataOriginal.data[0].detail.harga_order +
+                  dataOriginal.data[0].detail.biaya_lain_harga_order_arr.reduce(
+                    (acc, curr) => {
+                      if (curr.sifat == "Mengurangi") {
+                        return acc - curr.nominal;
+                      } else {
+                        return acc + curr.nominal;
+                      }
+                    },
+                    0
+                  ) -
+                  dataOriginal.data[0].detail.mutasi_order -
+                  dataOriginal.data[0].detail.total_pajak
+              )}
+              <br />
+            {:else if jenis == "uang_jalan"}
+              <br />
+              Muatan: {dataOriginal.data[0].detail.muatan}
+              <br />
+              Asal - Tujuan: {dataOriginal.data[0].detail.asal} - {dataOriginal
+                .data[0].detail.tujuan}
+              <br />
+              Uang jalan: Rp. {IDRFormatter.format(
+                dataOriginal.data[0].detail.uang_jalan
+              )}
+              <br />
+              THR: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.thr)}
+              <br />
+              {#each dataOriginal.data[0].detail.biaya_lain_uang_jalan_arr as item, index}
+                <tr>
+                  {#if index == 0}
+                    <td class="pr-3">Biaya Tambahan: </td>
+                  {:else}
+                    <td></td>
+                  {/if}
 
-                    <td class="pr-3">
-                      Nama: {item.nama}
-                    </td>
+                  <td class="pr-3">
+                    Nama: {item.nama}
+                  </td>
 
-                    <td>
-                      Nominal: Rp. {#if item.sifat == "Mengurangi"} - {/if}{IDRFormatter.format(item.nominal)}
-                    </td>
-                  </tr>
-                {/each}
-            <br />
-            <!-- Total mutasi: {dataOriginal.data[0].detail.mutasi}
+                  <td>
+                    Nominal: Rp. {#if item.sifat == "Mengurangi"}
+                      -
+                    {/if}{IDRFormatter.format(item.nominal)}
+                  </td>
+                </tr>
+              {/each}
+              <br />
+              <!-- Total mutasi: {dataOriginal.data[0].detail.mutasi}
             <br /> -->
-            Sisa uang jalan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.sisa_uang_jalan)}
-            <br />
-          {/if}
-        </p>
-      {:else}
-        <p class="px-4 mt-2">Tidak ada data</p>
-      {/if}
+              Sisa uang jalan: Rp. {IDRFormatter.format(
+                dataOriginal.data[0].detail.harga_order +
+                  dataOriginal.data[0].detail.biaya_lain_harga_order_arr.reduce(
+                    (acc, curr) => {
+                      if (curr.sifat == "Mengurangi") {
+                        return acc - curr.nominal;
+                      } else {
+                        return acc + curr.nominal;
+                      }
+                    },
+                    0
+                  ) -
+                  dataOriginal.data[0].detail.mutasi_order -
+                  dataOriginal.data[0].detail.total_pajak
+              )}
+              <br />
+            {/if}
+          </p>
+        {:else}
+          <p class="px-4 mt-2">Tidak ada data</p>
+        {/if}
       {/await}
     </div>
   </div>
