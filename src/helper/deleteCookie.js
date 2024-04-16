@@ -1,8 +1,5 @@
 export function deleteCookie(name) {
-    let cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    cookie += "; path=/";
-    cookie += `; domain=${window.location.hostname}`;
-    cookie += "; secure";
+    let cookie = name + "=; Max-Age=-99999999";
     document.cookie = cookie;
     console.log("Cookie deleted", cookie);
   }
