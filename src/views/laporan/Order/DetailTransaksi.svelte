@@ -20,6 +20,7 @@
     "Nominal",
     "Keterangan",
     "Pembuat",
+    "Rekening Tujuan"
   ];
   console.log(data);
 
@@ -39,6 +40,7 @@
       if (copy.pembuat == null) {
         copy.pembuat = "Tidak ada data pembuat";
       }
+      copy.master_rekening = `${copy.master_rekening.atas_nama} | ${copy.master_rekening.nama_bank} | ${copy.master_rekening.nomor_rekening}`;
       copy.pembuat = copy.pembuat.name;
       delete copy.detail;
       delete copy.created_by;
