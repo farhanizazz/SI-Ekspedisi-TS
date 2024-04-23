@@ -10,7 +10,7 @@
 
   export let id;
   let data = [];
-  const heading = ["ID", "Tanggal pembayaran", "Nominal","Jenis Transaksi", "Keterangan", "Pembuat"];
+  const heading = ["ID", "Tanggal pembayaran", "Nominal","Jenis Transaksi", "Keterangan", "Pembuat", "Nomor transaksi"];
 
   function fetchData() {
     fetch(`${mainUrl}/api/getProfile`, {
@@ -46,7 +46,10 @@
                     e.jenis_transaksi = "Pembayaran Uang Jalan";
                     e.nominal = `-${e.nominal}`;
                     break;
-                } 
+                }
+                e.nomor_transaksi = e.transaksi_order.no_transaksi;
+                delete e.transaksi_order;
+                delete e.master_rekening;
                 delete e.created_at;
                 delete e.updated_at;
                 delete e.master_rekening_id;
@@ -70,7 +73,7 @@
         addData={false}
         href="/admin/rekening/mutasi"
         deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
-        heading="Data Rekening"
+        heading="Data Mutasi Rekening"
         {data}
         onLoad={fetchData}
       />
