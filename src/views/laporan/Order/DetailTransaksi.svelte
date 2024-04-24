@@ -22,7 +22,6 @@
     "Pembuat",
     "Rekening Tujuan"
   ];
-  console.log(data);
 
   async function fetchData() {
     const responseJson = await fetch(
@@ -56,9 +55,6 @@
     });
     return response;
   }
-  onMount(() => {
-    fetchData();
-  });
 </script>
 
 <Router route={id}>
@@ -178,11 +174,51 @@
                   dataOriginal.data[0].detail.total_pajak
               )}
               <br />
+            {:else if jenis == "jual"}
+            <!-- 
+            No transaksi:
+            Pemilik subkon 
+            Nopol/sopir 
+            Harga jual
+            Biaya tambah/kurang 
+            Sisa hutang ke subkon -->
+            <br/>
+            Pemilik subkon: -
+            <br/>
+            Nopol/sopir: {dataOriginal.data[0].detail.nopol_subkon} / {dataOriginal.data[0].detail.sopir_subkon}
+            <br/>
+            Harga jual: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.harga_jual)}
+            <br/>
+            Total biaya tambah / kurang: Rp. {IDRFormatter.format(
+              dataOriginal.data[0].detail.biaya_lain_harga_jual_arr.reduce(
+                (acc, curr) =>
+                  curr.sifat === "Menambahkan"
+                    ? acc + curr.nominal
+                    : acc - curr.nominal,
+                0
+              ))}
+            <br/>
+            Sisa hutang ke subkon: Rp. {IDRFormatter.format(
+              dataOriginal.data[0].detail.harga_jual +
+                dataOriginal.data[0].detail.biaya_lain_harga_jual_arr.reduce(
+                  (acc, curr) => {
+                    if (curr.sifat == "Mengurangi") {
+                      return acc - curr.nominal;
+                    } else {
+                      return acc + curr.nominal;
+                    }
+                  },
+                  0
+                ) -
+                dataOriginal.data[0].detail.mutasi_jual
+            )}
             {/if}
           </p>
         {:else}
           <p class="px-4 mt-2">Tidak ada data</p>
         {/if}
+      {:catch error}
+        <p class="px-4 mt-2">Error: {error.message}</p>
       {/await}
     </div>
   </div>
