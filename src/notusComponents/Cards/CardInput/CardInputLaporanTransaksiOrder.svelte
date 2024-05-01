@@ -3,7 +3,6 @@
   import { navigate } from "svelte-routing";
   import { mainUrl } from "../../../environment";
   import { getCookie } from "svelte-cookie";
-  import Select from "svelte-select/Select.svelte";
 
   export let onSuccess;
 
@@ -129,7 +128,7 @@
   });
 
   function handleSubmit() {
-    if (data.status_kendaraan == "Sendiri") {
+    if(data.status_kendaraan == "Sendiri"){
       data.m_subkon_id = null;
       data.nopol_subkon = null;
       data.sopir_subkon = null;
@@ -157,6 +156,7 @@
       });
     });
   }
+  
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
@@ -310,7 +310,7 @@
           >
             Penyewa
           </label>
-          <!-- <select
+          <select
             id="grid-penyewa"
             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
             bind:value={data.m_penyewa_id}
@@ -319,17 +319,7 @@
             {#each penyewas as penyewa}
               <option value={penyewa.id}>{penyewa.nama_perusahaan}</option>
             {/each}
-          </select> -->
-          <Select
-            items={penyewas}
-            label="nama_perusahaan"
-            itemId="id"
-            bind:justValue={data.m_penyewa_id}
-            onChange={(e) => console.log(e)}
-            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-            placeholder="Pilih Penyewa"
-            showChevron
-          />
+          </select>
           {#if "m_penyewa_id" in error}
             <p class="text-red-500 text-sm">{error.m_penyewa_id}</p>
           {/if}
@@ -513,7 +503,7 @@
             >
               Armada
             </label>
-            <!-- <select
+            <select
               id="grid-about-me"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               bind:value={data.m_armada_id}
@@ -522,21 +512,7 @@
               {#each armadas as armada}
                 <option value={armada.id}>{armada.nopol}</option>
               {/each}
-            </select> -->
-            <Select
-              items={armadas}
-              label="nopol"
-              itemId="id"
-              bind:justValue={data.m_armada_id}
-              onChange={(e) => console.log(e)}
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Pilih Armada"
-              showChevron
-            >
-              <div slot="item" let:item let:index>
-                {item.merk} | {item.nopol} | {item.jenis}
-              </div>
-            </Select>
+            </select>
             {#if "status_kendaraan" in error}
               <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
             {/if}
@@ -549,7 +525,7 @@
             >
               Sopir
             </label>
-            <!-- <select
+            <select
               id="grid-about-me"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               bind:value={data.m_sopir_id}
@@ -558,18 +534,7 @@
               {#each sopirs as sopir}
                 <option value={sopir.id}>{sopir.nama}</option>
               {/each}
-            </select> -->
-            <Select
-              items={sopirs}
-              label="nama"
-              itemId="id"
-              bind:justValue={data.m_sopir_id}
-              onChange={(e) => console.log(e)}
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Pilih Sopir"
-              showChevron
-            >
-            </Select>
+            </select>
             {#if "sopir" in error}
               <p class="text-red-500 text-sm">{error.sopir}</p>
             {/if}
@@ -605,7 +570,7 @@
             >
               Subkon
             </label>
-            <!-- <select
+            <select
               id="grid-about-me"
               disabled={data.status_kendaraan != "Subkon"}
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -615,17 +580,7 @@
               {#each subkons as subkon}
                 <option value={subkon.id}>{subkon.nama_perusahaan}</option>
               {/each}
-            </select> -->
-            <Select
-              items={subkons}
-              label="nama_perusahaan"
-              itemId="id"
-              bind:justValue={data.m_subkon_id}
-              onChange={(e) => console.log(e)}
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Pilih Penyewa"
-              showChevron
-            />
+            </select>
             {#if "m_subkon_id" in error}
               <p class="text-red-500 text-sm">{error.m_subkon_id}</p>
             {/if}
