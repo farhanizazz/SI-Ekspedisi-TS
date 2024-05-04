@@ -1,11 +1,11 @@
-type Permission = {
+export type Permission = {
     view: boolean;
     create: boolean;
     edit: boolean;
     delete: boolean;
 };
 
-type Akses = {
+export type Akses = {
     master_armada: Permission;
     master_penyewa: Permission;
     master_rekening: Permission;
@@ -13,7 +13,7 @@ type Akses = {
     master_sopir: Permission;
 };
 
-type Role = {
+export type Role = {
     id: number;
     name: string;
     akses: Akses;
@@ -21,7 +21,7 @@ type Role = {
     updated_at: string;
 };
 
-type User = {
+export type User = {
     id: number;
     name: string;
     username: string;
