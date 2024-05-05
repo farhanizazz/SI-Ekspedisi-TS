@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { navigate } from "svelte-routing";
   import { mainUrl } from "../../../../environment";
   import { getCookie } from "svelte-cookie";
 
-  export let id;
+  export let id: string;
   let error = {};
   let data = {
     nama: '',
@@ -12,7 +12,7 @@
   };
 
   onMount(async () => {
-    const res = await fetch(`${mainUrl}/api/master/rekening/${id}`, {
+    const res = await fetch(`${mainUrl}/api/master/tambahan/${id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `bearer ${getCookie("token")}`,
@@ -37,7 +37,7 @@
       response.json().then((res) => {
         console.log(res)
         if (res.status != "error") {
-          navigate("/admin/sopir");
+          navigate("/admin/tambahan");
         } else {
           error = res.message;
         }
