@@ -330,9 +330,9 @@
     );
   }, 500);
 
-  let sifat = 0;
+  let sifat: any;
   let jenis = 0;
-  let biaya;
+  let biaya: number;
   let errorModalMsg;
   let totalSum = 0;
   let detailBiayaOrderData = [];
@@ -973,7 +973,7 @@
                                                 >Silahkan pilih sifat biaya</option
                                               >
                                               {#each dataTambahan as tambahan}
-                                                <option value={tambahan.id}>
+                                                <option value={tambahan}>
                                                   {tambahan.nama} | {tambahan.sifat}
                                                 </option>
                                               {/each}
@@ -1011,7 +1011,7 @@
                                         class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
-                                          if (sifat == 0) {
+                                          if (sifat.id == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
                                             return;
@@ -1022,8 +1022,8 @@
                                               biaya_lain_harga_order:
                                                 tableData.biaya_lain_harga_order.concat(
                                                   {
-                                                    m_tambahan_id: sifat,
-                                                    nominal: biaya,
+                                                    m_tambahan_id: sifat.id,
+                                                    nominal: sifat.id === "Menambahkan" ? biaya : -biaya,
                                                   }
                                                 ),
                                             },
@@ -1166,7 +1166,7 @@
                                                 >Silahkan pilih sifat biaya</option
                                               >
                                               {#each dataTambahan as tambahan}
-                                                <option value={tambahan.id}>
+                                                <option value={tambahan}>
                                                   {tambahan.nama} | {tambahan.sifat}
                                                 </option>
                                               {/each}
@@ -1204,7 +1204,7 @@
                                         class="px-6 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
                                         on:click={() => {
-                                          if (sifat == 0) {
+                                          if (sifat.id == 0) {
                                             errorModalMsg =
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
                                             return;
@@ -1215,8 +1215,8 @@
                                               biaya_lain_uang_jalan:
                                                 tableData.biaya_lain_uang_jalan.concat(
                                                   {
-                                                    m_tambahan_id: sifat,
-                                                    nominal: biaya,
+                                                    m_tambahan_id: sifat.id,
+                                                    nominal: sifat.id === "Menambahkan" ? biaya : -biaya,
                                                   }
                                                 ),
                                             },
