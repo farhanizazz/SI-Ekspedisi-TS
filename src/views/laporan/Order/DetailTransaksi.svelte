@@ -98,9 +98,7 @@
                       </td>
 
                       <td>
-                        Nominal: Rp. {#if item.sifat == "Mengurangi"}
-                          -
-                        {/if}{IDRFormatter.format(item.nominal)}
+                        Nominal: Rp. {IDRFormatter.format(item.nominal)}
                       </td>
                     </tr>
                   {/each}
@@ -111,11 +109,7 @@
                 dataOriginal.data[0].detail.harga_order +
                   dataOriginal.data[0].detail.biaya_lain_harga_order_arr.reduce(
                     (acc, curr) => {
-                      if (curr.sifat == "Mengurangi") {
-                        return acc - curr.nominal;
-                      } else {
                         return acc + curr.nominal;
-                      }
                     },
                     0
                   ) -
@@ -149,9 +143,7 @@
                   </td>
 
                   <td>
-                    Nominal: Rp. {#if item.sifat == "Mengurangi"}
-                      -
-                    {/if}{IDRFormatter.format(item.nominal)}
+                    Nominal: Rp. {IDRFormatter.format(item.nominal)}
                   </td>
                 </tr>
               {/each}
@@ -162,11 +154,7 @@
                 dataOriginal.data[0].detail.harga_order +
                   dataOriginal.data[0].detail.biaya_lain_harga_order_arr.reduce(
                     (acc, curr) => {
-                      if (curr.sifat == "Mengurangi") {
-                        return acc - curr.nominal;
-                      } else {
                         return acc + curr.nominal;
-                      }
                     },
                     0
                   ) -
@@ -192,9 +180,7 @@
             Total biaya tambah / kurang: Rp. {IDRFormatter.format(
               dataOriginal.data[0].detail.biaya_lain_harga_jual_arr.reduce(
                 (acc, curr) =>
-                  curr.sifat === "Menambahkan"
-                    ? acc + curr.nominal
-                    : acc - curr.nominal,
+                  acc + curr.nominal,
                 0
               ))}
             <br/>
@@ -202,11 +188,7 @@
               dataOriginal.data[0].detail.harga_jual +
                 dataOriginal.data[0].detail.biaya_lain_harga_jual_arr.reduce(
                   (acc, curr) => {
-                    if (curr.sifat == "Mengurangi") {
-                      return acc - curr.nominal;
-                    } else {
-                      return acc + curr.nominal;
-                    }
+                      acc + curr.nominal;
                   },
                   0
                 ) -
