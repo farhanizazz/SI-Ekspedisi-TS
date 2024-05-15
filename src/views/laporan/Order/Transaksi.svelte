@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentPage, search } from './stores/TransaksiStores.ts';
+  import { currentPage, search } from "./stores/TransaksiStores.ts";
   import Modal from "./../../../notusComponents/Modal/Modal.svelte";
   import { debounce } from "./../../../helper/Debounce.js";
   import Pagination from "./../../../notusComponents/Pagination/Pagination.svelte";
@@ -81,7 +81,9 @@
     return json;
   }
 
-  const getdata = async (url = `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`) => {
+  const getdata = async (
+    url = `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+  ) => {
     // set cache lifetime in seconds
     var cachelife = 5000;
     //get cached data from local storage
@@ -344,7 +346,9 @@
 
   function toggleTabs(tabCategory) {
     currentPage.set(0);
-    getdata(`${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${tabCategory}`);
+    getdata(
+      `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${tabCategory}`
+    );
     openTab = tabCategory;
   }
 
@@ -383,7 +387,7 @@
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <button
                   class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal w-full {openTab ===
-                  "Sendiri"
+                  'Sendiri'
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
                   on:click={() => toggleTabs("Sendiri")}
@@ -394,7 +398,7 @@
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <button
                   class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal w-full {openTab ===
-                  "Subkon"
+                  'Subkon'
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
                   on:click={() => toggleTabs("Subkon")}
@@ -915,10 +919,7 @@
                                     //   0
                                     // )+
                                     tableData.biaya_lain_harga_order_arr.reduce(
-                                      (acc, curr) =>
-                                        curr.sifat === "Menambahkan"
-                                          ? acc + curr.nominal
-                                          : acc - curr.nominal,
+                                      (acc, curr) => acc + curr.nominal,
                                       0
                                     )
                                   )}</a
@@ -1016,6 +1017,7 @@
                                               "Mohon pilih jenis dan sifat terlebih dahulu";
                                             return;
                                           }
+                                          console.log(sifat.sifat);
                                           addBiaya({
                                             data: {
                                               ...tableData,
@@ -1023,7 +1025,11 @@
                                                 tableData.biaya_lain_harga_order.concat(
                                                   {
                                                     m_tambahan_id: sifat.id,
-                                                    nominal: sifat.id === "Menambahkan" ? biaya : -biaya,
+                                                    nominal:
+                                                      sifat.sifat ===
+                                                      "Menambahkan"
+                                                        ? biaya
+                                                        : -biaya,
                                                   }
                                                 ),
                                             },
@@ -1108,10 +1114,7 @@
                                     //     0
                                     //   ) +
                                     tableData.biaya_lain_uang_jalan_arr.reduce(
-                                      (acc, curr) =>
-                                        curr.sifat === "Menambahkan"
-                                          ? acc + curr.nominal
-                                          : acc - curr.nominal,
+                                      (acc, curr) => acc + curr.nominal,
                                       0
                                     )
                                   )}</a
@@ -1216,7 +1219,11 @@
                                                 tableData.biaya_lain_uang_jalan.concat(
                                                   {
                                                     m_tambahan_id: sifat.id,
-                                                    nominal: sifat.id === "Menambahkan" ? biaya : -biaya,
+                                                    nominal:
+                                                      sifat.sifat ===
+                                                      "Menambahkan"
+                                                        ? biaya
+                                                        : -biaya,
                                                   }
                                                 ),
                                             },
@@ -1248,10 +1255,7 @@
                             Rp. {IDRFormatter.format(
                               tableData.harga_order +
                                 tableData.biaya_lain_harga_order_arr.reduce(
-                                  (acc, curr) =>
-                                    curr.sifat === "Menambahkan"
-                                      ? acc + curr.nominal
-                                      : acc - curr.nominal,
+                                  (acc, curr) => acc + curr.nominal,
                                   0
                                 ) -
                                 tableData.total_mutasi_order -
@@ -1300,14 +1304,15 @@
                                 ).then(() => {
                                   toggleDeleteModal(index);
                                   isDataValid.set(false);
-                                  getdata(`${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`);
+                                  getdata(
+                                    `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+                                  );
                                 });
                               }}
-                              >
+                            >
                               <h1
                                 slot="header"
-                                class="font-semibold text-2xl {color ===
-                                'light'
+                                class="font-semibold text-2xl {color === 'light'
                                   ? 'text-blueGray-700'
                                   : 'text-white'}"
                               >
@@ -1592,7 +1597,8 @@
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                           >
-                            {tableData.subkon.nama_perusahaan}/ {tableData.nopol_subkon} / {tableData.sopir_subkon}
+                            {tableData.subkon.nama_perusahaan}/ {tableData.nopol_subkon}
+                            / {tableData.sopir_subkon}
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
@@ -1639,10 +1645,7 @@
                                 >
                                   Rp. {IDRFormatter.format(
                                     tableData.biaya_lain_harga_order_arr.reduce(
-                                      (acc, curr) =>
-                                        curr.sifat === "Menambahkan"
-                                          ? acc + curr.nominal
-                                          : acc - curr.nominal,
+                                      (acc, curr) => acc + curr.nominal,
                                       0
                                     )
                                   )}</a
@@ -1803,10 +1806,7 @@
                                 tableData.total_mutasi_order -
                                 tableData.total_pajak +
                                 tableData.biaya_lain_harga_order_arr.reduce(
-                                  (acc, curr) =>
-                                    curr.sifat === "Menambahkan"
-                                      ? acc + curr.nominal
-                                      : acc - curr.nominal,
+                                  (acc, curr) => acc + curr.nominal,
                                   0
                                 )
                             )}
@@ -1853,10 +1853,7 @@
                                 >
                                   Rp. {IDRFormatter.format(
                                     tableData.biaya_lain_harga_jual_arr.reduce(
-                                      (acc, curr) =>
-                                        curr.sifat === "Menambahkan"
-                                          ? acc + curr.nominal
-                                          : acc - curr.nominal,
+                                      (acc, curr) => acc + curr.nominal,
                                       0
                                     ) //+
                                     // tableData.biaya_lain_uang_jalan_arr.reduce(
@@ -1925,7 +1922,7 @@
                                                 >Silahkan pilih sifat biaya</option
                                               >
                                               {#each dataTambahan as tambahan}
-                                                <option value={tambahan.id}>
+                                                <option value={tambahan}>
                                                   {tambahan.nama} | {tambahan.sifat}
                                                 </option>
                                               {/each}
@@ -1974,8 +1971,12 @@
                                               biaya_lain_harga_jual:
                                                 tableData.biaya_lain_harga_jual.concat(
                                                   {
-                                                    m_tambahan_id: sifat,
-                                                    nominal: biaya,
+                                                    m_tambahan_id: sifat.id,
+                                                    nominal:
+                                                      sifat.sifat ===
+                                                      "Menambahkan"
+                                                        ? biaya
+                                                        : -biaya,
                                                   }
                                                 ),
                                             },
@@ -2003,10 +2004,7 @@
                             Rp. {IDRFormatter.format(
                               tableData.harga_jual +
                                 tableData.biaya_lain_harga_jual_arr.reduce(
-                                  (acc, curr) =>
-                                    curr.sifat === "Menambahkan"
-                                      ? acc + curr.nominal
-                                      : acc - curr.nominal,
+                                  (acc, curr) => acc + curr.nominal,
                                   0
                                 ) -
                                 tableData.total_mutasi_jual
@@ -2047,7 +2045,9 @@
                                 ).then(() => {
                                   isDataValid.set(false);
 
-                                  getdata(`${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`);
+                                  getdata(
+                                    `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+                                  );
                                 });
                               }}
                               class="w-full"
