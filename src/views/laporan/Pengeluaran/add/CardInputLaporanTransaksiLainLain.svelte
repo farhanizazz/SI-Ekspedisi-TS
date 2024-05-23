@@ -44,7 +44,8 @@
       res.json().then((res) => {
         console.log(res);
         if (res.status != "error") {
-          navigate("/transaksi/hutangSopir");
+          navigate("/transaksi/pengeluaran");
+
         } else {
           error = res.message;
         }
