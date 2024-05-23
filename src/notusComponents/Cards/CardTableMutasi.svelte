@@ -146,7 +146,7 @@
                   <td
                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData[header] == 'Pembayaran Penjualan' || tableData[header] == 'Pembayaran Uang Jalan' ? 'text-red-500' : ''}"
                   >
-                    {typeof tableData[header] == "number" && (header != 'id' && header != 'm_rekening_id') ? 'Rp. ' + IDRFormatter.format(tableData[header]) : tableData[header]}
+                    {typeof tableData[header] == "number" && (header != 'id' && header != 'm_rekening_id' && header != 'jumlah') ? 'Rp. ' + IDRFormatter.format(tableData[header]) : tableData[header]}
                   </td>
                 {/if}
               {/each}

@@ -9,6 +9,8 @@
   let data = {
     master_armada_id: "",
     nama_toko: "",
+    nama_barang: "lorem",
+    kategori_servis: "servis",
     nota_beli_items: [],
     // nomor_nota: "",
     // ket_trans: "",
@@ -85,7 +87,7 @@
           isDataValid = true;
         })
         .catch((err) => {
-          navigate("/admin/dashboard");
+          navigate("/transaksi/pengeluaran");
         });
     }
   }
@@ -121,7 +123,7 @@
 
   function handleSubmit() {
     data.nota_beli_items = simplifiedDataTransaksi;
-    const response = fetch(`${mainUrl}/api/master/laporan/servis`, {
+    const response = fetch(`${mainUrl}/api/laporan/servis`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { type LaporanServis } from './models/LaporanModel.ts';
   import CardEditSubkon from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditSubkon.svelte";
   import CardTable from "../../../notusComponents/Cards/CardTable.svelte";
   // core components
@@ -12,8 +13,10 @@
   import CardInputLaporanTransaksi from "../../../notusComponents/Cards/CardInput/CardInputLaporanTransaksi.svelte";
   import CardInputLaporanTransaksiServis from "./add/CardInputLaporanTransaksiServis.svelte";
   import CardInputLaporanTransaksiLainLain from "./add/CardInputLaporanTransaksiLainLain.svelte";
+  import CardTableLaporan from '../../../notusComponents/Cards/CardTableLaporan.svelte';
+  import LaporanServisDetail from './details/LaporanServisDetail.svelte';
 
-  let dataServis = [];
+  let dataServis: LaporanServis[] = [];
   const headingPengeluaran = [
     "ID",
     "Tanggal Servis",
@@ -22,17 +25,24 @@
   ];
 
   function fetchDataServis() {
-    fetch(`${mainUrl}/api/master/laporan/servis`, {
+    fetch(`${mainUrl}/api/laporan/servis`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
     }).then((res) => {
       res.json().then((res) => {
-        res.data.forEach((e) => {
+        res.data.forEach((e: LaporanServis | any) => {
           delete e.created_at;
           delete e.updated_at;
           delete e.master_armada_id;
           delete e.nota_beli_id;
+          delete e.kategori_servis;
+          delete e.nama_tujuan_lain;
+          delete e.keterangan_lain;
+          delete e.nominal_lain;
+          delete e.jumlah_lain;
+          delete e.total_lain;
+          delete e.nota_beli_items;
           e.master_armada = e.master_armada.nopol;
         });
         dataServis = res.data;
@@ -42,7 +52,7 @@
 
   let openTab = 1;
 
-  function toggleTabs(tabNumber) {
+  function toggleTabs(tabNumber: number) {
     openTab = tabNumber;
   }
 </script>
@@ -83,7 +93,7 @@
           </div>
         </div>
         {#if openTab === 1}
-          <CardTable
+          <CardTableLaporan
             tableHeading={headingPengeluaran}
             href="/transaksi/pengeluaran/servis"
             deleteApi={`${mainUrl}/api/transaksi/`}
@@ -104,6 +114,9 @@
       </Route>
       <Route path="servis/add">
         <CardInputLaporanTransaksiServis />
+      </Route>
+      <Route path="servis/laporan/:id" let:params>
+        <LaporanServisDetail id={params.id} />
       </Route>
       <Route path="lain-lain/add">
         <CardInputLaporanTransaksiLainLain />
