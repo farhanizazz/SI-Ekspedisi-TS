@@ -12,9 +12,10 @@
   import { mainUrl } from "../../../environment";
   import CardInputLaporanTransaksi from "../../../notusComponents/Cards/CardInput/CardInputLaporanTransaksi.svelte";
   import CardInputLaporanTransaksiServis from "./add/CardInputLaporanTransaksiServis.svelte";
-  import CardInputLaporanTransaksiLainLain from "./add/CardInputLaporanTransaksiLainLain.svelte";
+  import CardInputLaporanTransaksiLainLain from "./edit/CardEditLaporanTransaksiLainLain.svelte";
   import CardTableLaporan from '../../../notusComponents/Cards/CardTableLaporan.svelte';
   import LaporanServisDetail from './details/LaporanServisDetail.svelte';
+  import CardEditLaporanTransaksiServis from './edit/CardEditLaporanTransaksiServis.svelte';
 
   let dataServis: LaporanServis[] = [];
   const headingPengeluaran = [
@@ -96,7 +97,7 @@
           <CardTableLaporan
             tableHeading={headingPengeluaran}
             href="/transaksi/pengeluaran/servis"
-            deleteApi={`${mainUrl}/api/transaksi/`}
+            deleteApi={`${mainUrl}/api/laporan/servis/`}
             heading="Data Pengeluaran Servis"
             data={dataServis}
             onLoad={fetchDataServis}
@@ -121,8 +122,8 @@
       <Route path="lain-lain/add">
         <CardInputLaporanTransaksiLainLain />
       </Route>
-      <Route path="edit/:edit" let:params>
-        <CardEditSubkon id={params.edit} />
+      <Route path="servis/edit/:edit" let:params>
+        <CardEditLaporanTransaksiServis id={params.edit} />
       </Route>
     </Router>
   </div>

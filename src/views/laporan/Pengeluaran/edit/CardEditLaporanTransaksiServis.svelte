@@ -52,14 +52,14 @@
   let simplifiedDataTransaksi;
 
   $: simplifiedDataTransaksi = dataTransaksi.map((row) => {
-  
     let simplifiedRow = {
-    nama_barang: row[1].value,
-    harga: row[2].value,
-    jumlah: row[3].value,
-  };
-  return simplifiedRow;
-});
+      id: row[0].value,
+      nama_barang: row[1].value,
+      harga: row[2].value,
+      jumlah: row[3].value,
+    };
+    return simplifiedRow;
+  });
 
   function deleteRow(index) {
     dataTransaksi = dataTransaksi.filter((e, i) => i != index);
@@ -110,6 +110,7 @@
         Authorization: `bearer ${getCookie("token")}`,
       },
     });
+
     response.data.data.forEach((e) => {
       delete e.created_at;
       delete e.updated_at;
@@ -121,17 +122,38 @@
 
   onMount(async () => {
     await getData();
+    const nota_servis_response = await axios.get(
+      `${mainUrl}/api/laporan/servis/${id}`,
+      {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+        },
+      }
+    );
+
+    data = nota_servis_response.data.data;
+    data.nama_barang = "lorem";
+    console.log(data);
+    dataTransaksi = data.nota_beli_items.map((item) => {
+      return [
+        { column: "No", value: item.id },
+        { column: "Keterangan / Nama barang", value: item.nama_barang },
+        { column: "Harga", value: item.harga },
+        { column: "Jumlah", value: item.jumlah },
+        { column: "Sub total", value: item.harga * item.jumlah },
+      ];
+    });
   });
 
   function handleSubmit() {
     data.nota_beli_items = simplifiedDataTransaksi;
-    const response = fetch(`${mainUrl}/api/laporan/servis`, {
+    const response = fetch(`${mainUrl}/api/laporan/servis/${id}`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify(data),
     }).then((res) => {
       res.json().then((res) => {
@@ -262,10 +284,12 @@
           <thead>
             <tr>
               {#each columnTransaksi as column}
-                <th
-                  class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                  >{column}</th
-                >
+                {#if column !== "No"}
+                  <th
+                    class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-50 text-blueGray-500 border-blueGray-100"
+                    >{column}</th
+                  >
+                {/if}
               {/each}
               <th
                 class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-50 text-blueGray-500 border-blueGray-100"
@@ -276,27 +300,29 @@
           {#each dataTransaksi as row, index}
             <tr>
               {#each row as field, indexField}
-                <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
-                >
-                  {#if field.column === "Harga" || field.column === "Jumlah"}
-                    <input
-                      type="number"
-                      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder={field.column}
-                      bind:value={field.value}
-                    />
-                  {:else if field.column !== "Sub total"}
-                    <input
-                      type="text"
-                      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder={field.column}
-                      bind:value={field.value}
-                    />
-                  {:else}
-                    Rp. {IDRFormatter.format(field.value)}
-                  {/if}
-                </td>
+                {#if field.column !== "No"}
+                  <td
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
+                  >
+                    {#if field.column === "Harga" || field.column === "Jumlah"}
+                      <input
+                        type="number"
+                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        placeholder={field.column}
+                        bind:value={field.value}
+                      />
+                    {:else if field.column !== "Sub total"}
+                      <input
+                        type="text"
+                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        placeholder={field.column}
+                        bind:value={field.value}
+                      />
+                    {:else}
+                      Rp. {IDRFormatter.format(field.value)}
+                    {/if}
+                  </td>
+                {/if}
               {/each}
               <td>
                 <button on:click={() => deleteRow(index)}>Hapus</button>
