@@ -19,13 +19,13 @@
     tanggal_servis: "",
   };
   const columnTransaksi = [
-    "No",
     "Keterangan / Nama barang",
     "Harga",
     "Jumlah",
+    "Rekening",
     "Sub total",
   ];
-  let dataTransaksi = [];
+  let dataTransaksi: any[] = [];
 
   function addRow() {
     let newRow = columnTransaksi.map((column) => {
@@ -39,9 +39,11 @@
 
   $: {
     dataTransaksi.forEach((row) => {
-      let hargaField = row.find((field) => field.column === "Harga");
-      let jumlahField = row.find((field) => field.column === "Jumlah");
-      let subtotalField = row.find((field) => field.column === "Sub total");
+      let hargaField = row.find((field: any) => field.column === "Harga");
+      let jumlahField = row.find((field: any) => field.column === "Jumlah");
+      let subtotalField = row.find(
+        (field: any) => field.column === "Sub total"
+      );
       if (hargaField && jumlahField && subtotalField) {
         subtotalField.value =
           Number(hargaField.value) * Number(jumlahField.value);
@@ -49,14 +51,16 @@
     });
   }
 
-  let simplifiedDataTransaksi;
+  let simplifiedDataTransaksi: any;
 
   $: simplifiedDataTransaksi = dataTransaksi.map((row) => {
+    console.log(row);
+
     let simplifiedRow = {
-      id: row[0].value,
-      nama_barang: row[1].value,
-      harga: row[2].value,
-      jumlah: row[3].value,
+      nama_barang: row[0].value,
+      harga: row[1].value,
+      jumlah: row[2].value,
+      master_rekening_id: row[4].value,
     };
     return simplifiedRow;
   });
@@ -66,8 +70,9 @@
   }
 
   let sopirs = [];
+  let rekenings = [];
 
-  let isDataValid = true;
+  let isDataValid = false;
 
   async function getData() {
     var cachelife = 5000;
@@ -85,7 +90,8 @@
         .then((res) => {
           var json = { data: res, cachetime: Date.now() / 1000 };
           localStorage.setItem("armada", JSON.stringify(json));
-          sopirs = res;
+          sopirs = res.armada;
+          rekenings = res.rekening;
           isDataValid = true;
         })
         .catch((err) => {
@@ -111,11 +117,31 @@
       },
     });
 
-    response.data.data.forEach((e) => {
+    const response_rekening = await axios.get(
+      `${mainUrl}/api/master/rekening`,
+      {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+        },
+      }
+    );
+
+    const data = {
+      armada: response.data.data,
+      rekening: response_rekening.data.data,
+    };
+
+    data.armada.forEach((e: any) => {
       delete e.created_at;
       delete e.updated_at;
     });
-    return response.data.data;
+
+    data.rekening.forEach((e: any) => {
+      delete e.created_at;
+      delete e.updated_at;
+    });
+
+    return data;
   }
 
   let IDRFormatter = new Intl.NumberFormat("id-ID");
@@ -132,14 +158,14 @@
     );
 
     data = nota_servis_response.data.data;
+    console.log(nota_servis_response);
     data.nama_barang = "lorem";
-    console.log(data);
     dataTransaksi = data.nota_beli_items.map((item) => {
       return [
-        { column: "No", value: item.id },
         { column: "Keterangan / Nama barang", value: item.nama_barang },
         { column: "Harga", value: item.harga },
         { column: "Jumlah", value: item.jumlah },
+        { column: "Rekening", value: item.master_rekening_id },
         { column: "Sub total", value: item.harga * item.jumlah },
       ];
     });
@@ -284,12 +310,10 @@
           <thead>
             <tr>
               {#each columnTransaksi as column}
-                {#if column !== "No"}
-                  <th
-                    class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                    >{column}</th
-                  >
-                {/if}
+                <th
+                  class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-50 text-blueGray-500 border-blueGray-100"
+                  >{column}</th
+                >
               {/each}
               <th
                 class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-50 text-blueGray-500 border-blueGray-100"
@@ -300,29 +324,71 @@
           {#each dataTransaksi as row, index}
             <tr>
               {#each row as field, indexField}
-                {#if field.column !== "No"}
-                  <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
-                  >
-                    {#if field.column === "Harga" || field.column === "Jumlah"}
+                <td
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4"
+                >
+                  {#if field.column === "Harga" || field.column === "Jumlah"}
+                    <div class="flex flex-col">
                       <input
                         type="number"
                         class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                         placeholder={field.column}
                         bind:value={field.value}
                       />
-                    {:else if field.column !== "Sub total"}
+
+                      {#if `nota_beli_items.${index}.harga` in error || `nota_beli_items.${index}.jumlah` in error}
+                        <p class="text-red-500 text-sm">
+                          {field.column === "Harga" &&
+                          error[`nota_beli_items.${index}.harga`]
+                            ? error[`nota_beli_items.${index}.harga`]
+                            : ""}
+                          {field.column === "Jumlah" &&
+                          error[`nota_beli_items.${index}.jumlah`]
+                            ? error[`nota_beli_items.${index}.jumlah`]
+                            : ""}
+                        </p>
+                      {/if}
+                    </div>
+                  {:else if field.column === "Rekening"}
+                    <div class="flex flex-col">
+                      <select
+                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        bind:value={field.value}
+                      >
+                        <option>Silahkan Pilih Rekening</option>
+                        {#each rekenings as rekening}
+                          <option value={rekening.id}
+                            >{rekening.nama_bank} | {rekening.atas_nama} | {rekening.nomor_rekening}</option
+                          >
+                        {/each}
+                      </select>
+                      {#if `nota_beli_items.${index}.master_rekening_id` in error}
+                        <p class="text-red-500 text-sm">
+                          Mohon memilih rekening
+                        </p>
+                      {/if}
+                    </div>
+                  {:else if field.column !== "Sub total"}
+                    <div class="flex flex-col">
                       <input
                         type="text"
                         class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                         placeholder={field.column}
                         bind:value={field.value}
                       />
-                    {:else}
-                      Rp. {IDRFormatter.format(field.value)}
-                    {/if}
-                  </td>
-                {/if}
+                      {#if error[`nota_beli_items.${index}.nama_barang`]}
+                        <p class="text-red-500 text-sm">
+                          {field.column === "Keterangan / Nama barang" &&
+                          error[`nota_beli_items.${index}.nama_barang`]
+                            ? error[`nota_beli_items.${index}.nama_barang`]
+                            : ""}
+                        </p>
+                      {/if}
+                    </div>
+                  {:else}
+                    Rp. {IDRFormatter.format(field.value)}
+                  {/if}
+                </td>
               {/each}
               <td>
                 <button on:click={() => deleteRow(index)}>Hapus</button>

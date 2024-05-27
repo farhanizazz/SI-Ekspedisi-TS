@@ -34,6 +34,8 @@
           }).then((res) => {
             res.json().then((res) => {
               res.data.nota_beli_items.forEach((e: NotaBeliItem) => {
+                delete e.master_rekening_id;
+                delete e.mutasi;
                 delete e.created_at;
                 delete e.updated_at;
                 delete e.servis_id;
@@ -53,6 +55,7 @@
     <CardTableMutasi
       tableHeading={heading}
       addData={false}
+      withEdit={false}
       href="/admin/rekening/mutasi"
       deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
       heading="Data Laporan Servis"
