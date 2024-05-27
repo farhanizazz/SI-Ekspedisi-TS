@@ -79,7 +79,7 @@
     return response.data.data;
   }
 
-  var isDataValid = true;
+  var isDataValid = false;
 
   async function getData() {
     var cachelife = 5000;
