@@ -16,12 +16,14 @@
   import CardTableLaporan from '../../../notusComponents/Cards/CardTableLaporan.svelte';
   import LaporanServisDetail from './details/LaporanServisDetail.svelte';
   import CardEditLaporanTransaksiServis from './edit/CardEditLaporanTransaksiServis.svelte';
+  import CardInputPembayaranLaporanTransaksiServis from './add/CardInputPembayaranLaporanTransaksiServis.svelte';
 
   let dataServis: LaporanServis[] = [];
   const headingPengeluaran = [
     "ID",
     "Tanggal Servis",
     "Nama Toko",
+    "Total",
     "Armada",
   ];
 
@@ -124,6 +126,9 @@
       </Route>
       <Route path="servis/edit/:edit" let:params>
         <CardEditLaporanTransaksiServis id={params.edit} />
+      </Route>
+      <Route path="servis/laporan/:id/add/" let:params>
+        <CardInputPembayaranLaporanTransaksiServis id={params.id} />
       </Route>
     </Router>
   </div>

@@ -11,9 +11,7 @@
   let data: NotaBeliItem[] = [];
   const heading = [
     "ID",
-    "Nama Barang",
-    "Harga",
-    "Jumlah",
+    "Nominal",
   ];
 
   function fetchData() {
@@ -33,14 +31,17 @@
             },
           }).then((res) => {
             res.json().then((res) => {
-              res.data.nota_beli_items.forEach((e: NotaBeliItem) => {
+              res.data.servis_mutasi.forEach((e: NotaBeliItem) => {
+                delete e.master_mutasi_id;
                 delete e.master_rekening_id;
                 delete e.mutasi;
                 delete e.created_at;
                 delete e.updated_at;
                 delete e.servis_id;
+                e.nominal = e.master_mutasi.nominal;
+                delete e.master_mutasi;
               });
-              data = res.data.nota_beli_items;
+              data = res.data.servis_mutasi;
               console.log(data);
             });
           });
@@ -54,10 +55,10 @@
   <div class="w-full mb-12 px-4">
     <CardTableMutasi
       tableHeading={heading}
-      addData={false}
+      addData={true}
       withEdit={false}
-      href="/admin/rekening/mutasi"
-      deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
+      href="/transaksi/pengeluaran/servis/laporan/{id}"
+      deleteApi={`${mainUrl}/api/laporan/servis/mutasi/`}
       heading="Data Laporan Servis"
       {data}
       onLoad={fetchData}
