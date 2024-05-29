@@ -3,6 +3,7 @@
   import { navigate } from "svelte-routing";
   import { mainUrl } from "../../../environment";
   import { getCookie } from "svelte-cookie";
+  import Select from "svelte-select";
 
   export let onSuccess;
 
@@ -128,7 +129,7 @@
   });
 
   function handleSubmit() {
-    if(data.status_kendaraan == "Sendiri"){
+    if (data.status_kendaraan == "Sendiri") {
       data.m_subkon_id = null;
       data.nopol_subkon = null;
       data.sopir_subkon = null;
@@ -156,7 +157,6 @@
       });
     });
   }
-  
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
@@ -310,16 +310,19 @@
           >
             Penyewa
           </label>
-          <select
+          <Select
+            showChevron={true}
+            placeholder=""
             id="grid-penyewa"
             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-            bind:value={data.m_penyewa_id}
-          >
-            <option>Silahkan Pilih Penyewa</option>
-            {#each penyewas as penyewa}
-              <option value={penyewa.id}>{penyewa.nama_perusahaan}</option>
-            {/each}
-          </select>
+            items={penyewas.map((penyewa) => ({
+              value: penyewa.id,
+              label: penyewa.nama_perusahaan,
+            }))}
+            bind:justValue={data.m_penyewa_id}
+            label="label"
+            searchable={true}
+          />
           {#if "m_penyewa_id" in error}
             <p class="text-red-500 text-sm">{error.m_penyewa_id}</p>
           {/if}
@@ -503,16 +506,19 @@
             >
               Armada
             </label>
-            <select
-              id="grid-about-me"
+            <Select
+              showChevron={true}
+              placeholder=""
+              id="grid-armada"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              bind:value={data.m_armada_id}
-            >
-              <option>Silahkan Pilih Armada</option>
-              {#each armadas as armada}
-                <option value={armada.id}>{armada.nopol}</option>
-              {/each}
-            </select>
+              items={armadas.map((armada) => ({
+                value: armada.id,
+                label: armada.nopol,
+              }))}
+              bind:justValue={data.id}
+              label="label"
+              searchable={true}
+            />
             {#if "status_kendaraan" in error}
               <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
             {/if}
@@ -525,16 +531,19 @@
             >
               Sopir
             </label>
-            <select
-              id="grid-about-me"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              bind:value={data.m_sopir_id}
-            >
-              <option>Silahkan Pilih Sopir</option>
-              {#each sopirs as sopir}
-                <option value={sopir.id}>{sopir.nama}</option>
-              {/each}
-            </select>
+            <Select
+            showChevron={true}
+            id="grid-penyewa"
+            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+            items={sopirs.map((sopir) => ({
+              value: sopir.id,
+              label: sopir.nama,
+            }))}
+            bind:justValue={data.m_sopir_id}
+            label="label"
+            searchable={true}
+            placeholder=""
+          />
             {#if "sopir" in error}
               <p class="text-red-500 text-sm">{error.sopir}</p>
             {/if}
@@ -570,7 +579,7 @@
             >
               Subkon
             </label>
-            <select
+            <!-- <select
               id="grid-about-me"
               disabled={data.status_kendaraan != "Subkon"}
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -580,7 +589,20 @@
               {#each subkons as subkon}
                 <option value={subkon.id}>{subkon.nama_perusahaan}</option>
               {/each}
-            </select>
+            </select> -->
+            <Select
+              showChevron={true}
+              placeholder=""
+              id="grid-subkon"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              items={subkons.map((subkon) => ({
+                value: subkon.id,
+                label: subkon.nama_perusahaan,
+              }))}
+              bind:justValue={data.m_subkon_id}
+              label="label"
+              searchable={true}
+            />
             {#if "m_subkon_id" in error}
               <p class="text-red-500 text-sm">{error.m_subkon_id}</p>
             {/if}
