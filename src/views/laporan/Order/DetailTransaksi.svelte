@@ -1,4 +1,5 @@
 <script>
+	import { transaksi } from './stores/TransaksiStores.ts';
   import { IDRFormatter } from "./../../../helper/idrFormatter.js";
   import CardInputDetailTransaksi from "../../../notusComponents/Cards/CardInput/CardInputDetailTransaksi.svelte";
   import { Router, Route } from "svelte-routing";
@@ -48,6 +49,10 @@
       delete copy.transaksi_order_id;
       delete copy.master_rekening_id;
       delete copy.jenis_transaksi;
+      delete copy.model_type;
+      delete copy.model_id;
+      delete copy.asal_transaksi;
+      delete copy.transaksi_order;
       if (copy.keterangan == null) {
         copy.keterangan = "Tidak ada keterangan";
       }
@@ -150,17 +155,7 @@
               <br />
               <!-- Total mutasi: {dataOriginal.data[0].detail.mutasi}
             <br /> -->
-              Sisa uang jalan: Rp. {IDRFormatter.format(
-                dataOriginal.data[0].detail.harga_order +
-                  dataOriginal.data[0].detail.biaya_lain_harga_order_arr.reduce(
-                    (acc, curr) => {
-                        return acc + curr.nominal;
-                    },
-                    0
-                  ) -
-                  dataOriginal.data[0].detail.mutasi_order -
-                  dataOriginal.data[0].detail.total_pajak
-              )}
+              Sisa uang jalan: Rp. {IDRFormatter.format(dataOriginal.data[0].detail.sisa_uang_jalan)}
               <br />
             {:else if jenis == "jual"}
             <!-- 

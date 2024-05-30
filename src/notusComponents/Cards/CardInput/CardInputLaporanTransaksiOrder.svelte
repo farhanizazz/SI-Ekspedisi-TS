@@ -515,12 +515,12 @@
                 value: armada.id,
                 label: armada.nopol,
               }))}
-              bind:justValue={data.id}
+              bind:justValue={data.m_armada_id}
               label="label"
               searchable={true}
             />
-            {#if "status_kendaraan" in error}
-              <p class="text-red-500 text-sm">{error.status_kendaraan}</p>
+            {#if "m_armada_id" in error}
+              <p class="text-red-500 text-sm">{error.m_armada_id}</p>
             {/if}
           </div>
 
