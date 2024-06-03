@@ -23,8 +23,10 @@
     "ID",
     "Tanggal Servis",
     "Nama Toko",
-    "Total",
-    "Armada",
+    "Keterangan / Nama Barang",
+    "Harga",
+    "Jumlah / Satuan",
+    "Sub Total"
   ];
 
   function fetchDataServis() {
@@ -34,20 +36,6 @@
       },
     }).then((res) => {
       res.json().then((res) => {
-        res.data.forEach((e: LaporanServis | any) => {
-          delete e.created_at;
-          delete e.updated_at;
-          delete e.master_armada_id;
-          delete e.nota_beli_id;
-          delete e.kategori_servis;
-          delete e.nama_tujuan_lain;
-          delete e.keterangan_lain;
-          delete e.nominal_lain;
-          delete e.jumlah_lain;
-          delete e.total_lain;
-          delete e.nota_beli_items;
-          e.master_armada = e.master_armada.nopol;
-        });
         dataServis = res.data;
       });
     });
