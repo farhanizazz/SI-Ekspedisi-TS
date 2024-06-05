@@ -273,9 +273,7 @@
               </td>
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border font-semibold"
-                >{tableData.kategori_servis === "servis"
-                  ? "LUNAS"
-                  : "BELUM LUNAS"}
+                >{tableData['total'] > tableData["total_mutasi"] ? "Belum Lunas" : "Lunas"}
                 <div class="flex flex-row">
                   {#if withEdit === true}
                     <a use:link href={`${href}/edit/${tableData.id}`}>

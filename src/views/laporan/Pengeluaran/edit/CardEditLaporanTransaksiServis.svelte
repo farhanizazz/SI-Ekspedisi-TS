@@ -60,7 +60,6 @@
       nama_barang: row[0].value,
       harga: row[1].value,
       jumlah: row[2].value,
-      master_rekening_id: row[4].value,
     };
     return simplifiedRow;
   });
@@ -70,7 +69,6 @@
   }
 
   let sopirs = [];
-  let rekenings = [];
 
   let isDataValid = false;
 
@@ -91,7 +89,6 @@
           var json = { data: res, cachetime: Date.now() / 1000 };
           localStorage.setItem("armada", JSON.stringify(json));
           sopirs = res.armada;
-          rekenings = res.rekening;
           isDataValid = true;
         })
         .catch((err) => {
@@ -117,26 +114,11 @@
       },
     });
 
-    const response_rekening = await axios.get(
-      `${mainUrl}/api/master/rekening`,
-      {
-        headers: {
-          Authorization: `bearer ${getCookie("token")}`,
-        },
-      }
-    );
-
     const data = {
       armada: response.data.data,
-      rekening: response_rekening.data.data,
     };
 
     data.armada.forEach((e: any) => {
-      delete e.created_at;
-      delete e.updated_at;
-    });
-
-    data.rekening.forEach((e: any) => {
       delete e.created_at;
       delete e.updated_at;
     });
@@ -165,7 +147,6 @@
         { column: "Keterangan / Nama barang", value: item.nama_barang },
         { column: "Harga", value: item.harga },
         { column: "Jumlah", value: item.jumlah },
-        { column: "Rekening", value: item.master_rekening_id },
         { column: "Sub total", value: item.harga * item.jumlah },
       ];
     });
@@ -347,25 +328,6 @@
                           error[`nota_beli_items.${index}.jumlah`]
                             ? error[`nota_beli_items.${index}.jumlah`]
                             : ""}
-                        </p>
-                      {/if}
-                    </div>
-                  {:else if field.column === "Rekening"}
-                    <div class="flex flex-col">
-                      <select
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        bind:value={field.value}
-                      >
-                        <option>Silahkan Pilih Rekening</option>
-                        {#each rekenings as rekening}
-                          <option value={rekening.id}
-                            >{rekening.nama_bank} | {rekening.atas_nama} | {rekening.nomor_rekening}</option
-                          >
-                        {/each}
-                      </select>
-                      {#if `nota_beli_items.${index}.master_rekening_id` in error}
-                        <p class="text-red-500 text-sm">
-                          Mohon memilih rekening
                         </p>
                       {/if}
                     </div>
