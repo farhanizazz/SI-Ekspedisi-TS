@@ -85,7 +85,6 @@
         </div>
         {#if openTab === 1}
           <CardTableLaporan
-            tableHeading={headingPengeluaran}
             href="/transaksi/pengeluaran/servis"
             deleteApi={`${mainUrl}/api/laporan/servis/`}
             heading="Data Pengeluaran Servis"

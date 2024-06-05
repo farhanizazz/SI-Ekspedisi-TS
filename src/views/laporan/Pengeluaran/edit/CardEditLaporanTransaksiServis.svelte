@@ -173,6 +173,7 @@
 
   function handleSubmit() {
     data.nota_beli_items = simplifiedDataTransaksi;
+    console.log(data);
     const response = fetch(`${mainUrl}/api/laporan/servis/${id}`, {
       headers: {
         "Content-Type": "application/json",
