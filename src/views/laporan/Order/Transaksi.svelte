@@ -86,26 +86,25 @@
   ) => {
     // set cache lifetime in seconds
     var cachelife = 5000;
+    let expired = true;
     //get cached data from local storage
     var localStorageData = localStorage.getItem("order");
     var cacheddata = await JSON.parse(localStorageData);
     if (cacheddata) {
-      var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
+      expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
     }
     //If cached data available and not expired return them.
-    isDataValid.subscribe((value) => {
-      if (cacheddata && !expired && value) {
-        transaksi.set(cacheddata.data);
-      } else {
-        //otherwise fetch data from api then save the data in localstorage
-        fetchData(url).then((res) => {
-          var json = { data: res.list, cachetime: Date.now() / 1000 };
-          localStorage.setItem("order", JSON.stringify(json));
-          transaksi.set(res.list);
-          metaData = res.meta;
-        });
-      }
-    });
+    // if (cacheddata && !expired) {
+    //     transaksi.set(cacheddata.data);
+    //   } else {
+    //     //otherwise fetch data from api then save the data in localstorage
+    //   }
+      fetchData(url).then((res) => {
+        var json = { data: res.list, cachetime: Date.now() / 1000 };
+        localStorage.setItem("order", JSON.stringify(json));
+        transaksi.set(res.list);
+        metaData = res.meta;
+      });
   };
 
   // $: data = data;
