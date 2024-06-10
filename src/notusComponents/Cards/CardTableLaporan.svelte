@@ -145,14 +145,6 @@
           >
             Sub total
           </th>
-          <th
-            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
-            'light'
-              ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-              : 'bg-red-700 text-red-200 border-red-600'}"
-          >
-            Status / Action
-          </th>
         </tr>
       </thead>
       {#if data.length > 0}
@@ -174,8 +166,10 @@
                   <td
                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                     rowspan={tableData.nota_beli_items.length}
-                    >{tableData.nama_toko}</td
-                  >
+                    >
+                    <!-- {tableData.} -->
+                    {tableData.nama_toko}
+                    </td>
                 {/if}
                 <td
                   class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
@@ -254,23 +248,7 @@
               </tr>
             {/each}
             <tr>
-              <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border"
-                colspan="6"
-              ></td>
-              <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border font-semibold"
-                >{IDRFormatter.format(tableData.total)}
-                <div>
-                  <a
-                    use:link
-                    href={`${href}/laporan/${tableData.id}`}
-                    class="whitespace-nowrap font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                  >
-                    Rp. {tableData["total_mutasi"]}</a
-                  >
-                </div>
-              </td>
+              <td colspan="5"/>
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border font-semibold"
                 >{tableData['total'] > tableData["total_mutasi"] ? "Belum Lunas" : "Lunas"}
@@ -307,6 +285,23 @@
                       Delete
                     </p>
                   </button>
+                </div>
+              </td>
+              <!-- <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border"
+                
+              ></td> -->
+              <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border font-semibold"
+                >{IDRFormatter.format(tableData.total)}
+                <div>
+                  <a
+                    use:link
+                    href={`${href}/laporan/${tableData.id}`}
+                    class="whitespace-nowrap font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
+                  >
+                    Rp. {IDRFormatter.format(tableData["total_mutasi"])}</a
+                  >
                 </div>
               </td>
             </tr>
