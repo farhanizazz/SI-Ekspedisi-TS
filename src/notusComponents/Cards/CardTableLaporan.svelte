@@ -167,7 +167,7 @@
                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
                     rowspan={tableData.nota_beli_items.length}
                     >
-                    <!-- {tableData.} -->
+                    No. {tableData.nomor_nota}<br/>
                     {tableData.nama_toko}
                     </td>
                 {/if}
