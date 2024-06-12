@@ -15,7 +15,7 @@
     nama_barang: "lorem",
     kategori_servis: "servis",
     nota_beli_items: [],
-    // nomor_nota: "",
+    nomor_nota: "",
     // ket_trans: "",
     tanggal_servis: "",
   };
@@ -270,6 +270,28 @@
             />
             {#if "nama_toko" in error}
               <p class="text-red-500 text-sm">{error.nama_toko}</p>
+            {/if}
+          </div>
+        </div>
+
+        <div class="w-full lg:w-12/12 px-4">
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              for="grid-alamat"
+            >
+              Nomor Nota
+            </label>
+            <input
+              id="grid-alamat"
+              type="text"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              placeholder="Masukkan nominal hutang"
+              name="alamat"
+              bind:value={data.nomor_nota}
+            />
+            {#if "nomor_nota" in error}
+              <p class="text-red-500 text-sm">{error.nomor_nota}</p>
             {/if}
           </div>
         </div>

@@ -85,14 +85,14 @@
     url = `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
   ) => {
     // set cache lifetime in seconds
-    var cachelife = 5000;
-    let expired = true;
+    // var cachelife = 5000;
+    // let expired = true;
     //get cached data from local storage
-    var localStorageData = localStorage.getItem("order");
-    var cacheddata = await JSON.parse(localStorageData);
-    if (cacheddata) {
-      expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
-    }
+    // var localStorageData = localStorage.getItem("order");
+    // var cacheddata = await JSON.parse(localStorageData);
+    // if (cacheddata) {
+    //   expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
+    // }
     //If cached data available and not expired return them.
     // if (cacheddata && !expired) {
     //     transaksi.set(cacheddata.data);
