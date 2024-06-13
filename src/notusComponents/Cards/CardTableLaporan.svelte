@@ -4,6 +4,7 @@
   import { getCookie } from "svelte-cookie";
   import { createEventDispatcher } from "svelte";
   import axios from "axios";
+  import Modal from "../Modal/Modal.svelte";
 
   export let color = "light";
   export let heading = "Invoice Table";
@@ -15,10 +16,17 @@
 
   let search = "";
   let dataSearch;
+  let deleteModal = [];
 
   export let data;
 
   onLoad();
+
+  function toggleDeleteModal(index) {
+    deleteModal[index] = !deleteModal[index];
+  }
+
+  $: deleteModal = Array(data.length).fill(false);
 
   $: dataSearch = search
     ? data.filter((item) =>
@@ -150,108 +158,91 @@
       {#if data.length > 0}
         <tbody>
           {#each data as tableData, index}
+            <Modal
+              bind:showModal={deleteModal[index]}
+              isLoading={false}
+              onAccept={() => {
+                if (deleteApi !== undefined) {
+                  fetch(deleteApi + `${tableData.id}`, {
+                    method: "delete",
+                    headers: {
+                      Authorization: `bearer ${getCookie("token")}`,
+                    },
+                  }).then(() => {
+                    onLoad();
+                  });
+                } else {
+                  handleDelete(tableData.id);
+                }
+                toggleDeleteModal(index);
+              }}
+              saveText="Hapus"
+            >
+              <h1
+                slot="header"
+                class="font-semibold text-2xl {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Hapus Data
+              </h1>
+              <h3
+                class="text-lg mt-5 {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Apakah anda yakin ingin menghapus data ini?
+              </h3>
+            </Modal>
             {#each tableData.nota_beli_items as item, itemIndex}
               <tr>
                 {#if itemIndex === 0}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
                     rowspan={tableData.nota_beli_items.length}
                     >{tableData.tanggal_servis}</td
                   >
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
                     rowspan={tableData.nota_beli_items.length}
                     >{tableData.master_armada.nopol}</td
                   >
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
                     rowspan={tableData.nota_beli_items.length}
-                    >
-                    No. {tableData.nomor_nota}<br/>
+                  >
+                    No. {tableData.nomor_nota}<br />
                     {tableData.nama_toko}
-                    </td>
+                  </td>
                 {/if}
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
                   >{item.nama_barang}</td
                 >
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
                   >{IDRFormatter.format(item.harga)}</td
                 >
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
                   >{item.jumlah}</td
                 >
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
                   >{IDRFormatter.format(item.harga * item.jumlah)}</td
                 >
-                <!-- <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                >
-                  <button
-                    on:click={async () => {
-                      const itemIdToDelete = item.id;
-                      let dataDetail = (await axios.get(
-                        `${deleteApi}${tableData.id}`,
-                        {
-                          headers: {
-                            Authorization: `bearer ${getCookie("token")}`,
-                          },
-                        }
-                      )).data.data;
-                      dataDetail.nota_beli_items = dataDetail.nota_beli_items.filter(
-                        (item) => item.id !== itemIdToDelete
-                      );
-                      dataDetail.nama_barang = '1'
-                      console.log(dataDetail);
-
-                      if (deleteApi !== undefined) {
-                        // fetch(deleteApi + `${tableData.id}`, {
-                        //   body: JSON.stringify({ data }),
-                        //   method: "put",
-                        //   headers: {
-                        //     Authorization: `bearer ${getCookie("token")}`,
-                        //   },
-                        // }).then(() => {
-                        //   onLoad();
-                        // });
-                        axios
-                          .put(
-                            deleteApi + `${tableData.id}`,
-                            JSON.stringify(dataDetail),
-                            {
-                              headers: {
-                                Authorization: `bearer ${getCookie("token")}`,
-                                "Content-Type": "application/json",
-                                Accept: "application/json",
-                              },
-                            }
-                          )
-                          .then(() => {
-                            onLoad();
-                          });
-                      } else {
-                        handleDelete(tableData.id);
-                      }
-                    }}
-                    class="w-full"
-                  >
-                    <p
-                      class="text-center bg-red-500 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                    >
-                      Delete
-                    </p>
-                  </button>
-                </td> -->
               </tr>
             {/each}
             <tr>
-              <td colspan="5"/>
               <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border font-semibold"
-                >{tableData['total'] > tableData["total_mutasi"] ? "Belum Lunas" : "Lunas"}
+                colspan="5"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 border font-semibold"
+              />
+              <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 border font-semibold"
+                >{tableData["total"] > tableData["total_mutasi"]
+                  ? "Belum Lunas"
+                  : "Lunas"}
                 <div class="flex flex-row">
                   {#if withEdit === true}
                     <a use:link href={`${href}/edit/${tableData.id}`}>
@@ -264,18 +255,7 @@
                   {/if}
                   <button
                     on:click={() => {
-                      if (deleteApi !== undefined) {
-                        fetch(deleteApi + `${tableData.id}`, {
-                          method: "delete",
-                          headers: {
-                            Authorization: `bearer ${getCookie("token")}`,
-                          },
-                        }).then(() => {
-                          onLoad();
-                        });
-                      } else {
-                        handleDelete(tableData.id);
-                      }
+                      toggleDeleteModal(index);
                     }}
                     class="w-full"
                   >
@@ -288,11 +268,11 @@
                 </div>
               </td>
               <!-- <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 border"
                 
               ></td> -->
               <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 border font-semibold"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 border font-semibold"
                 >{IDRFormatter.format(tableData.total)}
                 <div>
                   <a

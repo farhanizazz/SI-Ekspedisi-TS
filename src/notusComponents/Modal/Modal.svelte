@@ -26,7 +26,7 @@
     <!-- svelte-ignore a11y-autofocus -->
     <!-- <button autofocus on:click={() => dialog.close()}>close modal</button> -->
     <div
-      class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
+      class="flex items-center justify-end p-6 border-t border-blueGray-200 rounded-b border-none"
     >
       <button
         class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -37,14 +37,14 @@
       </button>
       {#if onAccept === undefined}
         <button
-          class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+          class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
           type="submit"
         >
           {isLoading ? "Loading..." : saveText}
         </button>
       {:else}
         <button
-          class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+          class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
           type="button"
 		  on:click={onAccept}
         >
