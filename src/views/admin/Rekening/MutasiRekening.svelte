@@ -1,5 +1,5 @@
 <script>
-	import CardTableMutasi from './../../../notusComponents/Cards/CardTableMutasi.svelte';
+  import CardTableMutasi from "./../../../notusComponents/Cards/CardTableMutasi.svelte";
   import CardTable from "../../../notusComponents/Cards/CardTable.svelte";
   import { getCookie } from "svelte-cookie";
   import { mainUrl } from "../../../environment";
@@ -10,7 +10,16 @@
 
   export let id;
   let data = [];
-  const heading = ["ID", "Tanggal pembayaran", "Nominal","Jenis Transaksi", "Keterangan", "Pembuat", "Nomor transaksi"];
+  const heading = [
+    "ID",
+    "Tanggal pembayaran",
+    "Nominal",
+    "Jenis Transaksi",
+    "Asal Transaksi",
+    "Keterangan",
+    "Pembuat",
+    "Nomor transaksi",
+  ];
 
   function fetchData() {
     fetch(`${mainUrl}/api/getProfile`, {
@@ -47,7 +56,22 @@
                     e.nominal = `-${e.nominal}`;
                     break;
                 }
-                e.nomor_transaksi = e.transaksi_order.no_transaksi;
+                switch (e.asal_transaksi) {
+                  case "transaksi_order":
+                    e.asal_transaksi = "Transaksi Order";
+                    break;
+                  case "servis":
+                    e.asal_transaksi = "Servis";
+                    break;
+                  default:
+                    e.asal_transaksi = "Tidak diketahui";
+                    break;
+                }
+                if (e.transaksi_order == null) {
+                  e.nomor_transaksi = "Tidak diketahui";
+                } else {
+                  e.nomor_transaksi = e.transaksi_order.no_transaksi;
+                }
                 delete e.transaksi_order;
                 delete e.master_rekening;
                 delete e.created_at;
@@ -55,6 +79,13 @@
                 delete e.master_rekening_id;
                 delete e.created_by;
                 delete e.transaksi_order_id;
+                delete e.model_type;
+                delete e.model_id;
+                if (e.pembuat == null) {
+                  e.pembuat = "Tidak diketahui";
+                } else {
+                  e.pembuat = e.pembuat.name;
+                }
                 if (e.keterangan == null) e.keterangan = "Tidak ada keterangan";
               });
               console.log(data);
@@ -68,14 +99,14 @@
 
 <div class="flex flex-wrap mt-4">
   <div class="w-full mb-12 px-4">
-      <CardTableMutasi
-        tableHeading={heading}
-        addData={false}
-        href="/admin/rekening/mutasi"
-        deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
-        heading="Data Mutasi Rekening"
-        {data}
-        onLoad={fetchData}
-      />
+    <CardTableMutasi
+      tableHeading={heading}
+      addData={false}
+      href="/admin/rekening/mutasi"
+      deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
+      heading="Data Mutasi Rekening"
+      {data}
+      onLoad={fetchData}
+    />
   </div>
 </div>
