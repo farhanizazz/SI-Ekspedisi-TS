@@ -16,6 +16,7 @@ export interface NotaBeliItem {
 export interface LaporanServis {
   id: number;
   tanggal_servis: string;
+  nomor_nota: string;
   nama_toko: string;
   kategori_servis: string;
   nota_beli_id?: number;
