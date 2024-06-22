@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { type LaporanServis } from './models/LaporanModel.ts';
+  import {
+    laporanServisRepository,
+    laporanLainLainRepository,
+  } from "./../../../data/repository/laporanServisRepository.js";
+  import { type LaporanServis } from "./models/LaporanModel.ts";
   import CardEditSubkon from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditSubkon.svelte";
   import CardTable from "../../../notusComponents/Cards/CardTable.svelte";
   // core components
@@ -13,11 +17,12 @@
   import CardInputLaporanTransaksi from "../../../notusComponents/Cards/CardInput/CardInputLaporanTransaksi.svelte";
   import CardInputLaporanTransaksiServis from "./add/CardInputLaporanTransaksiServis.svelte";
   import CardInputLaporanTransaksiLainLain from "./edit/CardEditLaporanTransaksiLainLain.svelte";
-  import CardTableLaporan from '../../../notusComponents/Cards/CardTableLaporan.svelte';
-  import LaporanServisDetail from './details/LaporanServisDetail.svelte';
-  import CardEditLaporanTransaksiServis from './edit/CardEditLaporanTransaksiServis.svelte';
-  import CardInputPembayaranLaporanTransaksiServis from './add/CardInputPembayaranLaporanTransaksiServis.svelte';
+  import CardTableLaporan from "../../../notusComponents/Cards/CardTableLaporan.svelte";
+  import LaporanServisDetail from "./details/LaporanServisDetail.svelte";
+  import CardEditLaporanTransaksiServis from "./edit/CardEditLaporanTransaksiServis.svelte";
+  import CardInputPembayaranLaporanTransaksiServis from "./add/CardInputPembayaranLaporanTransaksiServis.svelte";
 
+  const errorImage = "/public/assets/img/error.png";
   let dataServis: LaporanServis[] = [];
   const headingPengeluaran = [
     "ID",
@@ -26,20 +31,8 @@
     "Keterangan / Nama Barang",
     "Harga",
     "Jumlah / Satuan",
-    "Sub Total"
+    "Sub Total",
   ];
-
-  function fetchDataServis() {
-    fetch(`${mainUrl}/api/laporan/servis`, {
-      headers: {
-        Authorization: `bearer ${getCookie("token")}`,
-      },
-    }).then((res) => {
-      res.json().then((res) => {
-        dataServis = res.data;
-      });
-    });
-  }
 
   let openTab = 1;
 
@@ -47,7 +40,6 @@
     openTab = tabNumber;
   }
 </script>
-
 
 <div class="flex flex-wrap mt-4">
   <div class="w-full mb-12 px-4">
@@ -84,22 +76,32 @@
           </div>
         </div>
         {#if openTab === 1}
-          <CardTableLaporan
-            href="/transaksi/pengeluaran/servis"
-            deleteApi={`${mainUrl}/api/laporan/servis/`}
-            heading="Data Pengeluaran Servis"
-            data={dataServis}
-            onLoad={fetchDataServis}
-          />
+          {#await laporanServisRepository()}
+            <div>Loading...</div>
+          {:then dataServis}
+            <CardTableLaporan
+              href="/transaksi/pengeluaran/servis"
+              deleteApi={`${mainUrl}/api/laporan/servis/`}
+              heading="Data Pengeluaran Servis"
+              data={dataServis}
+            />
+          {/await}
         {:else if openTab === 2}
-          <!-- <CardTable
-            tableHeading={headingPengeluaran}
-            href="/transaksi/pengeluaran/lain-lain"
-            deleteApi={`${mainUrl}/api/transaksi/`}
-            heading="Data Pengeluaran Lain-Lain"
-            {data}
-            onLoad={fetchData}
-          /> -->
+          {#await laporanLainLainRepository()}
+            <div>Loading...</div>
+          {:then data}
+            <CardTableLaporan
+              href="/transaksi/pengeluaran/lain-lain"
+              deleteApi={`${mainUrl}/api/transaksi/`}
+              heading="Data Pengeluaran Lain-Lain"
+              {data}
+            />
+          {:catch error}
+          <div class="flex flex-col items-center justify-center text-center" style="height: calc(100vh - 340px);">
+              <img class="mb-4 h-72" src={errorImage} alt="Error" />
+              <h2 class="font-semibold text-gray-400">Maaf, telah terjadi gangguan server, silahkan coba lagi</h2>
+          </div>
+          {/await}
         {/if}
       </Route>
       <Route path="servis/add">

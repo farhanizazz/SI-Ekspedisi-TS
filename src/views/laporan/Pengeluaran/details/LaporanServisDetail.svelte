@@ -34,8 +34,6 @@
 
               res.data.servis_mutasi.forEach((e: any) => {
                 delete e.master_mutasi_id;
-                delete e.master_rekening_id;
-                delete e.mutasi;
                 delete e.created_at;
                 delete e.updated_at;
                 delete e.servis_id;
@@ -54,7 +52,7 @@
 
 <div class="flex flex-wrap mt-4">
   <div class="w-full mb-12 px-4">
-    <div
+    <!-- <div
       class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded bg-white"
     >
       <div class="rounded-t mb-0 px-4 py-3 border-0">
@@ -103,7 +101,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <CardTableMutasi
       tableHeading={heading}
       addData={true}

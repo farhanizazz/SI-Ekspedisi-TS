@@ -6,8 +6,6 @@
   import { getCookie } from "svelte-cookie";
   import axios from "axios";
 
-  export let id: number;
-
   let error = {};
   let data = {
     master_armada_id: "",
