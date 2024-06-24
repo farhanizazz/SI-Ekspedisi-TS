@@ -9,7 +9,7 @@
 
   export let id: number;
   let data: NotaBeliItem[] = [];
-  const heading = ["ID", "Nominal"];
+  const heading = ["ID", "Nominal", "Nama Bank", "Nomor Rekening", "Atas Nama"];
   let originalData: LaporanServis;
 
   function fetchData() {
@@ -38,7 +38,10 @@
                 delete e.updated_at;
                 delete e.servis_id;
                 e.nominal = e.master_mutasi.nominal;
-                delete e.master_mutasi;
+                e.nama_bank = e.master_mutasi.master_rekening.nama_bank;
+                e.nomor_rekening = e.master_mutasi.master_rekening.nomor_rekening.toString();
+                e.atas_nama = e.master_mutasi.master_rekening.atas_nama;
+                delete e.master_mutasi
               });
               data = res.data.servis_mutasi;
               console.log(data);
