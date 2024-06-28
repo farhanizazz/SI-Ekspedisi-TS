@@ -4,12 +4,20 @@
   import { mainUrl } from "../../../../environment";
   import { getCookie } from "svelte-cookie";
   import axios from "axios";
+  import Select from "svelte-select";
+  import {
+    laporanServisPostRepository,
+    laporanLainLainPostRepository,
+  } from "./../../../../data/repository/laporanServisRepository.js";
 
   export let id: number;
+  export let type;
+  let mengurangi = false;
 
   let error = {};
   let data = {
     master_armada_id: "",
+    nomor_nota: "",
     nama_toko: "",
     nama_barang: "lorem",
     kategori_servis: "servis",
@@ -17,13 +25,27 @@
     // nomor_nota: "",
     // ket_trans: "",
     tanggal_servis: "",
+    tanggal_servis: "",
+    nama_tujuan_lain: "",
+    keterangan_lain: "",
+    nominal_lain: "0",
+    jumlah_lain: 0,
+    total_lain: 0,
   };
-  const columnTransaksi = [
+  let columnTransaksi = [
     "Keterangan / Nama barang",
     "Harga",
     "Jumlah",
     "Sub total",
   ];
+  $: type === "servis"
+    ? (columnTransaksi = [
+        "Keterangan / Nama barang",
+        "Harga",
+        "Jumlah",
+        "Sub total",
+      ])
+    : (columnTransaksi = ["Keterangan", "Harga", "Jumlah", "Sub total"]);
   let dataTransaksi: any[] = [];
 
   function addRow() {
@@ -130,7 +152,7 @@
   onMount(async () => {
     await getData();
     const nota_servis_response = await axios.get(
-      `${mainUrl}/api/laporan/servis/${id}`,
+      `${mainUrl}/api/laporan/lainlain/${id}`,
       {
         headers: {
           Authorization: `bearer ${getCookie("token")}`,
@@ -151,27 +173,33 @@
     });
   });
 
-  function handleSubmit() {
+  async function handleSubmit() {
     data.nota_beli_items = simplifiedDataTransaksi;
-    console.log(data);
-    const response = fetch(`${mainUrl}/api/laporan/servis/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: "PUT",
-      body: JSON.stringify(data),
-    }).then((res) => {
-      res.json().then((res) => {
-        console.log(res);
-        if (res.status != "error") {
-          navigate("/transaksi/pengeluaran");
-        } else {
-          error = res.message;
-        }
-      });
-    });
+    let res;
+    if (type === "servis") {
+      res = await laporanServisPostRepository(data);
+    } else {
+      data.kategori_servis = "lain";
+      data.nama_toko = "lain";
+      data.nomor_nota = "lain";
+      if (mengurangi) {
+        console.log(data);
+        console.log(mengurangi);
+
+        data.nota_beli_items = data.nota_beli_items.map((item) => {
+          return {
+            ...item,
+            harga: -item.harga,
+          };
+        });
+      }
+      res = await laporanLainLainPostRepository(data);
+    }
+    if (res.status != "error") {
+      navigate("/transaksi/pengeluaran");
+    } else {
+      error = res.message;
+    }
   }
 </script>
 
@@ -182,13 +210,13 @@
     <div class="rounded-t bg-white mb-0 px-6 py-6">
       <div class="text-center flex justify-between">
         <h6 class="text-blueGray-700 text-xl font-bold">
-          Masukkan data nota servis baru
+          Masukkan data nota {type} baru
         </h6>
         <button
-          class="bg-violet-400 text-white active:bg-violet-500 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+          class="bg-red-400 text-white active:bg-red-500 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
           type="submit"
         >
-          Ubah
+          Tambahkan
         </button>
       </div>
     </div>
@@ -201,9 +229,9 @@
                 class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                 for="grid-about-me"
               >
-                Pilih Armada
+                Pilih Jenis Transaksi
               </label>
-              <select
+              <!-- <select
                 id="grid-about-me"
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 bind:value={data.master_armada_id}
@@ -211,10 +239,73 @@
                 <option>Silahkan Pilih Armada</option>
                 {#each sopirs as sopir}
                   <option value={sopir.id}
-                    >{`${sopir.nopol} | ID Sopir: ${sopir.id}`}</option
+                    >{`${sopir.nopol}`}</option
                   >
                 {/each}
-              </select>
+              </select> -->
+              <Select
+                value={type}
+                showChevron={true}
+                placeholder=""
+                id="grid-penyewa"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                items={[
+                  {
+                    value: "servis",
+                    label: "Servis",
+                  },
+                  {
+                    value: "lain-lain",
+                    label: "Lain-Lain",
+                  },
+                ]}
+                bind:justValue={type}
+                label="label"
+                searchable={true}
+              />
+
+              {#if "master_armada_id" in error}
+                <p class="text-red-500 text-sm">{error.master_armada_id}</p>
+              {/if}
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap flex-grow">
+          <div class="w-full w-12/12 px-4">
+            <div class="relative w-full mb-3">
+              <label
+                class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                for="grid-about-me"
+              >
+                Pilih Armada
+              </label>
+              <!-- <select
+                id="grid-about-me"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                bind:value={data.master_armada_id}
+              >
+                <option>Silahkan Pilih Armada</option>
+                {#each sopirs as sopir}
+                  <option value={sopir.id}
+                    >{`${sopir.nopol}`}</option
+                  >
+                {/each}
+              </select> -->
+              <Select
+                showChevron={true}
+                placeholder=""
+                id="grid-penyewa"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                items={sopirs.map((sopir) => ({
+                  value: sopir.id,
+                  label: sopir.nopol,
+                }))}
+                bind:justValue={data.master_armada_id}
+                label="label"
+                searchable={true}
+              />
+
               {#if "master_armada_id" in error}
                 <p class="text-red-500 text-sm">{error.master_armada_id}</p>
               {/if}
@@ -228,7 +319,7 @@
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
               for="grid-supir"
             >
-              Tanggal Transaksi
+              Tanggal Servis
             </label>
             <input
               id="grid-supir"
@@ -238,8 +329,8 @@
               name="nama-supir"
               bind:value={data.tanggal_servis}
             />
-            {#if "tgl_transaksi" in error}
-              <p class="text-red-500 text-sm">{error.tgl_transaksi}</p>
+            {#if "tanggal_servis" in error}
+              <p class="text-red-500 text-sm">{error.tanggal_servis}</p>
             {/if}
           </div>
         </div>
@@ -249,43 +340,92 @@
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
               for="grid-alamat"
             >
-              Nama toko / bengkel
+              {type === "servis" ? "Nama toko / bengkel" : "Nama Tujuan Lain"}
             </label>
-            <input
-              id="grid-alamat"
-              type="text"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan nominal hutang"
-              name="alamat"
-              bind:value={data.nama_toko}
-            />
-            {#if "nama_toko" in error}
-              <p class="text-red-500 text-sm">{error.nama_toko}</p>
+            {#if type === "servis"}
+              <input
+                id="grid-alamat"
+                type="text"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                placeholder="Masukkan Nama Toko"
+                name="alamat"
+                bind:value={data.nama_toko}
+              />
+              {#if "nama_toko" in error}
+                <p class="text-red-500 text-sm">{error.nama_toko}</p>
+              {/if}
+            {:else}
+              <input
+                id="grid-alamat"
+                type="text"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                placeholder="Masukkan Nama Tujuan"
+                name="alamat"
+                bind:value={data.nama_tujuan_lain}
+              />
+              {#if "nama_tujuan_lain" in error}
+                <p class="text-red-500 text-sm">{error.nama_tujuan_lain}</p>
+              {/if}
             {/if}
           </div>
         </div>
 
-        <!-- <div class="w-full lg:w-12/12 px-4">
+        <div class="w-full lg:w-12/12 px-4">
           <div class="relative w-full mb-3">
             <label
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
               for="grid-alamat"
             >
-              Nomor Nota Beli
+              {type === "servis" ? "Nomor Nota" : "Keterangan"} 
             </label>
-            <input
-              id="grid-alamat"
-              type="text"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              placeholder="Masukkan nominal hutang"
-              name="alamat"
-              bind:value={data.nomor_nota}
-            />
-            {#if "nomor_nota" in error}
-              <p class="text-red-500 text-sm">{error.nomor_nota}</p>
+            {#if type === "servis"}
+              <input
+                id="grid-alamat"
+                type="text"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                placeholder="Masukkan Nomor Nota"
+                name="alamat"
+                bind:value={data.nomor_nota}
+              />
+              {#if "nomor_nota" in error}
+                <p class="text-red-500 text-sm">{error.nomor_nota}</p>
+              {/if}
+            {:else}
+              <input
+                id="grid-alamat"
+                type="text"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                placeholder="Masukkan Keterangan"
+                name="alamat"
+                bind:value={data.keterangan_lain}
+              />
+              {#if "keterangan_lain" in error}
+                <p class="text-red-500 text-sm">{error.keterangan_lain}</p>
+              {/if}
             {/if}
           </div>
-        </div> -->
+        </div>
+
+        {#if type === "lain-lain"}
+          <div class="w-full lg:w-12/12 px-4">
+            <div class="relative w-full mb-3 flex items-center">
+              <input
+                type="checkbox"
+                id="menambah-atau-mengurangi-checkbox"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+                placeholder="Masukkan nominal hutang"
+                name="alamat"
+                bind:checked={mengurangi}
+              />
+              <label
+                for="menambah-atau-mengurangi-checkbox"
+                class="block uppercase text-blueGray-600 text-xs font-bold ml-2"
+              >
+                Nota ini bersifat mengurangi
+              </label>
+            </div>
+          </div>
+        {/if}
 
         <table class="items-center w-full bg-transparent border-collapse">
           <thead>

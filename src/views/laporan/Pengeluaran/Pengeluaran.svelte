@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CardTableLaporanLain from './../../../notusComponents/Cards/CardTableLaporanLain.svelte';
   import {
     laporanServisRepository,
     laporanLainLainRepository,
@@ -90,7 +91,7 @@
           {#await laporanLainLainRepository()}
             <div>Loading...</div>
           {:then data}
-            <CardTableLaporan
+            <CardTableLaporanLain
               href="/transaksi/pengeluaran/lain-lain"
               deleteApi={`${mainUrl}/api/transaksi/`}
               heading="Data Pengeluaran Lain-Lain"
@@ -104,17 +105,17 @@
           {/await}
         {/if}
       </Route>
-      <Route path="servis/add">
-        <CardInputLaporanTransaksiServis />
+      <Route path=":type/add/" let:params>
+        <CardInputLaporanTransaksiServis type={params.type}/>
       </Route>
       <Route path="servis/laporan/:id" let:params>
         <LaporanServisDetail id={params.id} />
       </Route>
-      <Route path="lain-lain/add">
+      <!-- <Route path="lain-lain/add">
         <CardInputLaporanTransaksiLainLain />
-      </Route>
-      <Route path="servis/edit/:edit" let:params>
-        <CardEditLaporanTransaksiServis id={params.edit} />
+      </Route> -->
+      <Route path=":type/edit/:edit" let:params>
+        <CardEditLaporanTransaksiServis id={params.edit} type={params.type} />
       </Route>
       <Route path="servis/laporan/:id/add/" let:params>
         <CardInputPembayaranLaporanTransaksiServis id={params.id} />

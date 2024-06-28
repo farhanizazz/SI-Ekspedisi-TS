@@ -1,4 +1,4 @@
-import { lainLainRemoteDatasource, servisRemoteDatasource } from "../datasources/remote/laporan/servis/laporanServisDatasource";
+import { lainLainRemoteDatasource, servisRemoteDatasource, servisPostRemoteDatasource, lainlainPostRemoteDatasource } from "../datasources/remote/laporan/servis/laporanServisDatasource";
 
 export const laporanServisRepository = (async () => {
     let data = {};
@@ -17,3 +17,21 @@ export const laporanLainLainRepository = (async () => {
     });
     return data;
 });
+
+export const laporanServisPostRepository = async (data) => {
+    let res = {};
+    const store = await servisPostRemoteDatasource(data);
+    store.subscribe((value) => {
+        res = value;
+    });
+    return res;
+}
+
+export const laporanLainLainPostRepository = async (data) => {
+    let res = {};
+    const store = await lainlainPostRemoteDatasource(data);
+    store.subscribe((value) => {
+        res = value;
+    });
+    return res;
+}
