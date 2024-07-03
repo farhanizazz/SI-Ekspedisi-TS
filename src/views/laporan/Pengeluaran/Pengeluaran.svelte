@@ -1,7 +1,8 @@
 <script lang="ts">
-	import CardTableLaporanLain from './../../../notusComponents/Cards/CardTableLaporanLain.svelte';
+	import { laporanLainData, laporanServisData } from './stores/PengeluaranStore.ts';
+  import CardTableLaporanLain from "./../../../notusComponents/Cards/CardTableLaporanLain.svelte";
   import {
-    laporanServisRepository,
+    LaporanServisRepository,
     laporanLainLainRepository,
   } from "./../../../data/repository/laporanServisRepository.js";
   import { type LaporanServis } from "./models/LaporanModel.ts";
@@ -22,6 +23,7 @@
   import LaporanServisDetail from "./details/LaporanServisDetail.svelte";
   import CardEditLaporanTransaksiServis from "./edit/CardEditLaporanTransaksiServis.svelte";
   import CardInputPembayaranLaporanTransaksiServis from "./add/CardInputPembayaranLaporanTransaksiServis.svelte";
+  import { get, writable } from "svelte/store";
 
   const errorImage = "/public/assets/img/error.png";
   let dataServis: LaporanServis[] = [];
@@ -40,6 +42,8 @@
   function toggleTabs(tabNumber: number) {
     openTab = tabNumber;
   }
+  let currentPage = writable(0);
+  let currentSearch = "";
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -77,36 +81,45 @@
           </div>
         </div>
         {#if openTab === 1}
-          {#await laporanServisRepository()}
-            <div>Loading...</div>
-          {:then dataServis}
-            <CardTableLaporan
-              href="/transaksi/pengeluaran/servis"
-              deleteApi={`${mainUrl}/api/laporan/servis/`}
-              heading="Data Pengeluaran Servis"
-              data={dataServis}
-            />
-          {/await}
+            {#await laporanServisData.getStore()}
+              <div>Loading...</div>
+            {:then dataServis}
+              <CardTableLaporan
+                repository={laporanServisData}
+                href="/transaksi/pengeluaran/servis"
+                deleteApi={`${mainUrl}/api/laporan/servis/`}
+                heading="Data Pengeluaran Servis"
+                dataStore={dataServis}
+              />
+            {:catch e}
+              <div>{e}</div>
+            {/await}
         {:else if openTab === 2}
-          {#await laporanLainLainRepository()}
+          {#await laporanLainData.getStore()}
             <div>Loading...</div>
           {:then data}
             <CardTableLaporanLain
               href="/transaksi/pengeluaran/lain-lain"
-              deleteApi={`${mainUrl}/api/transaksi/`}
+              deleteApi={`${mainUrl}/api/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"
-              {data}
+              dataStore={data}
+              repository={laporanLainData}
             />
           {:catch error}
-          <div class="flex flex-col items-center justify-center text-center" style="height: calc(100vh - 340px);">
+            <div
+              class="flex flex-col items-center justify-center text-center"
+              style="height: calc(100vh - 340px);"
+            >
               <img class="mb-4 h-72" src={errorImage} alt="Error" />
-              <h2 class="font-semibold text-gray-400">Maaf, telah terjadi gangguan server, silahkan coba lagi</h2>
-          </div>
+              <h2 class="font-semibold text-gray-400">
+                Maaf, telah terjadi gangguan server, silahkan coba lagi
+              </h2>
+            </div>
           {/await}
         {/if}
       </Route>
       <Route path=":type/add/" let:params>
-        <CardInputLaporanTransaksiServis type={params.type}/>
+        <CardInputLaporanTransaksiServis type={params.type} />
       </Route>
       <Route path="servis/laporan/:id" let:params>
         <LaporanServisDetail id={params.id} />

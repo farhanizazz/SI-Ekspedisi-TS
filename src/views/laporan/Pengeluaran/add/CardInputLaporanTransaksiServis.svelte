@@ -236,6 +236,7 @@
                 value={type}
                 showChevron={true}
                 placeholder=""
+                clearable={false}
                 id="grid-penyewa"
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 items={[
@@ -396,22 +397,42 @@
         </div>
 
         {#if type === "lain-lain"}
-          <div class="w-full lg:w-12/12 px-4">
-            <div class="relative w-full mb-3 flex items-center">
-              <input
+          <div class="w-full w-12/12 px-4">
+            <div class="relative w-full mb-3">
+              <label
+                for="select-mengurangi"
+                class="block uppercase mb-2 text-blueGray-600 text-xs font-bold"
+              >
+                Sifat nota
+              </label>
+              <Select
+                showChevron={true}
+                id="select-mengurangi"
+                placeholder=""
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                items={[
+                  {
+                    value: true,
+                    label: "Mengurangi",
+                  },
+                  {
+                    value: false,
+                    label: "Menambahkan",
+                  },
+                ]}
+                bind:justValue={mengurangi}
+                label="label"
+                searchable={false}
+              />
+              <!-- <input
                 type="checkbox"
                 id="menambah-atau-mengurangi-checkbox"
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
                 placeholder="Masukkan nominal hutang"
                 name="alamat"
                 bind:checked={mengurangi}
-              />
-              <label
-                for="menambah-atau-mengurangi-checkbox"
-                class="block uppercase text-blueGray-600 text-xs font-bold ml-2"
-              >
-                Nota ini bersifat mengurangi
-              </label>
+              />  -->
+              
             </div>
           </div>
         {/if}

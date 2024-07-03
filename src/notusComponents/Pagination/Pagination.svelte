@@ -1,12 +1,14 @@
-<script>
-	import { currentPage } from './../../views/laporan/Order/stores/TransaksiStores.ts';
+<script lang="ts">
   import { onDestroy } from 'svelte';
+  import type { Writable } from 'svelte/store';
 
-  export let onPrev;
-  export let onNext;
+  export let onPrev: () => void;
+  export let onNext: () => void;
+  export let onLast: () => void;
+  export let onFirst: () => void;
   export let pageCount;
-  export let onSeek;
-
+  export let onSeek: (page: number) => void;
+  export let currentPage: Writable<number>;
   const unsubscribe = currentPage.subscribe((value) => {
     console.log(value);
   });
@@ -24,8 +26,8 @@
       <li>
         <button
           on:click={() => {
-            onNext();
             currentPage.set(0);
+            onFirst();
           }}
           class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
         >
@@ -97,8 +99,8 @@
         <li>
           <button
             on:click={() => {
-              onNext();
               currentPage.set(pageCount - 1);
+              onLast();
             }}
             class="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative border border-solid border-orange-500 bg-white text-orange-500"
           >

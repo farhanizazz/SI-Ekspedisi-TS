@@ -1,17 +1,30 @@
-import { lainLainRemoteDatasource, servisRemoteDatasource, servisPostRemoteDatasource, lainlainPostRemoteDatasource } from "../datasources/remote/laporan/servis/laporanServisDatasource";
+import { getLainLain, ServisService, servisPostRemoteDatasource, lainlainPostRemoteDatasource } from "../datasources/remote/laporan/servis/laporanServisDatasource";
 
-export const laporanServisRepository = (async () => {
-    let data = {};
-    const store = await servisRemoteDatasource();
-    store.subscribe((value) => {
-        data = value;
-    });
-    return data;
-});
+export class LaporanServisRepository {
+    constructor(jenis = "servis") {
+        this.store = new ServisService(jenis);
+    }
+
+    async fetchServis() {
+        await this.store.fetchServis();
+    }
+
+    updatePage(newPage) {
+        this.store.updatePage(newPage);
+    }
+
+    updateSearch(newSearch) {
+        this.store.updateSearch(newSearch);
+    }
+
+    getStore() {
+        return this.store.getStore();
+    }
+};
 
 export const laporanLainLainRepository = (async () => {
     let data = {};
-    const store = await lainLainRemoteDatasource();
+    const store = await getLainLain();
     store.subscribe((value) => {
         data = value;
     });

@@ -410,6 +410,19 @@
         </div>
         <div class="w-full px-4 max-w-full flex justify-center items-center">
           <Pagination
+            onFirst={() => {
+              isDataValid.set(false);
+              getdata(
+                `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+              );
+            }}
+            onLast={() => {
+              isDataValid.set(false);
+              getdata(
+                `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+              );
+            }}
+            currentPage={currentPage}
             onSeek={(page) => {
               currentPage.set(page);
               isDataValid.set(false);

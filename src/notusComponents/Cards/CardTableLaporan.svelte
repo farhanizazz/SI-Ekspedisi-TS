@@ -1,10 +1,14 @@
-<script>
-  import { onMount } from "svelte";
+<script lang="ts">
+  import { currentPage } from "./../../views/laporan/Pengeluaran/stores/PengeluaranStore.ts";
+  import { onDestroy, onMount } from "svelte";
   import { link } from "svelte-routing";
   import { getCookie } from "svelte-cookie";
   import { createEventDispatcher } from "svelte";
   import axios from "axios";
   import Modal from "../Modal/Modal.svelte";
+  import Pagination from "/src/notusComponents/Pagination/Pagination.svelte";
+  import type { Writable } from "svelte/store";
+  import type { LaporanServisRepository } from "src/data/repository/laporanServisRepository.js";
 
   export let color = "light";
   export let heading = "Invoice Table";
@@ -13,12 +17,26 @@
   export let addData = true;
   export let deleteApi;
   export let onLoad = () => {};
+  export let repository: LaporanServisRepository;
 
   let search = "";
-  let dataSearch;
-  let deleteModal = [];
+  let timeout: number;
+  let deleteModal: any[] = [];
 
-  export let data;
+  export let dataStore: Writable<{}>;
+  let data: any;
+  let pageCount: number;
+
+  const unsubscribe = dataStore.subscribe((value) => {
+    data = value.list;
+    pageCount = value.meta.links.length;
+    console.log(value);
+  });
+
+  onDestroy(() => {
+    unsubscribe();
+    clearTimeout(timeout);
+  });
 
   onLoad();
 
@@ -28,14 +46,13 @@
 
   $: deleteModal = Array(data.length).fill(false);
 
-  $: dataSearch = search
-    ? data.filter((item) =>
-        Object.keys(item).some(
-          (key) =>
-            String(item[key]).toLowerCase().indexOf(search.toLowerCase()) > -1
-        )
-      )
-    : data;
+  $: {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      // Your function here
+      repository.updateSearch(search);
+    }, 500);
+  }
 
   const dispatch = createEventDispatcher();
 
@@ -47,8 +64,34 @@
     style: "currency",
     currency: "IDR",
   });
+  console.log("repository: ", repository)
 </script>
 
+<div style="display: flex; justify-content: center; align-items: center;">
+  <Pagination
+    onLast={() => {
+      repository.updatePage($currentPage + 1);
+    }}
+    onFirst={() => {
+      repository.updatePage($currentPage + 1);
+    }}
+    {currentPage}
+    {pageCount}
+    onNext={() => {
+      currentPage.set($currentPage + 1);
+      repository.updatePage($currentPage + 1);
+    }}
+    onPrev={() => {
+      currentPage.set($currentPage - 1);
+      repository.updatePage($currentPage + 1);
+    }}
+    onSeek={(page) => {
+      currentPage.set(page);
+      console.log("Page: ", $currentPage);
+      repository.updatePage($currentPage + 1);
+    }}
+  />
+</div>
 <div
   class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded {color ===
   'light'
@@ -169,7 +212,7 @@
                       Authorization: `bearer ${getCookie("token")}`,
                     },
                   }).then(() => {
-                    onLoad();
+                    repository.fetchServis();
                   });
                 } else {
                   handleDelete(tableData.id);
