@@ -46,14 +46,13 @@
 
   $: deleteModal = Array(data.length).fill(false);
 
-  $: dataSearch = search
-    ? data.filter((item) =>
-        Object.keys(item).some(
-          (key) =>
-            String(item[key]).toLowerCase().indexOf(search.toLowerCase()) > -1
-        )
-      )
-    : data;
+  $: {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      // Your function here
+      repository.updateSearch(search);
+    }, 500);
+  }
 
   const dispatch = createEventDispatcher();
 

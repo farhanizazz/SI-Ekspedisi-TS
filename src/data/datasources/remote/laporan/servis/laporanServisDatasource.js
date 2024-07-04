@@ -60,9 +60,31 @@ export const servisPostRemoteDatasource = async (data) => {
     return store;
 }
 
+export const editServisDatasource = async (data, id) => {
+    const store = writable({});
+    const res = await axios.put(`${mainUrl}/api/laporan/servis/${id}`, data, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
+    })
+    store.set(res.data);
+    return store;
+}
+
 export const lainlainPostRemoteDatasource = async (data) => {
     const store = writable({});
     const res = await axios.post(`${mainUrl}/api/laporan/lainlain`, data, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
+    })
+    store.set(res.data);
+    return store;
+}
+
+export const editLainLainDatasource = async (data, id) => {
+    const store = writable({});
+    const res = await axios.put(`${mainUrl}/api/laporan/lainlain/${id}`, data, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
         }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { selectedSopir } from "./../stores/PengeluaranStore.ts";
   import { onMount } from "svelte";
   import { navigate } from "svelte-routing";
   import { mainUrl } from "../../../../environment";
@@ -8,6 +9,8 @@
   import {
     laporanServisPostRepository,
     laporanLainLainPostRepository,
+    editServisRepository,
+    editLainLainRepository
   } from "./../../../../data/repository/laporanServisRepository.js";
 
   export let id: number;
@@ -22,9 +25,9 @@
     nama_barang: "lorem",
     kategori_servis: "servis",
     nota_beli_items: [],
+    master_armada: {},
     // nomor_nota: "",
     // ket_trans: "",
-    tanggal_servis: "",
     tanggal_servis: "",
     nama_tujuan_lain: "",
     keterangan_lain: "",
@@ -159,9 +162,15 @@
         },
       }
     );
-
     data = nota_servis_response.data.data;
-    console.log(nota_servis_response);
+    data.master_armada_id =
+      nota_servis_response.data.data.master_armada.id.toString();
+    const selectedValue = data.master_armada;
+    console.log(selectedValue);
+    if (selectedValue) {
+      selectedSopir.set(selectedValue.nopol);
+    }
+    console.log(data);
     data.nama_barang = "lorem";
     dataTransaksi = data.nota_beli_items.map((item) => {
       return [
@@ -176,9 +185,15 @@
   async function handleSubmit() {
     data.nota_beli_items = simplifiedDataTransaksi;
     let res;
+    if(Number.isNaN(Number(data.master_armada_id))) {
+      data.master_armada_id = data.master_armada.id
+    }
     if (type === "servis") {
-      res = await laporanServisPostRepository(data);
+      res = await editServisRepository(data, id);
     } else {
+      console.log(data.master_armada_id);
+      
+      
       data.kategori_servis = "lain";
       data.nama_toko = "lain";
       data.nomor_nota = "lain";
@@ -193,7 +208,7 @@
           };
         });
       }
-      res = await laporanLainLainPostRepository(data);
+      res = await editLainLainRepository(data, id);
     }
     if (res.status != "error") {
       navigate("/transaksi/pengeluaran");
@@ -264,7 +279,7 @@
                 searchable={true}
               />
 
-              {#if "master_armada_id" in error}
+              {#if "type" in error}
                 <p class="text-red-500 text-sm">{error.master_armada_id}</p>
               {/if}
             </div>
@@ -302,10 +317,10 @@
                   label: sopir.nopol,
                 }))}
                 bind:justValue={data.master_armada_id}
+                value={$selectedSopir}
                 label="label"
                 searchable={true}
               />
-
               {#if "master_armada_id" in error}
                 <p class="text-red-500 text-sm">{error.master_armada_id}</p>
               {/if}
@@ -376,7 +391,7 @@
               class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
               for="grid-alamat"
             >
-              {type === "servis" ? "Nomor Nota" : "Keterangan"} 
+              {type === "servis" ? "Nomor Nota" : "Keterangan"}
             </label>
             {#if type === "servis"}
               <input
