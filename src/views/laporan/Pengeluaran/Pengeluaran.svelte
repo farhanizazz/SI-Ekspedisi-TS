@@ -121,8 +121,8 @@
       <Route path=":type/add/" let:params>
         <CardInputLaporanTransaksiServis type={params.type} />
       </Route>
-      <Route path="servis/laporan/:id" let:params>
-        <LaporanServisDetail id={params.id} />
+      <Route path=":type/laporan/:id" let:params>
+        <LaporanServisDetail id={params.id} type={params.type}/>
       </Route>
       <!-- <Route path="lain-lain/add">
         <CardInputLaporanTransaksiLainLain />

@@ -8,6 +8,7 @@
   import type { LaporanServis, NotaBeliItem } from "../models/LaporanModel";
 
   export let id: number;
+  export let type: string;
   let data: NotaBeliItem[] = [];
   const heading = ["ID", "Nominal", "Nama Bank", "Nomor Rekening", "Atas Nama"];
   let originalData: LaporanServis;
@@ -111,7 +112,7 @@
       withEdit={false}
       href="/transaksi/pengeluaran/servis/laporan/{id}"
       deleteApi={`${mainUrl}/api/laporan/servis/mutasi/`}
-      heading="Data Laporan Servis"
+      heading="Data Laporan {type}"
       {data}
       onLoad={fetchData}
     />

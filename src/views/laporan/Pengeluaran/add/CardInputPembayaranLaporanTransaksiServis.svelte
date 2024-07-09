@@ -112,7 +112,7 @@
     <div class="rounded-t bg-white mb-0 px-6 py-6">
       <div class="text-center flex justify-between">
         <h6 class="text-blueGray-700 text-xl font-bold">
-          Masukkan data nota servis baru
+          Masukkan data pembayaran baru
         </h6>
         <button
           class="bg-red-400 text-white active:bg-red-500 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"

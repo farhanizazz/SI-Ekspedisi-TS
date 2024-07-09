@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import CardTableMutasi from "./../../../notusComponents/Cards/CardTableMutasi.svelte";
   import CardTable from "../../../notusComponents/Cards/CardTable.svelte";
   import { getCookie } from "svelte-cookie";
@@ -8,7 +8,7 @@
 
   export let location;
 
-  export let id;
+  export let id: number;
   let data = [];
   const heading = [
     "ID",
@@ -53,6 +53,10 @@
                     break;
                   case "uang_jalan":
                     e.jenis_transaksi = "Pembayaran Uang Jalan";
+                    e.nominal = `-${e.nominal}`;
+                    break;
+                  case "pengeluaran":
+                    e.jenis_transaksi = "Pembayaran Pengeluaran";
                     e.nominal = `-${e.nominal}`;
                     break;
                 }
