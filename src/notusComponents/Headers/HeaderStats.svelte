@@ -1,3 +1,4 @@
+
 <script lang="ts">
   import { userStore } from "../../layouts/stores/AdminStore.ts";
   import { link, navigate } from "svelte-routing";
@@ -11,7 +12,7 @@
   import { deleteCookie } from "../../helper/deleteCookie.js";
 
   export let location;
-  let userData: User;
+  let userData;
 
   const unsubscribeUserData = userStore.subscribe((value) => {
     userData = value;
