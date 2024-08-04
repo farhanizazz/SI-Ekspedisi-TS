@@ -1784,7 +1784,11 @@
                                                 tableData.biaya_lain_harga_order.concat(
                                                   {
                                                     m_tambahan_id: sifat,
-                                                    nominal: biaya,
+                                                    nominal:
+                                                      sifat.sifat ===
+                                                      "Menambahkan"
+                                                        ? biaya
+                                                        : -biaya,
                                                   }
                                                 ),
                                             },
