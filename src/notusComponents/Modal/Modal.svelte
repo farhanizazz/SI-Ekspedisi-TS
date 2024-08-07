@@ -3,10 +3,9 @@
   export let isLoading: boolean;
   export let saveText: string = "Save Changes";
   export let onAccept: () => void;
+  export let onReject: () => void;
 
   let dialog; // HTMLDialogElement
-  $: console.log(dialog);
-  
 
   $: if (dialog && showModal) dialog.showModal();
   $: if (dialog && !showModal) dialog.close();
@@ -15,7 +14,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
   bind:this={dialog}
-  on:close={() => (showModal = false)}
+  on:close={onReject}
   on:click|self={() => dialog.close()}
 >
   <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -31,7 +30,7 @@
       <button
         class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
         type="button"
-        on:click={() => dialog.close()}
+        on:click={onReject}
       >
         Tutup
       </button>
@@ -46,7 +45,7 @@
         <button
           class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
           type="button"
-		  on:click={onAccept}
+          on:click={onAccept}
         >
           {isLoading ? "Loading..." : saveText}
         </button>

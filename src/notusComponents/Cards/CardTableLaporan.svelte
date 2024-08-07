@@ -202,6 +202,9 @@
         <tbody>
           {#each data as tableData, index}
             <Modal
+              onReject={() => {
+                toggleDeleteModal(index);
+              }}
               bind:showModal={deleteModal[index]}
               isLoading={false}
               onAccept={() => {

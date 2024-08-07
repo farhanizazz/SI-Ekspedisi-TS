@@ -99,12 +99,12 @@
     //   } else {
     //     //otherwise fetch data from api then save the data in localstorage
     //   }
-      fetchData(url).then((res) => {
-        var json = { data: res.list, cachetime: Date.now() / 1000 };
-        localStorage.setItem("order", JSON.stringify(json));
-        transaksi.set(res.list);
-        metaData = res.meta;
-      });
+    fetchData(url).then((res) => {
+      var json = { data: res.list, cachetime: Date.now() / 1000 };
+      localStorage.setItem("order", JSON.stringify(json));
+      transaksi.set(res.list);
+      metaData = res.meta;
+    });
   };
 
   // $: data = data;
@@ -422,7 +422,7 @@
                 `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
               );
             }}
-            currentPage={currentPage}
+            {currentPage}
             onSeek={(page) => {
               currentPage.set(page);
               isDataValid.set(false);
@@ -729,6 +729,9 @@
                                 }}
                               >
                                 <Modal
+                                  onReject={() => {
+                                    catatanModal[index] = false;
+                                  }}
                                   onAccept={undefined}
                                   bind:showModal={catatanModal[index]}
                                   bind:isLoading={tableData.statusLoadingCatatan}
@@ -809,56 +812,6 @@
                             {tableData.nomor_do == null
                               ? ""
                               : tableData.nomor_do}
-                            <!-- <form
-                              on:submit|preventDefault={() => {
-                                tableData.statusLoadingCatatan = true;
-                                axios
-                                  .put(
-                                    `${mainUrl}/api/transaksi/order/${tableData.id}`,
-                                    {
-                                      catatan_surat_jalan:
-                                        tableData.catatan_surat_jalan,
-                                      ...tableData,
-                                    },
-                                    {
-                                      headers: {
-                                        Authorization: `bearer ${getCookie(
-                                          "token"
-                                        )}`,
-                                      },
-                                    }
-                                  )
-                                  .then((res) => {
-                                              isDataValid.set(false);
-
-                                    getdata().then(() => {
-                                      tableData.statusLoadingCatatan = false;
-                                    });
-                                  });
-                              }}
-                            > -->
-                            <!-- <div
-                                class="relative flex w-full flex-wrap items-stretch mb-3"
-                              >
-                                <input
-                                  bind:value={tableData.catatan_surat_jalan}
-                                  type="text"
-                                  placeholder="Keterangan"
-                                  class="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:shadow-outline w-full pr-10"
-                                />
-                                <span
-                                  class="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3"
-                                >
-                                  <button type="submit">
-                                    <i
-                                      class={tableData.statusLoadingCatatan
-                                        ? "fas fa-spinner fa-pulse"
-                                        : "fas fa-save"}
-                                    ></i>
-                                  </button>
-                                </span>
-                              </div> -->
-                            <!-- </form> -->
                           </td>
                           <td
                             class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
@@ -916,20 +869,6 @@
                                   class="whitespace-nowrap font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
                                   Rp. {IDRFormatter.format(
-                                    // tableData.biaya_lain_harga_jual_arr.reduce(
-                                    //   (acc, curr) =>
-                                    //     curr.sifat === "Menambahkan"
-                                    //       ? acc + curr.nominal
-                                    //       : acc - curr.nominal,
-                                    //   0
-                                    // ) +
-                                    // tableData.biaya_lain_uang_jalan_arr.reduce(
-                                    //   (acc, curr) =>
-                                    //     curr.sifat === "Menambahkan"
-                                    //       ? acc + curr.nominal
-                                    //       : acc - curr.nominal,
-                                    //   0
-                                    // )+
                                     tableData.biaya_lain_harga_order_arr.reduce(
                                       (acc, curr) => acc + curr.nominal,
                                       0
@@ -1111,20 +1050,6 @@
                                   class="whitespace-nowrap font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
                                 >
                                   Rp. {IDRFormatter.format(
-                                    // tableData.biaya_lain_harga_jual_arr.reduce(
-                                    //   (acc, curr) =>
-                                    //     curr.sifat === "Menambahkan"
-                                    //       ? acc + curr.nominal
-                                    //       : acc - curr.nominal,
-                                    //   0
-                                    // ) +
-                                    //   tableData.biaya_lain_uang_jalan_arr.reduce(
-                                    //     (acc, curr) =>
-                                    //       curr.sifat === "Menambahkan"
-                                    //         ? acc + curr.nominal
-                                    //         : acc - curr.nominal,
-                                    //     0
-                                    //   ) +
                                     tableData.biaya_lain_uang_jalan_arr.reduce(
                                       (acc, curr) => acc + curr.nominal,
                                       0
@@ -1298,6 +1223,9 @@
                               </p>
                             </button>
                             <Modal
+                              onReject={() => {
+                                toggleDeleteModal(index);
+                              }}
                               bind:showModal={deleteModal[index]}
                               isLoading={false}
                               onAccept={() => {
@@ -1518,6 +1446,9 @@
                                 }}
                               >
                                 <Modal
+                                onReject={() => {
+                                  catatanModal[index] = false;
+                                }}
                                   onAccept={undefined}
                                   bind:showModal={catatanModal[index]}
                                   bind:isLoading={tableData.statusLoadingCatatan}
@@ -1783,7 +1714,7 @@
                                               biaya_lain_harga_order:
                                                 tableData.biaya_lain_harga_order.concat(
                                                   {
-                                                    m_tambahan_id: sifat,
+                                                    m_tambahan_id: sifat.id,
                                                     nominal:
                                                       sifat.sifat ===
                                                       "Menambahkan"
@@ -1871,21 +1802,7 @@
                                     tableData.biaya_lain_harga_jual_arr.reduce(
                                       (acc, curr) => acc + curr.nominal,
                                       0
-                                    ) //+
-                                    // tableData.biaya_lain_uang_jalan_arr.reduce(
-                                    //   (acc, curr) =>
-                                    //     curr.sifat === "Menambahkan"
-                                    //       ? acc + curr.nominal
-                                    //       : acc - curr.nominal,
-                                    //   0
-                                    // ) +
-                                    // tableData.biaya_lain_harga_order_arr.reduce(
-                                    //   (acc, curr) =>
-                                    //     curr.sifat === "Menambahkan"
-                                    //       ? acc + curr.nominal
-                                    //       : acc - curr.nominal,
-                                    //   0
-                                    // )
+                                    )
                                   )}</a
                                 >
                               </div>

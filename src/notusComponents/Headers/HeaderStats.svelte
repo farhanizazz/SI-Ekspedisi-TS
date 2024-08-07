@@ -1,5 +1,5 @@
-
 <script lang="ts">
+  import Invoices from "../../views/invoices/invoices.svelte";
   import { userStore } from "../../layouts/stores/AdminStore.ts";
   import { link, navigate } from "svelte-routing";
   // core components
@@ -29,7 +29,7 @@
     });
   });
 
-  let selected;
+  let selected: any;
   const unsubscribe = selectedStore.subscribe((value) => {
     selected = value;
   });
@@ -78,8 +78,18 @@
         >
           Transaksi
         </li>
+        <a use:link href="/admin/invoice">
+          <li
+            class={`${selected == 4 ? "active" : ""} px-6 py-3`}
+            on:click={() => {
+              selectTab(4);
+            }}
+          >
+            Invoices
+          </li>
+        </a>
         <li
-          class={`${selected == 4 ? "active" : ""} px-6 py-3`}
+          class={`${selected == 5 ? "active" : ""} px-6 py-3`}
           on:click={() => {
             selectTab(4);
           }}

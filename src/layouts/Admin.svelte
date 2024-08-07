@@ -1,19 +1,20 @@
 <script>
-// @ts-nocheck
-
+  // @ts-nocheck
+  
   import { notificationsStore, userStore } from "./stores/AdminStore.ts";
   import Transaksi from "../views/laporan/Order/Transaksi.svelte";
   import { Router, Route, navigate } from "svelte-routing";
   import Toastify from "toastify-js";
-
+  
   // components for this layout
   import AdminNavbar from "../notusComponents/Navbars/AdminNavbar.svelte";
   import Sidebar from "../notusComponents/Sidebar/Sidebar.svelte";
   import HeaderStats from "../notusComponents/Headers/HeaderStats.svelte";
   import FooterAdmin from "../notusComponents/Footers/FooterAdmin.svelte";
-
+  
   // pages for this layout
   import Dashboard from "../views/admin/Dashboard.svelte";
+	import Invoices from '../views/invoices/invoices.svelte';
   import Settings from "../views/admin/Settings.svelte";
   import Tables from "../views/admin/Tables.svelte";
   import Maps from "../views/admin/Maps.svelte";
@@ -69,7 +70,7 @@
 
         notif.data.forEach((e) => {
           var toast = Toastify({
-            text: e.message + ' ' + e.selisih,
+            text: e.message + " " + e.selisih,
             duration: -1,
             close: true,
             gravity: "top", // `top` or `bottom`
@@ -115,6 +116,9 @@
         <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
         <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
         <Route path="order/*order" component={Transaksi} />
+      </Router>
+      <Router url="invoice">
+        <Route path="invoice/*invoice" component={Invoices} />
       </Router>
       <FooterAdmin />
     </div>
