@@ -16,12 +16,19 @@
   let metaData = { links: [] };
   let data = [];
   let searchValue = "";
+  let searchPerusahaanValue = "";
+  let searchPPNValue = "";
+  let searchStatusValue = "";
   let color = "light";
   let IDRFormatter = new Intl.NumberFormat("id-ID");
   let selectedPerusahaan = { id: "", nama_perusahaan: "" };
   let modalOpen = false;
   let singkatan = "";
   let selectedRekeningId = "0";
+
+  $: if (searchPPNValue === null) {
+    searchPPNValue = '';
+  }
 
   const unsubscribe = transaksi.subscribe((value) => {
     data = value;
@@ -45,7 +52,7 @@
     currentPage.set(0);
     search.set(searchValue);
     getdata(
-      `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+      `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=Sendiri&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
     );
   }, 500);
 
@@ -109,7 +116,7 @@
   }
 
   const getdata = async (
-    url = `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}`
+    url = `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=Sendiri&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
   ) => {
     // set cache lifetime in seconds
     // var cachelife = 5000;
@@ -161,6 +168,28 @@
 <main>
   <div class="flex flex-wrap mt-4">
     <div class="w-full mb-12 px-4">
+      <div class="flex flex-row items-center gap-3 w-1/2 my-2">
+        <h1>Filter:</h1>
+        <input
+          type="text"
+          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+          placeholder="Cari Perusahaan"
+          bind:value={searchPerusahaanValue}
+          on:input={handleSearch}
+        />
+        <input
+          type="number"
+          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+          placeholder="PPH / PPN"
+          bind:value={searchPPNValue}
+          on:input={handleSearch}
+        />
+        <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" bind:value={searchStatusValue} on:change={handleSearch}>
+          <option value="">Status</option>
+          <option value="lunas">Lunas</option>
+          <option value="belum_lunas">Belum Lunas</option>
+        </select>
+      </div>
       <div
         class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded {color ===
         'light'
@@ -222,7 +251,9 @@
                   }).then((res) => {
                     if (res.data.status == true) {
                       modalOpen = false;
-                      window.open(`${mainUrl}/transaksi/laporan/invoice/${res.data.data.id}/export`);
+                      window.open(
+                        `${mainUrl}/transaksi/laporan/invoice/${res.data.data.id}/export`
+                      );
                       getdata();
                     } else {
                       alert("Gagal membuat invoice");
