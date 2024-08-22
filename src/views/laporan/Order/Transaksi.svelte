@@ -1643,7 +1643,7 @@
                                                 >Silahkan pilih sifat biaya</option
                                               >
                                               {#each dataTambahan as tambahan}
-                                                <option value={tambahan.id}>
+                                                <option value={tambahan}>
                                                   {tambahan.nama} | {tambahan.sifat}
                                                 </option>
                                               {/each}

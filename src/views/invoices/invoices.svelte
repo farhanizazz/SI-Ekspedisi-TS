@@ -177,13 +177,18 @@
           bind:value={searchPerusahaanValue}
           on:input={handleSearch}
         />
-        <input
+        <!-- <input
           type="number"
           class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
           placeholder="PPH / PPN"
           bind:value={searchPPNValue}
           on:input={handleSearch}
-        />
+        /> -->
+        <select class="border-0 px-3 py-3 w-44 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" bind:value={searchPPNValue} on:change={handleSearch}>
+          <option value="">Status PPH / PPN</option>
+          <option value="ada">PPH / PPN</option>
+          <option value="tidak_ada">Non PPH / PPN</option>
+        </select>
         <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" bind:value={searchStatusValue} on:change={handleSearch}>
           <option value="">Status</option>
           <option value="lunas">Lunas</option>
