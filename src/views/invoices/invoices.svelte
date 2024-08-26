@@ -25,9 +25,10 @@
   let modalOpen = false;
   let singkatan = "";
   let selectedRekeningId = "0";
+  let openTab = "Sendiri";
 
   $: if (searchPPNValue === null) {
-    searchPPNValue = '';
+    searchPPNValue = "";
   }
 
   const unsubscribe = transaksi.subscribe((value) => {
@@ -52,9 +53,18 @@
     currentPage.set(0);
     search.set(searchValue);
     getdata(
-      `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=Sendiri&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
+      `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
     );
   }, 500);
+
+  function toggleTabs(tabCategory) {
+    currentPage.set(0);
+    getdata(
+      `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${tabCategory}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
+    );
+    selectedItems = [];
+    openTab = tabCategory;
+  }
 
   async function fetchData(url = `${mainUrl}/api/transaksi/order`) {
     const res = await fetch(url, {
@@ -116,7 +126,7 @@
   }
 
   const getdata = async (
-    url = `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=Sendiri&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
+    url = `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
   ) => {
     // set cache lifetime in seconds
     // var cachelife = 5000;
@@ -184,16 +194,52 @@
           bind:value={searchPPNValue}
           on:input={handleSearch}
         /> -->
-        <select class="border-0 px-3 py-3 w-44 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" bind:value={searchPPNValue} on:change={handleSearch}>
+        <select
+          class="border-0 px-3 py-3 w-44 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+          bind:value={searchPPNValue}
+          on:change={handleSearch}
+        >
           <option value="">Status PPH / PPN</option>
           <option value="ada">PPH / PPN</option>
           <option value="tidak_ada">Non PPH / PPN</option>
         </select>
-        <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" bind:value={searchStatusValue} on:change={handleSearch}>
+        <select
+          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+          bind:value={searchStatusValue}
+          on:change={handleSearch}
+        >
           <option value="">Status</option>
           <option value="lunas">Lunas</option>
           <option value="belum_lunas">Belum Lunas</option>
         </select>
+      </div>
+      <div class="flex flex-wrap">
+        <div class="w-full">
+          <ul class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row">
+            <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
+              <button
+                class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal w-full {openTab ===
+                'Sendiri'
+                  ? 'text-white bg-red-600'
+                  : 'text-red-600 bg-white'}"
+                on:click={() => toggleTabs("Sendiri")}
+              >
+                <i class="fas fa-cog text-base mr-1" /> Transaksi Order Sendiri
+              </button>
+            </li>
+            <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
+              <button
+                class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal w-full {openTab ===
+                'Subkon'
+                  ? 'text-white bg-red-600'
+                  : 'text-red-600 bg-white'}"
+                on:click={() => toggleTabs("Subkon")}
+              >
+                <i class="fas fa-briefcase text-base mr-1" /> Transaksi Order Subkon
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
       <div
         class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded {color ===
@@ -339,161 +385,144 @@
             {#if data.length > 0}
               <tbody>
                 {#each data as tableData, index}
-                  {#if tableData.status_kendaraan == "Sendiri"}
-                    <tr>
-                      <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
-                      >
-                        <div class="text-center">
-                          {tableData.tanggal_awal}
-                          {#if tableData.status_kendaraan_sendiri == "Kontrak"}
-                            <br />
-                            -
-                            <br />
-                            {tableData.tanggal_akhir}
-                          {/if}
-                        </div>
-                      </td>
-                      <td>
-                        {tableData.no_transaksi} <br />
-                        {tableData.nomor_sj == null
-                          ? ""
-                          : tableData.nomor_sj + " / "}
-                        {tableData.nomor_po == null
-                          ? ""
-                          : tableData.nomor_po + " / "}
-                        {tableData.nomor_do == null ? "" : tableData.nomor_do}
-                      </td>
-                      <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
-                      >
-                        {tableData.penyewa.nama_perusahaan} / {tableData.muatan}
-                      </td>
+                  <tr>
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
+                    >
+                      <div class="text-center">
+                        {tableData.tanggal_awal}
+                        {#if tableData.status_kendaraan_sendiri == "Kontrak"}
+                          <br />
+                          -
+                          <br />
+                          {tableData.tanggal_akhir}
+                        {/if}
+                      </div>
+                    </td>
+                    <td>
+                      {tableData.no_transaksi} <br />
+                      {tableData.nomor_sj == null
+                        ? ""
+                        : tableData.nomor_sj + " / "}
+                      {tableData.nomor_po == null
+                        ? ""
+                        : tableData.nomor_po + " / "}
+                      {tableData.nomor_do == null ? "" : tableData.nomor_do}
+                    </td>
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                    >
+                      {tableData.penyewa.nama_perusahaan} / {tableData.muatan}
+                    </td>
+                    {#if tableData.status_kendaraan == "Sendiri"}
                       <td
                         class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                       >
                         {tableData.armada.nopol} / {tableData.sopir.nama}
                       </td>
+                    {:else}
                       <td
                         class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
                       >
-                        {tableData.asal} / {tableData.tujuan}
+                        {tableData.nopol_subkon} / {tableData.sopir_subkon}
                       </td>
-                      <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
-                      >
-                        Rp. {IDRFormatter.format(tableData.harga_order)}
-                      </td>
-                      <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
-                      >
-                        {#if tableData.biaya_lain_harga_order_arr.length == 0}
-                          <p class="pl-1">-</p>
-                        {:else}
-                          <!-- Biaya lain harga order sendiri -->
-                          <div>
-                            <a
-                              use:link
-                              href={`/transaksi/order/detail-biaya-tambahan/${tableData.id}`}
-                              class="whitespace-nowrap font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                            >
-                              Rp. {IDRFormatter.format(
-                                // tableData.biaya_lain_harga_jual_arr.reduce(
-                                //   (acc, curr) =>
-                                //     curr.sifat === "Menambahkan"
-                                //       ? acc + curr.nominal
-                                //       : acc - curr.nominal,
-                                //   0
-                                // ) +
-                                // tableData.biaya_lain_uang_jalan_arr.reduce(
-                                //   (acc, curr) =>
-                                //     curr.sifat === "Menambahkan"
-                                //       ? acc + curr.nominal
-                                //       : acc - curr.nominal,
-                                //   0
-                                // )+
-                                tableData.biaya_lain_harga_order_arr.reduce(
-                                  (acc, curr) => acc + curr.nominal,
-                                  0
-                                )
-                              )}</a
-                            >
-                          </div>
-                        {/if}
-                      </td>
-                      <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
-                      >
-                        Rp. {IDRFormatter.format(tableData.total_pajak)}
-                      </td>
-                      <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
-                      >
+                    {/if}
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                    >
+                      {tableData.asal} / {tableData.tujuan}
+                    </td>
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2 whitespace-nowrap"
+                    >
+                      Rp. {IDRFormatter.format(tableData.harga_order)}
+                    </td>
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                    >
+                      {#if tableData.biaya_lain_harga_order_arr.length == 0}
+                        <p class="pl-1">-</p>
+                      {:else}
                         Rp. {IDRFormatter.format(
-                          tableData.harga_order +
-                            tableData.biaya_lain_harga_order_arr.reduce(
-                              (acc, curr) => acc + curr.nominal,
-                              0
-                            ) -
-                            tableData.total_mutasi_order -
-                            tableData.total_pajak
+                          tableData.biaya_lain_harga_order_arr.reduce(
+                            (acc, curr) => acc + curr.nominal,
+                            0
+                          )
                         )}
-                      </td>
-                      <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
-                      >
-                        {tableData.harga_order +
+                      {/if}
+                    </td>
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                    >
+                      Rp. {IDRFormatter.format(tableData.total_pajak)}
+                    </td>
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                    >
+                      Rp. {IDRFormatter.format(
+                        tableData.harga_order +
                           tableData.biaya_lain_harga_order_arr.reduce(
                             (acc, curr) => acc + curr.nominal,
                             0
                           ) -
                           tableData.total_mutasi_order -
-                          tableData.total_pajak ==
-                        0
-                          ? "Lunas"
-                          : "Belum Lunas"}
-                      </td>
-                      <td
-                        class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
-                      >
-                        <input
-                          type="checkbox"
-                          class="shadow form-checkbox border-2 border-gray-300 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
-                          checked={selectedItems.includes(tableData.id)}
-                          on:change={() => {
-                            if (selectedItems.includes(tableData.id)) {
-                              selectedItems = selectedItems.filter(
-                                (item) => item !== tableData.id
-                              );
-                              if (selectedItems.length == 0) {
-                                getdata(
-                                  `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}`
-                                );
-                                selectedPerusahaan = {
-                                  id: "",
-                                  nama_perusahaan: "",
-                                };
-                              }
-                            } else {
-                              selectedItems = [...selectedItems, tableData.id];
-
-                              if (
-                                selectedPerusahaan.nama_perusahaan !=
-                                tableData.penyewa.nama_perusahaan
-                              ) {
-                                selectedPerusahaan = tableData.penyewa;
-                                transaksi.set([]);
-                              }
+                          tableData.total_pajak
+                      )}
+                    </td>
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                    >
+                      {tableData.harga_order +
+                        tableData.biaya_lain_harga_order_arr.reduce(
+                          (acc, curr) => acc + curr.nominal,
+                          0
+                        ) -
+                        tableData.total_mutasi_order -
+                        tableData.total_pajak ==
+                      0
+                        ? "Lunas"
+                        : "Belum Lunas"}
+                    </td>
+                    <td
+                      class="border-t-0 align-middle border-l-0 border-r-0 text-sm py-4 px-2"
+                    >
+                      <input
+                        type="checkbox"
+                        class="shadow form-checkbox border-2 border-gray-300 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
+                        checked={selectedItems.includes(tableData.id)}
+                        on:change={() => {
+                          if (selectedItems.includes(tableData.id)) {
+                            selectedItems = selectedItems.filter(
+                              (item) => item !== tableData.id
+                            );
+                            if (selectedItems.length == 0) {
                               getdata(
-                                `${mainUrl}/api/transaksi/order?cari=${selectedPerusahaan.nama_perusahaan}&page=${$currentPage + 1}`
+                                `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
                               );
+                              selectedPerusahaan = {
+                                id: "",
+                                nama_perusahaan: "",
+                              };
                             }
-                            console.log(selectedItems);
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  {/if}
+                          } else {
+                            selectedItems = [...selectedItems, tableData.id];
+
+                            if (
+                              selectedPerusahaan.nama_perusahaan !=
+                              tableData.penyewa.nama_perusahaan
+                            ) {
+                              selectedPerusahaan = tableData.penyewa;
+                              transaksi.set([]);
+                            }
+                            getdata(
+                              `${mainUrl}/api/transaksi/order?cari=${selectedPerusahaan.nama_perusahaan}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
+                            );
+                          }
+                          console.log(selectedItems);
+                        }}
+                      />
+                    </td>
+                  </tr>
                 {/each}
               </tbody>
             {:else}
