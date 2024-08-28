@@ -78,7 +78,7 @@
         >
           Transaksi
         </li>
-        <a use:link href="/admin/invoice">
+        <a use:link href="/admin/invoice/buat">
           <li
             class={`${selected == 4 ? "active" : ""} px-6 py-3`}
             on:click={() => {

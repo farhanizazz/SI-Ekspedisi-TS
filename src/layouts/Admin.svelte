@@ -32,6 +32,7 @@
   import Roles from "../views/admin/Roles.svelte";
   import Tambahan from "../views/admin/Tambahan.svelte";
   import { get } from "svelte/store";
+  import ListInvoices from "../views/invoices/listInvoices.svelte";
 
   export let location;
   export let admin = "";
@@ -118,7 +119,8 @@
         <Route path="order/*order" component={Transaksi} />
       </Router>
       <Router url="invoice">
-        <Route path="invoice/*invoice" component={Invoices} />
+        <Route path="invoice/buat" component={Invoices} />
+        <Route path="invoice/lihat" component={ListInvoices} />
       </Router>
       <FooterAdmin />
     </div>

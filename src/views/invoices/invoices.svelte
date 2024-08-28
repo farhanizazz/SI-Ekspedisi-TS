@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { link } from "svelte-routing";
+  import { Link } from "svelte-routing";
   import { debounce } from "../../helper/Debounce.js";
   import Pagination from "./../../notusComponents/Pagination/Pagination.svelte";
 
@@ -178,40 +178,38 @@
 <main>
   <div class="flex flex-wrap mt-4">
     <div class="w-full mb-12 px-4">
-      <div class="flex flex-row items-center gap-3 w-1/2 my-2">
-        <h1>Filter:</h1>
-        <input
-          type="text"
-          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-          placeholder="Cari Perusahaan"
-          bind:value={searchPerusahaanValue}
-          on:input={handleSearch}
-        />
-        <!-- <input
-          type="number"
-          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-          placeholder="PPH / PPN"
-          bind:value={searchPPNValue}
-          on:input={handleSearch}
-        /> -->
-        <select
-          class="border-0 px-3 py-3 w-44 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-          bind:value={searchPPNValue}
-          on:change={handleSearch}
-        >
-          <option value="">Status PPH / PPN</option>
-          <option value="ada">PPH / PPN</option>
-          <option value="tidak_ada">Non PPH / PPN</option>
-        </select>
-        <select
-          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-          bind:value={searchStatusValue}
-          on:change={handleSearch}
-        >
-          <option value="">Status</option>
-          <option value="lunas">Lunas</option>
-          <option value="belum_lunas">Belum Lunas</option>
-        </select>
+      <div class="flex flex-row items-center justify-between gap-3 my-2">
+        <div class="flex flex-row items-center gap-3">
+          <h1>Filter:</h1>
+          <input
+            type="text"
+            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+            placeholder="Cari Perusahaan"
+            bind:value={searchPerusahaanValue}
+            on:input={handleSearch}
+          />
+          <select
+            class="border-0 px-3 py-3 w-44 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+            bind:value={searchPPNValue}
+            on:change={handleSearch}
+          >
+            <option value="">Status PPH / PPN</option>
+            <option value="ada">PPH / PPN</option>
+            <option value="tidak_ada">Non PPH / PPN</option>
+          </select>
+          <select
+            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+            bind:value={searchStatusValue}
+            on:change={handleSearch}
+          >
+            <option value="">Status</option>
+            <option value="lunas">Lunas</option>
+            <option value="belum_lunas">Belum Lunas</option>
+          </select>
+        </div>
+        <Link to="/admin/invoice/lihat" class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal bg-red-500 text-white">
+          Lihat Invoice
+        </Link>
       </div>
       <div class="flex flex-wrap">
         <div class="w-full">
@@ -224,7 +222,7 @@
                   : 'text-red-600 bg-white'}"
                 on:click={() => toggleTabs("Sendiri")}
               >
-                <i class="fas fa-cog text-base mr-1" /> Transaksi Order Sendiri
+              Transaksi Order Sendiri
               </button>
             </li>
             <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
@@ -235,7 +233,7 @@
                   : 'text-red-600 bg-white'}"
                 on:click={() => toggleTabs("Subkon")}
               >
-                <i class="fas fa-briefcase text-base mr-1" /> Transaksi Order Subkon
+                Transaksi Order Subkon
               </button>
             </li>
           </ul>
@@ -542,13 +540,13 @@
           onFirst={() => {
             isDataValid.set(false);
             getdata(
-              `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}`
+              `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
             );
           }}
           onLast={() => {
             isDataValid.set(false);
             getdata(
-              `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}`
+              `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
             );
           }}
           {currentPage}
@@ -557,7 +555,7 @@
             isDataValid.set(false);
 
             getdata(
-              `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}`
+              `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
             );
           }}
           pageCount={metaData.links.length}
@@ -567,7 +565,7 @@
               isDataValid.set(false);
 
               getdata(
-                `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}`
+                `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
               );
             }
           }}
@@ -577,7 +575,7 @@
               isDataValid.set(false);
 
               getdata(
-                `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}`
+                `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}&nama_penyewa=${searchPerusahaanValue}&ppn=${searchPPNValue}&status_lunas=${searchStatusValue}`
               );
             }
           }}
