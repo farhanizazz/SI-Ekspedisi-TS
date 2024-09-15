@@ -29,7 +29,7 @@
         sopirs = res.data
       })
     })
-    fetch(`${mainUrl}/api/transaksi/hutang_sopir/${id}`, {
+    fetch(`${mainUrl}/api/transaksi/hutang-sopir/${id}`, {
       headers: {
         Authorization: `bearer ${getCookie('token')}`
       }
@@ -44,7 +44,7 @@
   });
 
   function handleSubmit() {
-    const response = fetch(`${mainUrl}/api/transaksi/hutang_sopir/${id}`, {
+    const response = fetch(`${mainUrl}/api/transaksi/hutang-sopir/${id}`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

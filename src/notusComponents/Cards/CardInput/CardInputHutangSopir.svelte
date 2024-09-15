@@ -32,7 +32,7 @@
   });
 
   function handleSubmit() {
-    const response = fetch(`${mainUrl}/api/transaksi/hutang_sopir`, {
+    const response = fetch(`${mainUrl}/api/transaksi/hutang-sopir`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

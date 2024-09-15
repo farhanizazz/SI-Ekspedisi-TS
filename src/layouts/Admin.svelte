@@ -23,7 +23,6 @@
   import Armada from "../views/admin/Armada.svelte";
   import Rekening from "../views/admin/Rekening/Rekening.svelte";
   import Subkon from "../views/admin/Subkon.svelte";
-  import HutangSopir from "../views/admin/HutangSopir.svelte";
   import Pengeluaran from "../views/laporan/Pengeluaran/Pengeluaran.svelte";
   import { onMount } from "svelte";
   import { mainUrl } from "../environment";
@@ -33,6 +32,7 @@
   import Tambahan from "../views/admin/Tambahan.svelte";
   import { get } from "svelte/store";
   import ListInvoices from "../views/invoices/listInvoices.svelte";
+  import HutangSopir from "../views/laporan/HutangSopir/HutangSopir.svelte";
 
   export let location;
   export let admin = "";
@@ -115,8 +115,11 @@
       </Router>
       <Router url="transaksi">
         <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
-        <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
+        <!-- <Route path="hutangSopir/*hutangSopir" component={HutangSopir} /> -->
         <Route path="order/*order" component={Transaksi} />
+      </Router>
+      <Router url="laporan">
+        <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
       </Router>
       <Router url="invoice">
         <Route path="invoice/buat" component={Invoices} />

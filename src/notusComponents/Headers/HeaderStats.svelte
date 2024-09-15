@@ -91,7 +91,7 @@
         <li
           class={`${selected == 5 ? "active" : ""} px-6 py-3`}
           on:click={() => {
-            selectTab(4);
+            selectTab(5);
           }}
         >
           Laporan
@@ -225,17 +225,20 @@
               Transaksi Pengeluaran
             </li>
           </a>
-          <a use:link href="/transaksi/hutangSopir">
+        </ul>
+      {/if}
+
+      {#if selected == 5}
+        <ul class="flex">
+          <a use:link href="/laporan/hutangSopir">
             <li
-              class="px-6 py-3 {location.href.indexOf(
-                '/transaksi/hutangSopir'
-              ) !== -1
+              class="px-6 py-3 {location.href.indexOf('/laporan/hutangSopir') !== -1
                 ? 'active'
                 : ''}"
             >
-              Transaksi Hutang Sopir
-            </li>
-          </a>
+              Laporan Hutang Sopir
+            </li></a
+          >
         </ul>
       {/if}
       <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">

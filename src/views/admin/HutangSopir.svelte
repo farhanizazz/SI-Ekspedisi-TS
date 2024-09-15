@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 	import CardEditSubkon from '../../notusComponents/Cards/CardInput/CardEdit/CardEditSubkon.svelte';
 	import CardInputSubkon from '../../notusComponents/Cards/CardInput/CardInputSubkon.svelte';
   import CardInputArmada from "../../notusComponents/Cards/CardInput/CardInputArmada.svelte";
@@ -68,4 +68,4 @@
       </Route>
     </Router>
   </div>
-</div>
+</div> -->

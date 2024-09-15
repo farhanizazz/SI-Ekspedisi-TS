@@ -29,6 +29,7 @@
     <Route path="admin/*admin" component={Admin} />
     <Route path="transaksi/*transaksi" component={Admin} />
     <Route path="invoice/*invoice" component={Admin} />
+    <Route path="laporan/*laporan" component={Admin} />
     <!-- auth layout -->
     <Route path="auth/*auth" component={Auth} />
     <!-- no layout pages -->

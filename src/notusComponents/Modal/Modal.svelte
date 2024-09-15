@@ -5,10 +5,9 @@
   export let onAccept: () => void;
   export let onReject: () => void;
 
-  let dialog; // HTMLDialogElement
+  let dialog: HTMLDialogElement; // HTMLDialogElement
 
   $: if (dialog && showModal) dialog.showModal();
-  $: if (dialog && !showModal) dialog.close();
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
@@ -30,7 +29,7 @@
       <button
         class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
         type="button"
-        on:click={onReject}
+        on:click={() => dialog.close()}
       >
         Tutup
       </button>
