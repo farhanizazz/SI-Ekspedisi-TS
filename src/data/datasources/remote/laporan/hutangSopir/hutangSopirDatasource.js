@@ -10,7 +10,7 @@ export class hutangSopirService {
     }
 
     async fetchHutangSopir() {
-        const res = await axios.get(`${mainUrl}/api/transaksi/hutang-sopir/total/?page=${this.page}&search=${this.search}&sort=created_at%20ASC`, {
+        const res = await axios.get(`${mainUrl}/api/transaksi/hutang-sopir/total?page=${this.page}&search=${this.search}&sort=created_at%20ASC`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             }
