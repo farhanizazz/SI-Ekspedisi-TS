@@ -33,6 +33,8 @@
   import { get } from "svelte/store";
   import ListInvoices from "../views/invoices/listInvoices.svelte";
   import HutangSopir from "../views/laporan/HutangSopir/HutangSopir.svelte";
+  import PemasukanCv from "../views/laporan/PemasukanCV/PemasukanCV.svelte";
+  import PemasukanKendaraan from "../views/laporan/PemasukanKendaraan/PemasukanKendaraan.svelte";
 
   export let location;
   export let admin = "";
@@ -115,11 +117,12 @@
       </Router>
       <Router url="transaksi">
         <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
-        <!-- <Route path="hutangSopir/*hutangSopir" component={HutangSopir} /> -->
+        <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
         <Route path="order/*order" component={Transaksi} />
       </Router>
       <Router url="laporan">
-        <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
+        <Route path="pemasukanCV/*pemasukanCV" component={PemasukanCv} />
+        <Route path="pemasukanKendaraan/*pemasukanKendaraan" component={PemasukanKendaraan} />
       </Router>
       <Router url="invoice">
         <Route path="invoice/buat" component={Invoices} />

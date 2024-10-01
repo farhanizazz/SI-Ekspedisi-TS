@@ -87,7 +87,6 @@
     }}
     onSeek={(page) => {
       currentPage.set(page);
-      console.log("Page: ", $currentPage);
       repository.updatePage($currentPage + 1);
     }}
   />

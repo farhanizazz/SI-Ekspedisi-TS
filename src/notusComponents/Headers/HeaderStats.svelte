@@ -88,10 +88,20 @@
             Invoices
           </li>
         </a>
+        <a use:link href="/laporan/hutangSopir">
+          <li
+            class={`${selected == 5 ? "active" : ""} px-6 py-3`}
+            on:click={() => {
+              selectTab(5);
+            }}
+          >
+            Laporan Hutang Sopir
+          </li>
+        </a>
         <li
-          class={`${selected == 5 ? "active" : ""} px-6 py-3`}
+          class={`${selected == 6 ? "active" : ""} px-6 py-3`}
           on:click={() => {
-            selectTab(5);
+            selectTab(6);
           }}
         >
           Laporan
@@ -227,18 +237,28 @@
           </a>
         </ul>
       {/if}
-
-      {#if selected == 5}
+      {#if selected == 6}
         <ul class="flex">
-          <a use:link href="/laporan/hutangSopir">
+          <a use:link href="/laporan/pemasukanCV">
             <li
-              class="px-6 py-3 {location.href.indexOf('/laporan/hutangSopir') !== -1
+              class="px-6 py-3 {location.href.indexOf('/laporan/pemasukanCV') !== -1
                 ? 'active'
                 : ''}"
             >
-              Laporan Hutang Sopir
+              Laporan Pemasukan CV
             </li></a
           >
+          <a use:link href="/laporan/pemasukanKendaraan">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/pemasukanKendaraan'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Laporan Pemasukan Kendaraan
+            </li>
+          </a>
         </ul>
       {/if}
       <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
