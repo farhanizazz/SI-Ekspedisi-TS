@@ -137,13 +137,13 @@
                   </td>
                 {:else if header == "nominal"}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData.jenis_transaksi == 'Pembayaran Penjualan' || tableData.jenis_transaksi == 'Pembayaran Uang Jalan' || tableData.jenis_transaksi == 'Pembayaran Pengeluaran' ? 'text-red-500' : ''}"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData.jenis_transaksi == 'Pembayaran Penjualan' || tableData.jenis_transaksi == 'Pembayaran Uang Jalan' || tableData.jenis_transaksi == 'Pembayaran Invoice' ? 'text-red-500' : ''}"
                   >
                     {'Rp. ' + IDRFormatter.format(tableData[header])}
                   </td>
                 {:else}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData[header] == 'Pembayaran Penjualan' || tableData[header] == 'Pembayaran Uang Jalan' || tableData[header] == 'Pembayaran Pengeluaran' ? 'text-red-500' : ''}"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData[header] == 'Pembayaran Penjualan' || tableData[header] == 'Pembayaran Uang Jalan' || tableData[header] == 'Pembayaran Invoice' ? 'text-red-500' : ''}"
                   >
                     {typeof tableData[header] == "number" && (header != 'id' && header != 'm_rekening_id' && header != 'jumlah') ? 'Rp. ' + IDRFormatter.format(tableData[header]) : tableData[header]}
                   </td>

@@ -15,7 +15,7 @@
 
   let data = [];
   // let dataOriginal = [{detail: {detail: {}}}];
-  const headingPengeluaran = [
+  const headingInvoice = [
     "ID",
     "Tanggal Pembayaran",
     "Nominal",
@@ -200,7 +200,7 @@
     </div>
   </div>
   <CardTable
-    tableHeading={headingPengeluaran}
+    tableHeading={headingInvoice}
     href="/transaksi/order/mutasi/{id}/{jenis}"
     deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
     heading="Detail Transaksi"

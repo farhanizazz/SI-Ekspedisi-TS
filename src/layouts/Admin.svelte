@@ -23,7 +23,7 @@
   import Armada from "../views/admin/Armada.svelte";
   import Rekening from "../views/admin/Rekening/Rekening.svelte";
   import Subkon from "../views/admin/Subkon.svelte";
-  import Pengeluaran from "../views/laporan/Pengeluaran/Pengeluaran.svelte";
+  import Invoice from "../views/laporan/Invoice/Invoice.svelte";
   import { onMount } from "svelte";
   import { mainUrl } from "../environment";
   import { getCookie } from "svelte-cookie";
@@ -35,6 +35,7 @@
   import HutangSopir from "../views/laporan/HutangSopir/HutangSopir.svelte";
   import PemasukanCv from "../views/laporan/PemasukanCV/PemasukanCV.svelte";
   import PemasukanKendaraan from "../views/laporan/PemasukanKendaraan/PemasukanKendaraan.svelte";
+  import Pengeluaran from "../views/laporan/Pengeluaran/Pengeluaran.svelte";
 
   export let location;
   export let admin = "";
@@ -116,13 +117,13 @@
         <Route path="tambahan/*tambahan" component={Tambahan} />
       </Router>
       <Router url="transaksi">
-        <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
         <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
         <Route path="order/*order" component={Transaksi} />
       </Router>
       <Router url="laporan">
         <Route path="pemasukanCV/*pemasukanCV" component={PemasukanCv} />
         <Route path="pemasukanKendaraan/*pemasukanKendaraan" component={PemasukanKendaraan} />
+        <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
       </Router>
       <Router url="invoice">
         <Route path="invoice/buat" component={Invoices} />

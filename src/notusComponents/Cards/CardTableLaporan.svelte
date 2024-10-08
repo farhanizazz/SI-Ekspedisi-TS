@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentPage } from "./../../views/laporan/Pengeluaran/stores/PengeluaranStore.ts";
+  import { currentPage } from "./../../views/laporan/Invoice/stores/InvoiceStore.ts";
   import { onDestroy, onMount } from "svelte";
   import { link } from "svelte-routing";
   import { getCookie } from "svelte-cookie";

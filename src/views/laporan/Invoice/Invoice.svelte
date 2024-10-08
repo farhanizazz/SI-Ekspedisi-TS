@@ -1,15 +1,11 @@
 <script lang="ts">
-  import {
-    laporanPengeluaranData,
-    laporanPengeluaranLainData,
-    laporanPengeluaranSemuaData,
-  } from "./stores/PengeluaranStore.ts";
-  import CardTableLaporanLain from "./../../../notusComponents/Cards/CardTableLaporanLain.svelte";
+	import { laporanLainData, laporanServisData } from './stores/InvoiceStore.ts';
+  import CardTableLaporanLain from "../../../notusComponents/Cards/CardTableLaporanLain.svelte";
   import {
     LaporanServisRepository,
     laporanLainLainRepository,
-  } from "./../../../data/repository/laporanServisRepository.js";
-  import { type LaporanServis } from "./models/LaporanModel.ts";
+  } from "../../../data/repository/laporanServisRepository.js";
+  import { type LaporanServis } from "./models/LaporanModel.js";
   import CardEditSubkon from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditSubkon.svelte";
   import CardTable from "../../../notusComponents/Cards/CardTable.svelte";
   // core components
@@ -19,23 +15,35 @@
   import CardInputSopir from "../../../notusComponents/Cards/CardInput/CardInputSopir.svelte";
   import CardEditArmada from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditArmada.svelte";
   import { getCookie } from "svelte-cookie";
-  import { mainUrl } from "../../../environment";
+  import { mainUrl } from "../../../environment.js";
   import CardInputLaporanTransaksi from "../../../notusComponents/Cards/CardInput/CardInputLaporanTransaksi.svelte";
   import CardInputLaporanTransaksiServis from "./add/CardInputLaporanTransaksiServis.svelte";
   import CardInputLaporanTransaksiLainLain from "./edit/CardEditLaporanTransaksiLainLain.svelte";
+  import CardTableLaporan from "../../../notusComponents/Cards/CardTableLaporan.svelte";
   import LaporanServisDetail from "./details/LaporanServisDetail.svelte";
   import CardEditLaporanTransaksiServis from "./edit/CardEditLaporanTransaksiServis.svelte";
   import CardInputPembayaranLaporanTransaksiServis from "./add/CardInputPembayaranLaporanTransaksiServis.svelte";
   import { get, writable } from "svelte/store";
-  import CardTablePengeluaran from "../../../notusComponents/Cards/CardTablePengeluaran.svelte";
 
   const errorImage = "/public/assets/img/error.png";
+  let dataServis: LaporanServis[] = [];
+  const headingInvoice = [
+    "ID",
+    "Tanggal Servis",
+    "Nama Toko",
+    "Keterangan / Nama Barang",
+    "Harga",
+    "Jumlah / Satuan",
+    "Sub Total",
+  ];
 
   let openTab = 1;
 
   function toggleTabs(tabNumber: number) {
     openTab = tabNumber;
   }
+  let currentPage = writable(0);
+  let currentSearch = "";
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -53,7 +61,8 @@
                     ? 'text-white bg-red-600'
                     : 'text-red-600 bg-white'}"
                   on:click={() => toggleTabs(1)}
-                  >Servis
+                >
+                  <i class="fas fa-cog text-base mr-1" /> Servis
                 </a>
               </li>
               <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
@@ -65,70 +74,36 @@
                     : 'text-red-600 bg-white'}"
                   on:click={() => toggleTabs(2)}
                 >
-                  Lain-Lain
-                </a>
-              </li>
-              <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
-                <a
-                  href="#"
-                  class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal {openTab ===
-                  3
-                    ? 'text-white bg-red-600'
-                    : 'text-red-600 bg-white'}"
-                  on:click={() => toggleTabs(3)}
-                >
-                  Semua
+                  <i class="fas fa-briefcase text-base mr-1" /> Lain-Lain
                 </a>
               </li>
             </ul>
           </div>
         </div>
         {#if openTab === 1}
-          {#await laporanPengeluaranData.getStore()}
-            <div>Loading...</div>
-          {:then dataServis}
-            <CardTablePengeluaran
-              repository={laporanPengeluaranData}
-              href="/transaksi/pengeluaran/servis"
-              deleteApi={`${mainUrl}/api/laporan/servis/`}
-              heading="Data Pengeluaran Servis"
-              dataStore={dataServis}
-            />
-          {:catch e}
-            <div>{e}</div>
-          {/await}
+            {#await laporanServisData.getStore()}
+              <div>Loading...</div>
+            {:then dataServis}
+              <CardTableLaporan
+                repository={laporanServisData}
+                href="/transaksi/pengeluaran/servis"
+                deleteApi={`${mainUrl}/api/laporan/servis/`}
+                heading="Data Invoice Servis"
+                dataStore={dataServis}
+              />
+            {:catch e}
+              <div>{e}</div>
+            {/await}
         {:else if openTab === 2}
-          {#await laporanPengeluaranLainData.getStore()}
+          {#await laporanLainData.getStore()}
             <div>Loading...</div>
           {:then data}
-            <CardTablePengeluaran
+            <CardTableLaporanLain
               href="/transaksi/pengeluaran/lain-lain"
               deleteApi={`${mainUrl}/api/laporan/servis/`}
-              heading="Data Pengeluaran Lain-Lain"
+              heading="Data Invoice Lain-Lain"
               dataStore={data}
-              repository={laporanPengeluaranLainData}
-            />
-          {:catch error}
-            <div
-              class="flex flex-col items-center justify-center text-center"
-              style="height: calc(100vh - 340px);"
-            >
-              <img class="mb-4 h-72" src={errorImage} alt="Error" />
-              <h2 class="font-semibold text-gray-400">
-                Maaf, telah terjadi gangguan server, silahkan coba lagi
-              </h2>
-            </div>
-          {/await}
-        {:else if openTab === 3}
-          {#await laporanPengeluaranSemuaData.getStore()}
-            <div>Loading...</div>
-          {:then data}
-            <CardTablePengeluaran
-              href="/transaksi/pengeluaran/lain-lain"
-              deleteApi={`${mainUrl}/api/laporan/servis/`}
-              heading="Data Pengeluaran Lain-Lain"
-              dataStore={data}
-              repository={laporanPengeluaranSemuaData}
+              repository={laporanLainData}
             />
           {:catch error}
             <div
@@ -147,7 +122,7 @@
         <CardInputLaporanTransaksiServis type={params.type} />
       </Route>
       <Route path=":type/laporan/:id" let:params>
-        <LaporanServisDetail id={params.id} type={params.type} />
+        <LaporanServisDetail id={params.id} type={params.type}/>
       </Route>
       <!-- <Route path="lain-lain/add">
         <CardInputLaporanTransaksiLainLain />

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentPage } from './../Pengeluaran/stores/PengeluaranStore.ts';
+	import { currentPage } from './../Invoice/stores/InvoiceStore.ts';
   import { currentPageDetail } from "./stores/hutangSopirStore";
   import { onDestroy, onMount } from "svelte";
   import { link } from "svelte-routing";

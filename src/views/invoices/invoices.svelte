@@ -207,7 +207,7 @@
             <option value="belum_lunas">Belum Lunas</option>
           </select>
         </div>
-        <Link to="/admin/invoice/lihat" class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal bg-red-500 text-white">
+        <Link to="/transaksi/invoice/lihat" class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal bg-red-500 text-white">
           Lihat Invoice
         </Link>
       </div>

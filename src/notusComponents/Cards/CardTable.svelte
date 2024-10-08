@@ -104,7 +104,7 @@
               {data}
             </th>
           {/each}
-          {#if withDelete && withEdit}
+          {#if withDelete || withEdit}
             <th
               class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
               'light'
@@ -153,7 +153,7 @@
                   </td>
                 {/if}
               {/each}
-              {#if withEdit && withDelete}
+              {#if withEdit || withDelete}
                 <td
                   class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
                 >

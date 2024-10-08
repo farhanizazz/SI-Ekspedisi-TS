@@ -56,7 +56,7 @@
                     e.nominal = `-${e.nominal}`;
                     break;
                   case "pengeluaran":
-                    e.jenis_transaksi = "Pembayaran Pengeluaran";
+                    e.jenis_transaksi = "Pembayaran Invoice";
                     e.nominal = `-${e.nominal}`;
                     break;
                 }

@@ -10,7 +10,7 @@
     id,
     status_kendaraan: "",
   };
-  const headingPengeluaran = ["ID Rekening", "Jumlah", "Sifat", "Keterangan"];
+  const headingInvoice = ["ID Rekening", "Jumlah", "Sifat", "Keterangan"];
   console.log(data);
 
   function fetchData() {
@@ -49,7 +49,7 @@
         }
       });
   }}
-  tableHeading={headingPengeluaran}
+  tableHeading={headingInvoice}
   href="/transaksi/pengeluaran"
   deleteApi={undefined}
   heading="Biaya Lain Harga Order"
@@ -60,7 +60,7 @@
 
 {#if data.status_kendaraan == "Sendiri"}
   <CardTable
-    tableHeading={headingPengeluaran}
+    tableHeading={headingInvoice}
     href="/transaksi/pengeluaran"
     deleteApi={undefined}
     heading="Biaya Lain Uang Jalan"
@@ -87,7 +87,7 @@
 
 {#if data.status_kendaraan == "Subkon"}
 <CardTable
-  tableHeading={headingPengeluaran}
+  tableHeading={headingInvoice}
   href="/transaksi/pengeluaran"
   deleteApi={undefined}
   heading="Data Lain Harga Jual"

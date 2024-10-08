@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { currentPage } from "../../views/laporan/Invoice/stores/InvoiceStore.js";
+  import { onDestroy, onMount } from "svelte";
   import { link } from "svelte-routing";
   import { getCookie } from "svelte-cookie";
   import { createEventDispatcher } from "svelte";
   import axios from "axios";
   import Modal from "../Modal/Modal.svelte";
-  import type { LaporanServisRepository } from "src/data/repository/laporanServisRepository.js";
-  import type { Writable } from "svelte/store";
   import Pagination from "/src/notusComponents/Pagination/Pagination.svelte";
-  import { currentPage } from "./../../views/laporan/Invoice/stores/InvoiceStore.ts";
+  import type { Writable } from "svelte/store";
+  import type { LaporanPengeluaranRepository } from "src/data/repository/laporanPengeluaranRepository.js";
 
   export let color = "light";
   export let heading = "Invoice Table";
@@ -17,14 +17,17 @@
   export let addData = true;
   export let deleteApi;
   export let onLoad = () => {};
-  export let repository: LaporanServisRepository;
-  export let dataStore: Writable<{}>;
+  export let repository: LaporanPengeluaranRepository;
+  const today = new Date();
+  let tglAwal = today.toISOString().substring(0, 10);
+  let tglAkhir = today.toISOString().substring(0, 10);
 
-  let data: any;
   let search = "";
   let timeout: number;
-  let dataSearch;
-  let deleteModal = [];
+  let deleteModal: any[] = [];
+
+  export let dataStore: Writable<{}>;
+  let data: any;
   let pageCount: number;
 
   const unsubscribe = dataStore.subscribe((value) => {
@@ -51,7 +54,10 @@
     timeout = setTimeout(() => {
       // Your function here
       repository.updateSearch(search);
-    }, 500);
+      repository.updateTglAkhir(tglAkhir)
+      repository.updateTglAwal(tglAwal)
+      repository.fetchServis()
+    }, 1000);
   }
 
   const dispatch = createEventDispatcher();
@@ -64,32 +70,67 @@
     style: "currency",
     currency: "IDR",
   });
+  console.log("repository: ", repository)
 </script>
 
 <div style="display: flex; justify-content: center; align-items: center;">
   <Pagination
     onLast={() => {
-      repository.updatePage($currentPage + 1);
+      repository.updatePage($currentPage);
+      repository.fetchServis()
     }}
     onFirst={() => {
-      repository.updatePage($currentPage + 1);
+      repository.updatePage($currentPage);
+      repository.fetchServis()
     }}
     {currentPage}
     {pageCount}
     onNext={() => {
       currentPage.set($currentPage + 1);
-      repository.updatePage($currentPage + 1);
+      repository.updatePage($currentPage);
+      repository.fetchServis()
     }}
     onPrev={() => {
       currentPage.set($currentPage - 1);
-      repository.updatePage($currentPage + 1);
+      repository.updatePage($currentPage);
+      repository.fetchServis()
     }}
     onSeek={(page) => {
       currentPage.set(page);
-      console.log("Page: ", $currentPage);
-      repository.updatePage($currentPage + 1);
+      repository.updatePage($currentPage);
+      repository.fetchServis()
     }}
   />
+</div>
+<div class="flex flex-row items-center gap-3 my-2  w-1/2">
+  <h1>Tanggal Awal:</h1>
+  <input
+    bind:value={tglAwal}
+    type="date"
+    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+    placeholder="Tanggal Awal"
+  />
+  <h1>Tanggal Akhir:</h1>
+  <input
+    bind:value={tglAkhir}
+    type="date"
+    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+    placeholder="Tanggal Akhir"
+  />
+  <h1>Armada:</h1>
+  <!-- <Select
+    showChevron={true}
+    placeholder=""
+    id="grid-penyewa"
+    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+    items={armadaData.map((armada) => ({
+      value: armada.id,
+      label: `${armada.nopol} | ${armada.jenis} | ${armada.merk}`
+    }))}
+    bind:justValue={selectedArmada}
+    label="label"
+    searchable={true}
+  /> -->
 </div>
 <div
   class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded {color ===
@@ -161,7 +202,7 @@
               ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
               : 'bg-red-700 text-red-200 border-red-600'}"
           >
-            Tujuan / Keterangan
+            Nama Barang
           </th>
           <th
             class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
@@ -169,7 +210,7 @@
               ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
               : 'bg-red-700 text-red-200 border-red-600'}"
           >
-            Keterangan/nama brg
+            Nomor Nota
           </th>
           <th
             class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
@@ -194,6 +235,14 @@
               : 'bg-red-700 text-red-200 border-red-600'}"
           >
             Sub total
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+            'light'
+              ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
+              : 'bg-red-700 text-red-200 border-red-600'}"
+          >
+            Keterangan
           </th>
         </tr>
       </thead>
@@ -239,101 +288,40 @@
                 Apakah anda yakin ingin menghapus data ini?
               </h3>
             </Modal>
-            {#each tableData.nota_beli_items as item, itemIndex}
               <tr>
-                {#if itemIndex === 0}
-                  <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                    rowspan={tableData.nota_beli_items.length}
-                    >{tableData.tanggal_servis}</td
-                  >
-                  <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                    rowspan={tableData.nota_beli_items.length}
-                    >{tableData.master_armada.nopol}</td
-                  >
-                  <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                    rowspan={tableData.nota_beli_items.length}
-                  >
-                    {#if tableData.total < 0}
-                      Invoice
-                    {:else}
-                      Pemasukan
-                    {/if}/ {tableData.nama_tujuan_lain}<br />
-                    {tableData.keterangan_lain}
-                  </td>
-                {/if}
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                  >{item.nama_barang}</td
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  >{tableData.tanggal}</td
                 >
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                  >{IDRFormatter.format(item.harga)}</td
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  >{tableData.nopol}</td
                 >
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                  >{item.jumlah}</td
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  >{tableData.nama_barang}</td
                 >
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                  >{IDRFormatter.format(item.harga * item.jumlah)}</td
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  >{tableData.nomor_nota}</td
+                >
+                <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                >{IDRFormatter.format(tableData.harga)}</td
+                >
+                <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                >{tableData.jumlah}</td
+                >
+                <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                >{IDRFormatter.format(tableData.subtotal)}</td
+                >
+                <td
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  >{tableData.keterangan == null ? "Tidak ada keterangan" : tableData.keterangan}</td
                 >
               </tr>
-            {/each}
-            <tr>
-              <td
-                colspan="5"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 border font-semibold"
-              />
-              <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 border font-semibold"
-                >{tableData["total"] > tableData["total_mutasi"]
-                  ? "Belum Lunas"
-                  : "Lunas"}
-                <div class="flex flex-row">
-                  {#if withEdit === true}
-                    <a use:link href={`${href}/edit/${tableData.id}`}>
-                      <p
-                        class="mr-1 text-center bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                      >
-                        Edit
-                      </p>
-                    </a>
-                  {/if}
-                  <button
-                    on:click={() => {
-                      toggleDeleteModal(index);
-                    }}
-                    class="w-full"
-                  >
-                    <p
-                      class="text-center bg-red-500 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                    >
-                      Delete
-                    </p>
-                  </button>
-                </div>
-              </td>
-              <!-- <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 border"
-                
-              ></td> -->
-              <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 border font-semibold"
-                >{IDRFormatter.format(tableData.total)}
-                <div>
-                  <a
-                    use:link
-                    href={`${href}/laporan/${tableData.id}`}
-                    class="whitespace-nowrap font-medium bg-violet-300 text-violet-800 flex justify-center items-center m-1 px-2 py-1 rounded-md text-base outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 border-none"
-                  >
-                    Rp. {IDRFormatter.format(tableData["total_mutasi"])}</a
-                  >
-                </div>
-              </td>
-            </tr>
           {/each}
         </tbody>
       {/if}

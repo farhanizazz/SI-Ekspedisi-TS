@@ -461,7 +461,7 @@
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
             />
-            Data Pengeluaran
+            Data Invoice
           </a>
         </li>
         

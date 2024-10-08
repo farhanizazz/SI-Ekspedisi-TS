@@ -78,7 +78,7 @@
         >
           Transaksi
         </li>
-        <a use:link href="/admin/invoice/buat">
+        <a use:link href="/transaksi/invoice/buat">
           <li
             class={`${selected == 4 ? "active" : ""} px-6 py-3`}
             on:click={() => {
@@ -232,7 +232,7 @@
                 ? 'active'
                 : ''}"
             >
-              Transaksi Pengeluaran
+              Transaksi Invoice
             </li>
           </a>
         </ul>
@@ -257,6 +257,17 @@
                 : ''}"
             >
               Laporan Pemasukan Kendaraan
+            </li>
+          </a>
+          <a use:link href="/laporan/pengeluaran">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/pengeluaran'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Laporan Pengeluaran
             </li>
           </a>
         </ul>
