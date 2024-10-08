@@ -92,6 +92,7 @@
               href="/transaksi/pengeluaran/servis"
               deleteApi={`${mainUrl}/api/laporan/servis/`}
               heading="Data Pengeluaran Servis"
+              addData={false}
               dataStore={dataServis}
             />
           {:catch e}
@@ -106,6 +107,7 @@
               deleteApi={`${mainUrl}/api/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"
               dataStore={data}
+              addData={false}
               repository={laporanPengeluaranLainData}
             />
           {:catch error}
@@ -128,6 +130,7 @@
               deleteApi={`${mainUrl}/api/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"
               dataStore={data}
+              addData={false}
               repository={laporanPengeluaranSemuaData}
             />
           {:catch error}
