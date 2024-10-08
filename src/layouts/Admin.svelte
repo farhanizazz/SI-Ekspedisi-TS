@@ -119,6 +119,7 @@
       <Router url="transaksi">
         <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />
         <Route path="order/*order" component={Transaksi} />
+        <Route path="tPengeluaran" component={Invoice}/>
       </Router>
       <Router url="laporan">
         <Route path="pemasukanCV/*pemasukanCV" component={PemasukanCv} />

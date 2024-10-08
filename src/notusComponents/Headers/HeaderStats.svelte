@@ -224,15 +224,15 @@
               Transaksi Transaksi Order
             </li></a
           >
-          <a use:link href="/transaksi/pengeluaran">
+          <a use:link href="/transaksi/tPengeluaran">
             <li
               class="px-6 py-3 {location.href.indexOf(
-                '/transaksi/pengeluaran'
+                '/transaksi/tPengeluaran'
               ) !== -1
                 ? 'active'
                 : ''}"
             >
-              Transaksi Invoice
+              Transaksi Pengeluaran
             </li>
           </a>
         </ul>
