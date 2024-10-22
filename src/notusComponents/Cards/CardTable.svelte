@@ -18,6 +18,7 @@
   export let onLoad = () => {};
   export let addData = true;
   export let deleteApi;
+  export let subtotal = '';
   let search = "";
   let dataSearch;
 
@@ -142,6 +143,7 @@
                     </p>
                   </td>
                 {:else}
+                  <!-- The data for the table -->
                   <td
                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
                   >
@@ -151,8 +153,10 @@
                       ? "Rp. " + IDRFormatter.format(tableData[header])
                       : tableData[header]}
                   </td>
+                  <!-- End of The data for the table -->
                 {/if}
               {/each}
+
               {#if withEdit || withDelete}
                 <td
                   class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
@@ -198,6 +202,24 @@
               {/if}
             </tr>
           {/each}
+          {#if subtotal != ''}
+          <tr>
+            <td
+            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en"
+            colSpan={tableHeading.length - 2}
+          />
+          <td
+            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en font-bold"
+          >
+            Subtotal: 
+          </td>
+          <td
+            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en"
+          >
+            {"Rp. " + IDRFormatter.format(dataSearch.reduce((sum, item) => sum + item[`${subtotal}`], 0))}
+          </td>
+        </tr>
+        {/if}
         </tbody>
       {:else}
         <tbody>

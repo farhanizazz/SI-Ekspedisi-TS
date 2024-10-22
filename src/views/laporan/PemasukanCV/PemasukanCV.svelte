@@ -9,19 +9,39 @@
   import Modal from "../../../notusComponents/Modal/Modal.svelte";
   import Pagination from "../../../notusComponents/Pagination/Pagination.svelte";
   import { writable } from "svelte/store";
+  import axios from "axios";
+  import { onMount } from "svelte";
+  import Select from "svelte-select";
 
   let data = [];
-  const headingSubkon = ["Tanggal", "Nomor Transaksi", "Status", "Status Kendaraan", "Armada", "Nama Sopir", "Nopol Subkon", "Sopir Subkon", "Perusahaan Penyewa", "Subkon", "Muatan", "Asal", "Tujuan", "Pemasukan"];
+  const headingSubkon = [
+    "Tanggal",
+    "Nomor Transaksi",
+    "Status",
+    "Status Kendaraan",
+    "Armada",
+    "Nama Sopir",
+    "Nopol Subkon",
+    "Sopir Subkon",
+    "Perusahaan Penyewa",
+    "Subkon",
+    "Muatan",
+    "Asal",
+    "Tujuan",
+    "Pemasukan",
+  ];
   const today = new Date();
   let tglAwal = today.toISOString().substring(0, 10);
   let tglAkhir = today.toISOString().substring(0, 10);
   let debounceTimeout;
   let page;
   const currentPage = writable(0);
+  let selectedArmada = [];
+  
 
-  function fetchData(tglAwal, tglAkhir, currentPage) {
+  function fetchData(tglAwal, tglAkhir, currentPage, armadaId) {
     fetch(
-      `${mainUrl}/api/laporan/pemasukan-cv?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&page=${currentPage + 1}`,
+      `${mainUrl}/api/laporan/pemasukan-cv?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&page=${currentPage + 1}&m_armada_id=[${armadaId == null ? '' : armadaId}]`,
       {
         headers: {
           Authorization: `bearer ${getCookie("token")}`,
@@ -33,8 +53,8 @@
           delete e.created_at;
           delete e.updated_at;
           delete e.akses;
-          if(e.nopol_subkon == null) e.nopol_subkon = "Tidak ada data subkon"
-          if(e.sopir_subkon == null) e.sopir_subkon = "Tidak ada data subkon"
+          if (e.nopol_subkon == null) e.nopol_subkon = "Tidak ada data subkon";
+          if (e.sopir_subkon == null) e.sopir_subkon = "Tidak ada data subkon";
           if (e.armada != null) {
             e.armada = e.armada.nopol;
           } else {
@@ -48,12 +68,12 @@
           if (e.sopir != null) {
             e.sopir = e.sopir.nama;
           } else {
-            e.sopir = "Tidak ada data sopir"
+            e.sopir = "Tidak ada data sopir";
           }
           if (e.subkon != null) {
             e.subkon = e.subkon.nama;
           } else {
-            e.subkon = "Tidak ada data subkon"
+            e.subkon = "Tidak ada data subkon";
           }
         });
         page = res.data.meta.links.length;
@@ -63,10 +83,28 @@
     });
   }
 
+  let armadaData = [];
+
+  async function getArmada() {
+    const response = await axios.get(`${mainUrl}/api/master/armada`, {
+      headers: {
+        Authorization: `bearer ${getCookie("token")}`,
+      },
+    });
+    return response.data.data;
+  }
+
+  onMount(() => {
+    getArmada().then((res) => {
+      armadaData = res;
+      console.log(armadaData);
+    });
+  });
+
   $: {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      fetchData(tglAwal, tglAkhir, $currentPage);
+      fetchData(tglAwal, tglAkhir, $currentPage, selectedArmada);
     }, 1000); // Adjust the delay as needed (500ms in this case)
   }
 </script>
@@ -94,7 +132,7 @@
         }}
       />
     </div>
-    <div class="flex flex-row items-center gap-3 my-2">
+    <div class="flex flex-row items-center gap-3 my-2 w-1/2">
       <h1>Tanggal Awal:</h1>
       <input
         bind:value={tglAwal}
@@ -109,6 +147,21 @@
         class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
         placeholder="Tanggal Akhir"
       />
+      <h1>Armada:</h1>
+      <Select
+        multiple
+        showChevron={true}
+        placeholder=""
+        id="grid-penyewa"
+        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+        items={armadaData.map((armada) => ({
+          value: armada.id,
+          label: `${armada.nopol} | ${armada.jenis} | ${armada.merk}`
+        }))}
+        bind:justValue={selectedArmada}
+        label="label"
+        searchable={true}
+      />
     </div>
     <Router route="roles">
       <Route path="">
@@ -121,6 +174,7 @@
           {data}
           withDelete={false}
           onLoad={fetchData}
+          subtotal='pemasukan'
         />
       </Route>
       <Route path="add">

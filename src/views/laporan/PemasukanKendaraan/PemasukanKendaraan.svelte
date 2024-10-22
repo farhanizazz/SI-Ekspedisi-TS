@@ -59,7 +59,7 @@
 
   function fetchData(tglAwal, tglAkhir, currentPage, armadaId) {
     fetch(
-      `${mainUrl}/api/laporan/pemasukan-kendaraan-${jenis}?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&page=${currentPage + 1}&m_armada_id=${armadaId}`,
+      `${mainUrl}/api/laporan/pemasukan-kendaraan-${jenis}?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&page=${currentPage + 1}&m_armada_id=[${armadaId == null ? '' : armadaId}]`,
       {
         headers: {
           Authorization: `bearer ${getCookie("token")}`,
@@ -200,6 +200,7 @@
       />
       <h1>Armada:</h1>
       <Select
+        multiple
         showChevron={true}
         placeholder=""
         id="grid-penyewa"
@@ -216,6 +217,7 @@
     <Router route="roles">
       <Route path="">
         <CardTable
+          subtotal='setor'
           addData={false}
           tableHeading={headingSubkon}
           href="/admin/roles"
