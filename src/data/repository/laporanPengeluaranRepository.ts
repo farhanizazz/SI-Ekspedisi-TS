@@ -29,4 +29,8 @@ export class LaporanPengeluaranRepository {
     getStore() {
         return this.store.getStore();
     }
+
+    updateSelectedArmadas(newArmadas: Array<string>) {
+        return this.store.updateSelectedArmadas(newArmadas)
+    }
 };

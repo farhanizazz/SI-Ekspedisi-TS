@@ -9,6 +9,7 @@ export class PengeluaranService {
     jenis: string;
     tglAwal: string;
     tglAkhir: string;
+    selectedArmadas: Array<string>;
     constructor(jenis = "semua") {
         let today = new Date();
         this.store = writable({});
@@ -17,12 +18,13 @@ export class PengeluaranService {
         this.jenis = jenis;
         this.tglAwal = today.toISOString().substring(0, 10);
         this.tglAkhir = today.toISOString().substring(0, 10);
+        this.selectedArmadas = []
     }
 
     
 
     async fetchServis() {
-        const res = await axios.get(`${mainUrl}/api/laporan/pengeluaran-${this.jenis}?tanggal_awal=${this.tglAwal}&tanggal_akhir=${this.tglAkhir}&page=${this.page + 1}`, {
+        const res = await axios.get(`${mainUrl}/api/laporan/pengeluaran-${this.jenis}?tanggal_awal=${this.tglAwal}&tanggal_akhir=${this.tglAkhir}&page=${this.page + 1}&m_armada_id=[${this.selectedArmadas == null ? '' : this.selectedArmadas}]`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             }
@@ -49,6 +51,13 @@ export class PengeluaranService {
     updateTglAkhir(newDate: string) {
         this.tglAkhir = newDate
         // this.fetchServis();
+    }
+
+    updateSelectedArmadas(newArmada: Array<string>) {
+        if(newArmada == null) {
+            this.selectedArmadas = ['']
+        }
+        this.selectedArmadas = newArmada
     }
 
     async getStore() {

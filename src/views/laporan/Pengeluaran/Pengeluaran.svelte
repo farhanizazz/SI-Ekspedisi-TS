@@ -28,6 +28,8 @@
   import CardInputPembayaranLaporanTransaksiServis from "./add/CardInputPembayaranLaporanTransaksiServis.svelte";
   import { get, writable } from "svelte/store";
   import CardTablePengeluaran from "../../../notusComponents/Cards/CardTablePengeluaran.svelte";
+  import axios from "axios";
+  import { onMount } from "svelte";
 
   const errorImage = "/public/assets/img/error.png";
 
@@ -36,6 +38,24 @@
   function toggleTabs(tabNumber: number) {
     openTab = tabNumber;
   }
+
+  let armadaData = [];
+  let selectedArmada = [];
+
+  async function getArmada() {
+    const response = await axios.get(`${mainUrl}/api/master/armada`, {
+      headers: {
+        Authorization: `bearer ${getCookie("token")}`,
+      },
+    });
+    return response.data.data;
+  }
+
+  onMount(() => {
+    getArmada().then((res) => {
+      armadaData = res;
+    });
+  });
 </script>
 
 <div class="flex flex-wrap mt-4">
@@ -88,6 +108,8 @@
             <div>Loading...</div>
           {:then dataServis}
             <CardTablePengeluaran
+              jenis={"servis"}
+              {armadaData}
               repository={laporanPengeluaranData}
               href="/transaksi/pengeluaran/servis"
               deleteApi={`${mainUrl}/api/laporan/servis/`}
@@ -103,6 +125,8 @@
             <div>Loading...</div>
           {:then data}
             <CardTablePengeluaran
+              jenis={"lain"}
+              {armadaData}
               href="/transaksi/pengeluaran/lain-lain"
               deleteApi={`${mainUrl}/api/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"
@@ -126,6 +150,9 @@
             <div>Loading...</div>
           {:then data}
             <CardTablePengeluaran
+              jenis={"semua"}
+
+              {armadaData}
               href="/transaksi/pengeluaran/lain-lain"
               deleteApi={`${mainUrl}/api/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"

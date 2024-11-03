@@ -37,11 +37,10 @@
   let page;
   const currentPage = writable(0);
   let selectedArmada = [];
-  
 
   function fetchData(tglAwal, tglAkhir, currentPage, armadaId) {
     fetch(
-      `${mainUrl}/api/laporan/pemasukan-cv?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&page=${currentPage + 1}&m_armada_id=[${armadaId == null ? '' : armadaId}]`,
+      `${mainUrl}/api/laporan/pemasukan-cv?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&page=${currentPage + 1}&m_armada_id=[${armadaId == null ? "" : armadaId}]`,
       {
         headers: {
           Authorization: `bearer ${getCookie("token")}`,
@@ -97,7 +96,6 @@
   onMount(() => {
     getArmada().then((res) => {
       armadaData = res;
-      console.log(armadaData);
     });
   });
 
@@ -132,36 +130,52 @@
         }}
       />
     </div>
-    <div class="flex flex-row items-center gap-3 my-2 w-1/2">
-      <h1>Tanggal Awal:</h1>
-      <input
-        bind:value={tglAwal}
-        type="date"
-        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-        placeholder="Tanggal Awal"
-      />
-      <h1>Tanggal Akhir:</h1>
-      <input
-        bind:value={tglAkhir}
-        type="date"
-        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-        placeholder="Tanggal Akhir"
-      />
-      <h1>Armada:</h1>
-      <Select
-        multiple
-        showChevron={true}
-        placeholder=""
-        id="grid-penyewa"
-        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-        items={armadaData.map((armada) => ({
-          value: armada.id,
-          label: `${armada.nopol} | ${armada.jenis} | ${armada.merk}`
-        }))}
-        bind:justValue={selectedArmada}
-        label="label"
-        searchable={true}
-      />
+    <div class="flex justify-between items-center">
+      <div class="flex flex-row items-center gap-3 my-2 w-1/2">
+        <h1>Tanggal Awal:</h1>
+        <input
+          bind:value={tglAwal}
+          type="date"
+          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+          placeholder="Tanggal Awal"
+        />
+        <h1>Tanggal Akhir:</h1>
+        <input
+          bind:value={tglAkhir}
+          type="date"
+          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+          placeholder="Tanggal Akhir"
+        />
+        <h1>Armada:</h1>
+        <Select
+          multiple
+          showChevron={true}
+          placeholder=""
+          id="grid-penyewa"
+          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+          items={armadaData.map((armada) => ({
+            value: armada.id,
+            label: `${armada.nopol} | ${armada.jenis} | ${armada.merk}`,
+          }))}
+          bind:justValue={selectedArmada}
+          label="label"
+          searchable={true}
+        />
+      </div>
+      <button
+        on:click={() => {
+          if(data.length == 0) {
+            alert("Data kosong, gagal mencetak laporan")
+            return
+          }
+          window.open(
+            `${mainUrl}/export-pdf/transaksi/laporan/pemasukan-cv?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&m_armada_id=[${selectedArmada == null ? "" : selectedArmada}]`,
+          );
+        }}
+        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+      >
+        <i class="fa-solid fa-print pr-2"></i>Cetak
+      </button>
     </div>
     <Router route="roles">
       <Route path="">
@@ -174,7 +188,7 @@
           {data}
           withDelete={false}
           onLoad={fetchData}
-          subtotal='pemasukan'
+          subtotal="pemasukan"
         />
       </Route>
       <Route path="add">
