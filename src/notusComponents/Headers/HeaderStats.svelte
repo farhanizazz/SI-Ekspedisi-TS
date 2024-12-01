@@ -88,16 +88,6 @@
             Invoices
           </li>
         </a>
-        <a use:link href="/laporan/hutangSopir">
-          <li
-            class={`${selected == 5 ? "active" : ""} px-6 py-3`}
-            on:click={() => {
-              selectTab(5);
-            }}
-          >
-            Laporan Hutang Sopir
-          </li>
-        </a>
         <li
           class={`${selected == 6 ? "active" : ""} px-6 py-3`}
           on:click={() => {
@@ -224,6 +214,17 @@
               Transaksi Transaksi Order
             </li></a
           >
+          <a use:link href="/transaksi/hutangSopir">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/transaksi/hutangSopir'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Transaksi Hutang Sopir
+            </li>
+          </a>
           <a use:link href="/transaksi/tPengeluaran">
             <li
               class="px-6 py-3 {location.href.indexOf(
@@ -268,6 +269,17 @@
                 : ''}"
             >
               Laporan Pengeluaran
+            </li>
+          </a>
+          <a use:link href="/laporan/lHutangSopir">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/lHutangSopir'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Laporan Hutang Sopir
             </li>
           </a>
         </ul>

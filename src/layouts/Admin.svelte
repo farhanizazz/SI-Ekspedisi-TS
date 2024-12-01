@@ -36,6 +36,7 @@
   import PemasukanCv from "../views/laporan/PemasukanCV/PemasukanCV.svelte";
   import PemasukanKendaraan from "../views/laporan/PemasukanKendaraan/PemasukanKendaraan.svelte";
   import Pengeluaran from "../views/laporan/Pengeluaran/Pengeluaran.svelte";
+  import LaporanHutangSopir from "../views/laporan/LaporanHutangSopir/LaporanHutangSopir.svelte";
 
   export let location;
   export let admin = "";
@@ -123,6 +124,7 @@
       </Router>
       <Router url="laporan">
         <Route path="pemasukanCV/*pemasukanCV" component={PemasukanCv} />
+        <Route path="lHutangSopir/*lHutangSopir" component={LaporanHutangSopir} />
         <Route path="pemasukanKendaraan/*pemasukanKendaraan" component={PemasukanKendaraan} />
         <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
       </Router>

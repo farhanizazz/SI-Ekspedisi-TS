@@ -14,21 +14,37 @@
   import CardEditHutangSopir from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditHutangSopir.svelte";
   import CardInputHutangSopir from "../../../notusComponents/Cards/CardInput/CardInputHutangSopir.svelte";
   import { getCookie } from "svelte-cookie";
-  import CardTableHutangSopir from "./CardTableHutangSopir.svelte";
-  import {
-    hutangSopirData,
-    hutangSopirDetailData,
-  } from "./stores/hutangSopirStore";
-  import CardTableHutangSopirDetail from "./CardTableHutangSopirDetail.svelte";
+  import CardTableHutangSopir from "./CardTableLaporanHutangSopir.svelte";
+  import { laporanHutangSopirData } from "./stores/laporanHutangSopirStore";
+  import CardTableHutangSopirDetail from "./CardTableLaporanHutangSopirDetail.svelte";
+  import { onMount } from "svelte";
+  import axios from "axios";
 
   export let location;
+  let sopirData = [];
+
+
+  async function getSopir() {
+    const response = await axios.get(`${mainUrl}/api/master/sopir`, {
+      headers: {
+        Authorization: `bearer ${getCookie("token")}`,
+      },
+    });
+    return response.data.data;
+  }
+
+  onMount(() => {
+    getSopir().then((res) => {
+      sopirData = res;
+    });
+  });
 </script>
 
 <div class="flex flex-wrap mt-4">
   <div class="w-full mb-12 px-4">
     <Router route="">
       <Route path="">
-        {#await hutangSopirData.getStore()}
+        {#await laporanHutangSopirData.getStore()}
           <CardTable
             heading="Data Hutang Sopir"
             data={[]}
@@ -39,49 +55,16 @@
         {:then dataHutangSopir}
           <CardTableHutangSopir
             withEdit={false}
-            repository={hutangSopirData}
+            repository={laporanHutangSopirData}
             href="/transaksi/hutangSopir"
             deleteApi={`${mainUrl}/api/transaksi/hutang-sopir/`}
             heading="Data Hutang Sopir"
             dataStore={dataHutangSopir}
+            sopirData={sopirData}
           />
         {:catch e}
           <div>Error: {e.message}</div>
         {/await}
-      </Route>
-      <Route path="add">
-        <CardInputHutangSopir />
-      </Route>
-      <Route path=":id" let:params>
-        {#await hutangSopirDetailData.getStore(params.id)}
-          <div class="pt-10"></div>
-          <CardTable
-            heading="Data Hutang Sopir Detail"
-            data={[]}
-            href=""
-            deleteApi=""
-            tableHeading={[
-              "Tanggal Transaksi",
-              "Nominal Hutang",
-              "Keterangan Transaksi",
-              "Action",
-            ]}
-          />
-        {:then dataServis}
-          <CardTableHutangSopirDetail
-            repository={hutangSopirDetailData}
-            href="/transaksi/hutangSopir"
-            deleteApi={`${mainUrl}/api/transaksi/hutang-sopir/`}
-            heading="Data Hutang Sopir Detail"
-            dataStore={dataServis}
-            id={params.id}
-          />
-        {:catch e}
-          <div>Error: {e.message}</div>
-        {/await}
-      </Route>
-      <Route path="edit/:edit" let:params>
-        <CardEditHutangSopir id={params.edit} />
       </Route>
     </Router>
   </div>
