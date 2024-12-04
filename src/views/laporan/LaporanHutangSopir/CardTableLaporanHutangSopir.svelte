@@ -9,9 +9,7 @@
   import Pagination from "/src/notusComponents/Pagination/Pagination.svelte";
   import type { Writable } from "svelte/store";
   import type { LaporanServisRepository } from "src/data/repository/laporanServisRepository.js";
-  import type {
-    LaporanHutangSopir2Repository,
-  } from "src/data/repository/laporanHutangSopir2Repository.js";
+  import type { LaporanHutangSopir2Repository } from "src/data/repository/laporanHutangSopir2Repository.js";
   import { formatToIndonesianDate } from "../../../helper/dateFormatterIndo.js";
   import Select from "svelte-select";
 
@@ -32,13 +30,13 @@
   let data: any;
   let pageCount: number;
   const today = new Date();
-  let tglAwal = '';
+  let tglAwal = "";
   let tglAkhir = today.toISOString().substring(0, 10);
   let selectedSopir = [];
   export let sopirData = [];
 
   const unsubscribe = dataStore.subscribe((value) => {
-    data = value.list;
+    data = value;
     pageCount = value.meta.links.length;
     console.log("data: ", data);
   });
@@ -61,11 +59,11 @@
     timeout = setTimeout(() => {
       // Your function here
       repository.updateSearch(search);
-      repository.updatePage($currentPage + 1)
-      repository.updateSopirId(selectedSopir == null ? '1' : selectedSopir)
-      repository.updateTanggalAwal(tglAwal == '' ? '2000-02-01' : tglAwal)
-      repository.updateTanggalAkhir(tglAkhir)
-      repository.fetchServis()
+      repository.updatePage($currentPage + 1);
+      repository.updateSopirId(selectedSopir);
+      repository.updateTanggalAwal(tglAwal == "" ? "2000-02-01" : tglAwal);
+      repository.updateTanggalAkhir(tglAkhir);
+      repository.fetchServis();
     }, 500);
   }
 
@@ -128,40 +126,48 @@
     </div>
   </div>
 
-    <div class="flex flex-row items-center gap-3 my-2 w-1/2">
-      <h1>Tanggal Awal:</h1>
-      <input
-        bind:value={tglAwal}
-        type="date"
-        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-        placeholder="Tanggal Awal"
-      />
-      <h1>Tanggal Akhir:</h1>
-      <input
-        bind:value={tglAkhir}
-        type="date"
-        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-        placeholder="Tanggal Akhir"
-      />
-      <h1>Armada:</h1>
-      <Select
-        multiple
-        showChevron={true}
-        placeholder=""
-        id="grid-penyewa"
-        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-        items={sopirData.map((sopir) => ({
-          value: sopir.id,
-          label: `${sopir.nama} | ${sopir.ktp} | ${sopir.status}`,
-        }))}
-        bind:justValue={selectedSopir}
-        label="label"
-        searchable={true}
-      />
+  <div class="flex flex-row items-center gap-3 my-2 w-1/2">
+    <h1>Tanggal Awal:</h1>
+    <input
+      bind:value={tglAwal}
+      type="date"
+      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+      placeholder="Tanggal Awal"
+    />
+    <h1>Tanggal Akhir:</h1>
+    <input
+      bind:value={tglAkhir}
+      type="date"
+      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+      placeholder="Tanggal Akhir"
+    />
+    <h1>Sopir:</h1>
+    <Select
+      multiple
+      showChevron={true}
+      placeholder=""
+      id="grid-penyewa"
+      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+      items={sopirData.map((sopir) => ({
+        value: sopir.id,
+        label: `${sopir.nama} | ${sopir.ktp} | ${sopir.status}`,
+      }))}
+      bind:justValue={selectedSopir}
+      label="label"
+      searchable={true}
+    />
+  </div>
+  {#each data.sopir as sopir, index}
+    <div class="mb-3">
+      <h1>Nama Sopir: {sopir.sopir}</h1>
+      <h1>Total Hutang: {IDRFormatter.format(sopir.totalHutang)}</h1>
+      <h1>
+        Total Sisa Uang Jalan: {IDRFormatter.format(sopir.totalSisaUangJalan)}
+      </h1>
     </div>
-
-  <div class="grid grid-cols-2 gap-4">
-    {#each data as tableData}
+  {/each}
+  <div class="grid grid-cols-1 gap-4">
+    {#each data.list as tableData}
       <div
         class=" {color === 'light'
           ? 'bg-white'
@@ -172,24 +178,24 @@
             <tr
               ><td
                 colspan="2"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                 >Tanggal: {formatToIndonesianDate(tableData.tanggal)}</td
               >
               <td
                 colspan="2"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                 >Uang Jalan: {IDRFormatter.format(tableData.uang_jalan)}</td
               >
             </tr>
             <tr
               ><td
                 colspan="2"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                 >No Transaksi: {tableData.no_transaksi}</td
               >
               <td
                 colspan="2"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                 >Biaya Tambah / Kurang: {IDRFormatter.format(
                   tableData.biaya_tambahan
                 )} / {IDRFormatter.format(tableData.biaya_kurang)}</td
@@ -198,74 +204,74 @@
             <tr
               ><td
                 colspan="2"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                 >Penyewa/muat : {tableData.penyewa} / {tableData.muatan}</td
               ><td
                 colspan="2"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                 >Potongan THR: {IDRFormatter.format(tableData.pot_thr)}</td
               >
             </tr>
             <tr
               ><td
                 colspan="4"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap border"
                 >Asal / Tujuan: {tableData.asal} / {tableData.tujuan}</td
               >
             </tr>
             <tr
               ><td
                 colspan="2"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap border"
                 >Total Uang Jalan</td
               ><td
                 colspan="2"
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap border"
                 >{IDRFormatter.format(tableData.total_uang_jalan)}</td
               >
             </tr><tr
               ><td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap border"
                 colspan="4">Rincian</td
               >
             </tr>
             <tr
               ><td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap border"
                 >Tgl Bayar</td
               ><td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap border"
                 >Keterangan</td
               >
               <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap border"
                 >Nominal</td
               >
               <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap border"
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap border"
                 >Sisa Uang Jalan</td
               >
             </tr>
             {#each tableData.rincian as rincian, index}
               <tr
                 ><td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                   >{formatToIndonesianDate(rincian.tanggal)}</td
                 ><td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                   >{rincian.keterangan}</td
                 >
                 <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                  >{rincian.nominal}</td
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
+                  >{IDRFormatter.format(rincian.nominal)}</td
                 >
                 {#if index == 0}
-                <td
-                  rowspan={tableData.rincian.length}
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap"
-                >
-                  {tableData.sisa_uang_jalan}
-                </td>
+                  <td
+                    rowspan={tableData.rincian.length}
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
+                  >
+                    {IDRFormatter.format(tableData.sisa_uang_jalan)}
+                  </td>
                 {/if}
               </tr>
             {/each}
@@ -273,5 +279,30 @@
         </table>
       </div>
     {/each}
+  </div>
+  <div class="flex justify-center">
+    <Pagination
+      onLast={() => {
+        repository.updatePage($currentPage + 1);
+      }}
+      onFirst={() => {
+        repository.updatePage($currentPage + 1);
+      }}
+      {currentPage}
+      {pageCount}
+      onNext={() => {
+        currentPage.set($currentPage + 1);
+        repository.updatePage($currentPage + 1);
+      }}
+      onPrev={() => {
+        currentPage.set($currentPage - 1);
+        repository.updatePage($currentPage + 1);
+      }}
+      onSeek={(page) => {
+        currentPage.set(page);
+        console.log("Page: ", $currentPage);
+        repository.updatePage($currentPage + 1);
+      }}
+    />
   </div>
 </div>
