@@ -14,9 +14,9 @@
   import CardEditHutangSopir from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditHutangSopir.svelte";
   import CardInputHutangSopir from "../../../notusComponents/Cards/CardInput/CardInputHutangSopir.svelte";
   import { getCookie } from "svelte-cookie";
-  import CardTableHutangSopir from "./CardTableLaporanHutangSopir.svelte";
+  import CardTableHutangSopir from "./CardTableLaporanRincianUangJalan.svelte";
   import { laporanHutangSopirData } from "./stores/laporanHutangSopirStore";
-  import CardTableHutangSopirDetail from "./CardTableLaporanHutangSopirDetail.svelte";
+  import CardTableHutangSopirDetail from "./CardTableLaporanRincianUangJalanDetail.svelte";
   import { onMount } from "svelte";
   import axios from "axios";
 

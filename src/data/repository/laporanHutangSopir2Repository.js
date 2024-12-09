@@ -9,6 +9,10 @@ export class LaporanHutangSopir2Repository {
         await this.store.fetchLaporanHutangSopir();
     }
 
+    async exportServis() {
+        await this.store.exportLaporanHutangSopir();
+    }
+
     updatePage(newPage) {
         this.store.updatePage(newPage);
     }

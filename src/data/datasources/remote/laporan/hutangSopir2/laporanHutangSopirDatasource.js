@@ -21,6 +21,9 @@ export class laporanHutangSopirService {
 
         this.store.set(res.data.data);
     }
+    async exportLaporanHutangSopir() {
+        window.open(`${mainUrl}/api/laporan-v2/hutang-sopir?page=${this.page}&search=${this.search}&sort=created_at%20ASC&sopirId=${this.sopirId}&tanggalAwal=${this.tanggalAwal}&tanggalAkhir=${this.tanggalAkhir}&export=1`)
+    }
 
     updatePage(newPage) {
         this.page = newPage;

@@ -36,7 +36,7 @@
   import PemasukanCv from "../views/laporan/PemasukanCV/PemasukanCV.svelte";
   import PemasukanKendaraan from "../views/laporan/PemasukanKendaraan/PemasukanKendaraan.svelte";
   import Pengeluaran from "../views/laporan/Pengeluaran/Pengeluaran.svelte";
-  import LaporanHutangSopir from "../views/laporan/LaporanHutangSopir/LaporanHutangSopir.svelte";
+  import LaporanHutangSopir from "../views/laporan/LaporanHutangSopir/LaporanRincianUangJalan.svelte";
 
   export let location;
   export let admin = "";

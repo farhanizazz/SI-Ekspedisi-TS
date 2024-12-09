@@ -279,7 +279,7 @@
                 ? 'active'
                 : ''}"
             >
-              Laporan Hutang Sopir
+              Laporan Rincian Uang Jalan
             </li>
           </a>
         </ul>

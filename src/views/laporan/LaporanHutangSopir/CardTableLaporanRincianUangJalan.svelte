@@ -12,6 +12,7 @@
   import type { LaporanHutangSopir2Repository } from "src/data/repository/laporanHutangSopir2Repository.js";
   import { formatToIndonesianDate } from "../../../helper/dateFormatterIndo.js";
   import Select from "svelte-select";
+  import { mainUrl } from "../../../environment.js";
 
   export let color = "light";
   export let heading = "Invoice Table";
@@ -120,42 +121,56 @@
             ? 'text-blueGray-700'
             : 'text-white'}"
         >
-          Laporan Hutang Sopir
+          Laporan Rincian Uang Jalan
         </h3>
       </div>
     </div>
   </div>
 
-  <div class="flex flex-row items-center gap-3 my-2 w-1/2">
-    <h1>Tanggal Awal:</h1>
-    <input
-      bind:value={tglAwal}
-      type="date"
-      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-      placeholder="Tanggal Awal"
-    />
-    <h1>Tanggal Akhir:</h1>
-    <input
-      bind:value={tglAkhir}
-      type="date"
-      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-      placeholder="Tanggal Akhir"
-    />
-    <h1>Sopir:</h1>
-    <Select
-      multiple
-      showChevron={true}
-      placeholder=""
-      id="grid-penyewa"
-      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-      items={sopirData.map((sopir) => ({
-        value: sopir.id,
-        label: `${sopir.nama} | ${sopir.ktp} | ${sopir.status}`,
-      }))}
-      bind:justValue={selectedSopir}
-      label="label"
-      searchable={true}
-    />
+  <div class="flex flex-row justify-between">
+    <div class="flex flex-row items-center gap-3 my-2 w-1/2">
+      <h1>Tanggal Awal:</h1>
+      <input
+        bind:value={tglAwal}
+        type="date"
+        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+        placeholder="Tanggal Awal"
+      />
+      <h1>Tanggal Akhir:</h1>
+      <input
+        bind:value={tglAkhir}
+        type="date"
+        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+        placeholder="Tanggal Akhir"
+      />
+      <h1>Sopir:</h1>
+      <Select
+        multiple
+        showChevron={true}
+        placeholder=""
+        id="grid-penyewa"
+        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+        items={sopirData.map((sopir) => ({
+          value: sopir.id,
+          label: `${sopir.nama} | ${sopir.ktp} | ${sopir.status}`,
+        }))}
+        bind:justValue={selectedSopir}
+        label="label"
+        searchable={true}
+      />
+    </div>
+    <button
+      on:click={() => {
+        if (data.list.length == 0) {
+          alert("Data kosong, gagal mencetak laporan");
+          return;
+        }
+        repository.exportServis()
+      }}
+      class="bg-red-500 hover:bg-red-700 text-white font-bold px-4 my-2 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+    >
+      <i class="fa-solid fa-print pr-2"></i>Cetak PDF
+    </button>
   </div>
   {#each data.sopir as sopir, index}
     <div class="mb-3">
