@@ -12,23 +12,17 @@
   import axios from "axios";
   import { onMount } from "svelte";
   import Select from "svelte-select";
+  import CardTableHutangCustomer from "./CardTableHutangCustomer.svelte";
 
   let data = [];
   const headingSubkon = [
-    "Tanggal",
-    "Nomor Transaksi",
-    "Status",
-    "Status Kendaraan",
-    "Armada",
-    "Nama Sopir",
-    "Nopol Subkon",
-    "Sopir Subkon",
-    "Perusahaan Penyewa",
-    "Subkon",
-    "Muatan",
-    "Asal",
-    "Tujuan",
-    "Pemasukan",
+    "Tanggal / No Transaksi",
+    "Nopol / Sopir / Muatan",
+    "Asal / Tujuan",
+    "Harga Order",
+    "Biaya Tambah / Kurang",
+    "PPH / PPN",
+    "Sisa Tagihan",
   ];
   const today = new Date();
   let tglAwal = today.toISOString().substring(0, 10);
@@ -36,56 +30,60 @@
   let debounceTimeout;
   let page;
   const currentPage = writable(0);
-  let selectedArmada = [];
+  let selectedPenyewa = [];
+  let selectedStatus = 'all';
 
-  function fetchData(tglAwal, tglAkhir, currentPage, armadaId) {
-    fetch(
-      `${mainUrl}/api/laporan/pemasukan-cv?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&page=${currentPage + 1}&m_armada_id=[${armadaId == null ? "" : armadaId}]`,
-      {
-        headers: {
-          Authorization: `bearer ${getCookie("token")}`,
-        },
-      }
-    ).then((res) => {
-      res.json().then((res) => {
-        res.data.list.forEach((e) => {
-          delete e.created_at;
-          delete e.updated_at;
-          delete e.akses;
-          if (e.nopol_subkon == null) e.nopol_subkon = "Tidak ada data subkon";
-          if (e.sopir_subkon == null) e.sopir_subkon = "Tidak ada data subkon";
-          if (e.armada != null) {
-            e.armada = e.armada.nopol;
-          } else {
-            e.armada = "Tidak ada armada";
-          }
-          if (e.penyewa != null) {
-            e.penyewa = e.penyewa.nama_perusahaan;
-          } else {
-            e.penyewa = "Tidak ada data penyewa";
-          }
-          if (e.sopir != null) {
-            e.sopir = e.sopir.nama;
-          } else {
-            e.sopir = "Tidak ada data sopir";
-          }
-          if (e.subkon != null) {
-            e.subkon = e.subkon.nama;
-          } else {
-            e.subkon = "Tidak ada data subkon";
-          }
+  function fetchData(tglAwal, tglAkhir, currentPage, armadaId, status) {
+    console.log(armadaId);
+    if(armadaId != null) {
+      fetch(
+        `${mainUrl}/api/laporan-v2/hutang-customer?penyewaId=${armadaId}&subkon=all&status=${status}&tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}`,
+        {
+          headers: {
+            Authorization: `bearer ${getCookie("token")}`,
+          },
+        }
+      ).then((res) => {
+        res.json().then((res) => {
+          res.data.list.forEach((e) => {
+            delete e.created_at;
+            delete e.updated_at;
+            delete e.akses;
+            if (e.nopol_subkon == null)
+              e.nopol_subkon = "Tidak ada data subkon";
+            if (e.sopir_subkon == null)
+              e.sopir_subkon = "Tidak ada data subkon";
+            if (e.armada != null) {
+              e.armada = e.armada.nopol;
+            } else {
+              e.armada = "Tidak ada armada";
+            }
+            if (e.penyewa != null) {
+              e.penyewa = e.penyewa.nama_perusahaan;
+            } else {
+              e.penyewa = "Tidak ada data penyewa";
+            }
+            if (e.subkon != null) {
+              e.subkon = e.subkon.nama;
+            } else {
+              e.subkon = "Tidak ada data subkon";
+            }
+          });
+          page = res.data.meta.links.length;
+          console.log(page);
+          data = res.data.list;
         });
-        page = res.data.meta.links.length;
-        console.log(page);
-        data = res.data.list;
       });
-    });
+    } else {
+      page = 0
+      data = []
+    }
   }
 
-  let armadaData = [];
+  let penyewaData = [];
 
-  async function getArmada() {
-    const response = await axios.get(`${mainUrl}/api/master/armada`, {
+  async function getPenyewa() {
+    const response = await axios.get(`${mainUrl}/api/master/penyewa`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
@@ -94,15 +92,15 @@
   }
 
   onMount(() => {
-    getArmada().then((res) => {
-      armadaData = res;
+    getPenyewa().then((res) => {
+      penyewaData = res;
     });
   });
 
   $: {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      fetchData(tglAwal, tglAkhir, $currentPage, selectedArmada);
+      fetchData(tglAwal, tglAkhir, $currentPage, selectedPenyewa, selectedStatus);
     }, 1000); // Adjust the delay as needed (500ms in this case)
   }
 </script>
@@ -131,7 +129,7 @@
       />
     </div>
     <div class="flex justify-between items-center">
-      <div class="flex flex-row items-center gap-3 my-2 w-1/2">
+      <div class="flex flex-row items-center gap-3 my-2 w-3/4">
         <h1>Tanggal Awal:</h1>
         <input
           bind:value={tglAwal}
@@ -146,30 +144,50 @@
           class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
           placeholder="Tanggal Akhir"
         />
-        <h1>Armada:</h1>
+        <h1>Status:</h1>
         <Select
-          multiple
           showChevron={true}
           placeholder=""
           id="grid-penyewa"
           class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-          items={armadaData.map((armada) => ({
-            value: armada.id,
-            label: `${armada.nopol} | ${armada.jenis} | ${armada.merk}`,
-          }))}
-          bind:justValue={selectedArmada}
+          items={[{
+            value: 'lunas',
+            label: 'Lunas'
+          }, {
+            value: 'belum',
+            label: "Belum Lunas"
+          }, {
+            value: 'all',
+            label: "Semua"
+          }]}
+          bind:justValue={selectedStatus}
           label="label"
           searchable={true}
         />
+        <h1>Penyewa:</h1>
+        <Select
+          showChevron={true}
+          placeholder=""
+          id="grid-penyewa"
+          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150 z-50"
+          items={penyewaData.map((penyewa) => ({
+            value: penyewa.id,
+            label: `${penyewa.nama_perusahaan} | ${penyewa.penanggung_jawab} | ${penyewa.alamat}`,
+          }))}
+          bind:justValue={selectedPenyewa}
+          label="label"
+          searchable={true}
+        />
+        
       </div>
       <button
         on:click={() => {
-          if(data.length == 0) {
-            alert("Data kosong, gagal mencetak laporan")
-            return
+          if (data.length == 0) {
+            alert("Data kosong, gagal mencetak laporan");
+            return;
           }
           window.open(
-            `${mainUrl}/export-pdf/transaksi/laporan/pemasukan-cv?tanggal_awal=${tglAwal}&tanggal_akhir=${tglAkhir}&m_armada_id=[${selectedArmada == null ? "" : selectedArmada}]`,
+            `${mainUrl}/api/laporan-v2/hutang-customer?penyewaId=${selectedPenyewa}&subkon=all&status=${selectedStatus}&tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&export=1`
           );
         }}
         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105"
@@ -179,16 +197,16 @@
     </div>
     <Router route="roles">
       <Route path="">
-        <CardTable
+        <CardTableHutangCustomer
           tableHeading={headingSubkon}
           href="/admin/roles"
           addData={false}
           withEdit={false}
-          heading="Data Pemasukan CV"
+          heading="Data Hutang Customer"
           {data}
           withDelete={false}
           onLoad={fetchData}
-          subtotal="pemasukan"
+          subtotal="sisa_tagihan"
         />
       </Route>
       <Route path="add">

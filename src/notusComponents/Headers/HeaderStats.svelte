@@ -242,7 +242,9 @@
         <ul class="flex">
           <a use:link href="/laporan/pemasukanCV">
             <li
-              class="px-6 py-3 {location.href.indexOf('/laporan/pemasukanCV') !== -1
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/pemasukanCV'
+              ) !== -1
                 ? 'active'
                 : ''}"
             >
@@ -280,6 +282,17 @@
                 : ''}"
             >
               Laporan Rincian Uang Jalan
+            </li>
+          </a>
+          <a use:link href="/laporan/hutangCustomer">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/hutangCustomer'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Laporan Hutang Customer
             </li>
           </a>
         </ul>
