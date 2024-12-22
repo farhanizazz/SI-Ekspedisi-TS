@@ -13,8 +13,10 @@
   import { onMount } from "svelte";
   import Select from "svelte-select";
   import CardTableHutangCustomer from "./CardTableHutangCustomer.svelte";
+  import { IDRFormatter } from "../../../helper/idrFormatter";
 
   let data = [];
+  let total_hutang;
   const headingSubkon = [
     "Tanggal / No Transaksi",
     "Nopol / Sopir / Muatan",
@@ -31,12 +33,12 @@
   let page;
   const currentPage = writable(0);
   let selectedPenyewa = [];
-  let selectedStatus = 'all';
-  let jenis = ""
+  let selectedStatus = "all";
+  let jenis = "";
 
   function fetchData(tglAwal, tglAkhir, currentPage, armadaId, status) {
     console.log(armadaId);
-    if(armadaId != null) {
+    if (armadaId != null) {
       fetch(
         `${mainUrl}/api/laporan-v2/hutang-customer?penyewaId=${armadaId}&subkon=all&status=${status}&tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&page=${currentPage + 1}`,
         {
@@ -73,11 +75,12 @@
           page = res.data.meta.links.length;
           console.log(page);
           data = res.data.list;
+          total_hutang = res.data.total_hutang;
         });
       });
     } else {
-      page = 0
-      data = []
+      page = 0;
+      data = [];
     }
   }
 
@@ -101,7 +104,13 @@
   $: {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      fetchData(tglAwal, tglAkhir, $currentPage, selectedPenyewa, selectedStatus);
+      fetchData(
+        tglAwal,
+        tglAkhir,
+        $currentPage,
+        selectedPenyewa,
+        selectedStatus
+      );
     }, 1000); // Adjust the delay as needed (500ms in this case)
   }
 </script>
@@ -151,16 +160,20 @@
           placeholder=""
           id="grid-penyewa"
           class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
-          items={[{
-            value: 'lunas',
-            label: 'Lunas'
-          }, {
-            value: 'belum',
-            label: "Belum Lunas"
-          }, {
-            value: 'all',
-            label: "Semua"
-          }]}
+          items={[
+            {
+              value: "lunas",
+              label: "Lunas",
+            },
+            {
+              value: "belum",
+              label: "Belum Lunas",
+            },
+            {
+              value: "all",
+              label: "Semua",
+            },
+          ]}
           bind:justValue={selectedStatus}
           label="label"
           searchable={true}
@@ -179,7 +192,6 @@
           label="label"
           searchable={true}
         />
-        
       </div>
       <button
         on:click={() => {
@@ -196,6 +208,13 @@
         <i class="fa-solid fa-print pr-2"></i>Cetak
       </button>
     </div>
+    {#if total_hutang != null}
+      <div>
+        <h1 class="px-7 pt-3 bg-white rounded">
+          Total Hutang: Rp. {IDRFormatter.format(total_hutang)}
+        </h1>
+      </div>
+    {/if}
     <Router route="roles">
       <Route path="">
         <CardTableHutangCustomer

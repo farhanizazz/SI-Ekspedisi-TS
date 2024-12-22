@@ -13,6 +13,8 @@
   import { onMount } from "svelte";
   import Select from "svelte-select";
   import CardTableHutangSubkon from "./CardTableHutangSubkon.svelte";
+  import { IDRFormatter } from "../../../helper/idrFormatter";
+
 
   let data = [];
   const headingSubkon = [
@@ -33,6 +35,7 @@
   let selectedSubkon = [];
   let selectedStatus = 'all';
   let jenis = ""
+  let total_hutang;
 
   function fetchData(tglAwal, tglAkhir, currentPage, subkonId, status) {
     console.log(subkonId);
@@ -73,6 +76,7 @@
           page = res.data.meta.links.length;
           console.log(page);
           data = res.data.list;
+          total_hutang = res.data.total_hutang
         });
       });
     } else {
@@ -196,6 +200,13 @@
         <i class="fa-solid fa-print pr-2"></i>Cetak
       </button>
     </div>
+    {#if total_hutang != null}
+      <div>
+        <h1 class="px-7 pt-3 bg-white rounded">
+          Total Hutang: Rp. {IDRFormatter.format(total_hutang)}
+        </h1>
+      </div>
+    {/if}
     <Router route="roles">
       <Route path="">
         <CardTableHutangSubkon
