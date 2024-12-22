@@ -165,7 +165,7 @@
           label="label"
           searchable={true}
         />
-        <h1>Penyewa:</h1>
+        <h1>Subkon:</h1>
         <Select
           showChevron={true}
           placeholder=""

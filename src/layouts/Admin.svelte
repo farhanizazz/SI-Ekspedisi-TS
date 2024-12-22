@@ -129,8 +129,8 @@
         <Route path="lHutangSopir/*lHutangSopir" component={LaporanHutangSopir} />
         <Route path="pemasukanKendaraan/*pemasukanKendaraan" component={PemasukanKendaraan} />
         <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
-        <Route path="hutangCustomer/*hutangCustomer" component={HutangCustomer} />
         <Route path="hutangSubkon/*hutangSubkon" component={HutangSubkon} />
+        <Route path="hutangCustomer/*hutangCustomer" component={HutangCustomer} />
       </Router>
       <Router url="invoice">
         <Route path="invoice/buat" component={Invoices} />
