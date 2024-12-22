@@ -12,7 +12,7 @@
   import axios from "axios";
   import { onMount } from "svelte";
   import Select from "svelte-select";
-  import CardTableHutangCustomer from "./CardTableHutangCustomer.svelte";
+  import CardTableHutangSubkon from "./CardTableHutangSubkon.svelte";
 
   let data = [];
   const headingSubkon = [
@@ -30,15 +30,15 @@
   let debounceTimeout;
   let page;
   const currentPage = writable(0);
-  let selectedPenyewa = [];
+  let selectedSubkon = [];
   let selectedStatus = 'all';
   let jenis = ""
 
-  function fetchData(tglAwal, tglAkhir, currentPage, armadaId, status) {
-    console.log(armadaId);
-    if(armadaId != null) {
+  function fetchData(tglAwal, tglAkhir, currentPage, subkonId, status) {
+    console.log(subkonId);
+    if(subkonId != null) {
       fetch(
-        `${mainUrl}/api/laporan-v2/hutang-customer?penyewaId=${armadaId}&subkon=all&status=${status}&tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&page=${currentPage + 1}`,
+        `${mainUrl}/api/laporan-v2/hutang-subkon?subkonId=${subkonId}&status=${status}&tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&page=${currentPage + 1}`,
         {
           headers: {
             Authorization: `bearer ${getCookie("token")}`,
@@ -81,10 +81,10 @@
     }
   }
 
-  let penyewaData = [];
+  let subkonData = [];
 
-  async function getPenyewa() {
-    const response = await axios.get(`${mainUrl}/api/master/penyewa`, {
+  async function getSubkon() {
+    const response = await axios.get(`${mainUrl}/api/master/subkon`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
@@ -93,15 +93,15 @@
   }
 
   onMount(() => {
-    getPenyewa().then((res) => {
-      penyewaData = res;
+    getSubkon().then((res) => {
+      subkonData = res;
     });
   });
 
   $: {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      fetchData(tglAwal, tglAkhir, $currentPage, selectedPenyewa, selectedStatus);
+      fetchData(tglAwal, tglAkhir, $currentPage, selectedSubkon, selectedStatus);
     }, 1000); // Adjust the delay as needed (500ms in this case)
   }
 </script>
@@ -171,11 +171,11 @@
           placeholder=""
           id="grid-penyewa"
           class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150 z-50"
-          items={penyewaData.map((penyewa) => ({
+          items={subkonData.map((penyewa) => ({
             value: penyewa.id,
             label: `${penyewa.nama_perusahaan} | ${penyewa.penanggung_jawab} | ${penyewa.alamat}`,
           }))}
-          bind:justValue={selectedPenyewa}
+          bind:justValue={selectedSubkon}
           label="label"
           searchable={true}
         />
@@ -188,7 +188,7 @@
             return;
           }
           window.open(
-            `${mainUrl}/api/laporan-v2/hutang-customer?penyewaId=${selectedPenyewa}&subkon=all&status=${selectedStatus}&tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&export=1`
+            `${mainUrl}/api/laporan-v2/hutang-subkon?subkonId=${selectedSubkon}&status=${selectedStatus}&tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&page=${$currentPage + 1}&export=1`
           );
         }}
         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105"
@@ -198,7 +198,7 @@
     </div>
     <Router route="roles">
       <Route path="">
-        <CardTableHutangCustomer
+        <CardTableHutangSubkon
           tableHeading={headingSubkon}
           href="/admin/roles"
           addData={false}
@@ -207,7 +207,7 @@
           {data}
           withDelete={false}
           onLoad={fetchData}
-          subtotal="sisa_tagihan"
+          subtotal="sisa_hutang"
         />
       </Route>
       <Route path="add">

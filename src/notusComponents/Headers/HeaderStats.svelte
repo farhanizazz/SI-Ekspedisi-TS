@@ -295,6 +295,17 @@
               Laporan Hutang Customer
             </li>
           </a>
+          <a use:link href="/laporan/hutangCustomer">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/hutangCustomer'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Laporan Hutang Subkon
+            </li>
+          </a>
         </ul>
       {/if}
       <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
