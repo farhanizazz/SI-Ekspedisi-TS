@@ -190,8 +190,8 @@
               name="email"
               bind:value={data.password}
             />
-            {#if "email" in error}
-              <p class="text-red-500 text-sm">{error.email}</p>
+            {#if "password" in error}
+              <p class="text-red-500 text-sm">{error.password}</p>
             {/if}
           </div>
         </div>

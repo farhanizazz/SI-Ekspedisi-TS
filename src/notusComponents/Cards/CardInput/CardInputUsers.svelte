@@ -35,12 +35,12 @@
       error.confirm_password = "Password tidak sama";
       return;
     }
-    fetch(`${mainUrl}/api/master/user/${id}`, {
+    fetch(`${mainUrl}/api/master/user/`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `bearer ${getCookie("token")}`,
       },
-      method: "PUT",
+      method: "POST",
       body: JSON.stringify(data),
     }).then((response) => {
       response.json().then((res) => {
