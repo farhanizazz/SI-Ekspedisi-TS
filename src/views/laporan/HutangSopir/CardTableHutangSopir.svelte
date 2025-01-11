@@ -178,7 +178,7 @@
               isLoading={false}
               onAccept={() => {
                 if (deleteApi !== undefined) {
-                  fetch(deleteApi + `${tableData.id}`, {
+                  fetch(deleteApi + `${tableData.master_sopir_id}`, {
                     method: "delete",
                     headers: {
                       Authorization: `bearer ${getCookie("token")}`,

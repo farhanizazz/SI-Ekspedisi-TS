@@ -155,7 +155,7 @@
   onMount(async () => {
     await getData();
     const nota_servis_response = await axios.get(
-      `${mainUrl}/api/laporan/lainlain/${id}`,
+      `${mainUrl}/api/laporan/${type}/${id}`,
       {
         headers: {
           Authorization: `bearer ${getCookie("token")}`,

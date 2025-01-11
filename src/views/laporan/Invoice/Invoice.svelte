@@ -87,7 +87,7 @@
               <CardTableLaporan
                 repository={laporanServisData}
                 href="/transaksi/pengeluaran/servis"
-                deleteApi={`${mainUrl}/api/laporan/servis/`}
+                deleteApi={`${mainUrl}/api/master/laporan/servis/`}
                 heading="Data Invoice Servis"
                 dataStore={dataServis}
               />
@@ -100,7 +100,7 @@
           {:then data}
             <CardTableLaporanLain
               href="/transaksi/pengeluaran/lain-lain"
-              deleteApi={`${mainUrl}/api/laporan/servis/`}
+              deleteApi={`${mainUrl}/api/master/laporan/servis/`}
               heading="Data Invoice Lain-Lain"
               dataStore={data}
               repository={laporanLainData}

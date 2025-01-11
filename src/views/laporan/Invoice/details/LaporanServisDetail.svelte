@@ -24,7 +24,7 @@
         if (res.data.role.akses.master_rekening.view != true) {
           navigate("/admin/dashboard");
         } else {
-          fetch(`${mainUrl}/api/laporan/servis/${id}`, {
+          fetch(`${mainUrl}/api/master/laporan/servis/${id}`, {
             headers: {
               Authorization: `bearer ${getCookie("token")}`,
             },
@@ -111,7 +111,7 @@
       addData={true}
       withEdit={false}
       href="/transaksi/pengeluaran/servis/laporan/{id}"
-      deleteApi={`${mainUrl}/api/laporan/servis/mutasi/`}
+      deleteApi={`${mainUrl}/api/master/laporan/servis/mutasi/`}
       heading="Data Laporan {type}"
       {data}
       onLoad={fetchData}

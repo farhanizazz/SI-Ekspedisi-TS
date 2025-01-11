@@ -84,7 +84,7 @@
   });
 
   function handleSubmit() {
-    const response = fetch(`${mainUrl}/api/laporan/servis/mutasi`, {
+    const response = fetch(`${mainUrl}/api/master/laporan/servis/mutasi`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

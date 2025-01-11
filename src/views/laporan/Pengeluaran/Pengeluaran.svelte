@@ -112,7 +112,7 @@
               {armadaData}
               repository={laporanPengeluaranData}
               href="/transaksi/pengeluaran/servis"
-              deleteApi={`${mainUrl}/api/laporan/servis/`}
+              deleteApi={`${mainUrl}/api/master/laporan/servis/`}
               heading="Data Pengeluaran Servis"
               addData={false}
               dataStore={dataServis}
@@ -128,7 +128,7 @@
               jenis={"lain"}
               {armadaData}
               href="/transaksi/pengeluaran/lain-lain"
-              deleteApi={`${mainUrl}/api/laporan/servis/`}
+              deleteApi={`${mainUrl}/api/master/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"
               dataStore={data}
               addData={false}
@@ -154,7 +154,7 @@
 
               {armadaData}
               href="/transaksi/pengeluaran/lain-lain"
-              deleteApi={`${mainUrl}/api/laporan/servis/`}
+              deleteApi={`${mainUrl}/api/master/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"
               dataStore={data}
               addData={false}

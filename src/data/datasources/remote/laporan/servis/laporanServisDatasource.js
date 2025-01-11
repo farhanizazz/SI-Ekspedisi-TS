@@ -41,7 +41,7 @@ export class ServisService {
 export const getLainLain = async () => {
     const store = writable({});
 
-    const res = await axios.get(`${mainUrl}/api/laporan/lainlain`, {
+    const res = await axios.get(`${mainUrl}/api/master/laporan/lainlain`, {
         headers: {
             Authorization: `Bearer ${getCookie('token')}`,
         }
@@ -53,7 +53,7 @@ export const getLainLain = async () => {
 
 export const servisPostRemoteDatasource = async (data) => {
     const store = writable({});
-    const res = await axios.post(`${mainUrl}/api/laporan/servis`, data, {
+    const res = await axios.post(`${mainUrl}/api/master/laporan/servis`, data, {
         headers: {
             Authorization: `Bearer ${getCookie('token')}`,
         }
@@ -64,7 +64,7 @@ export const servisPostRemoteDatasource = async (data) => {
 
 export const editServisDatasource = async (data, id) => {
     const store = writable({});
-    const res = await axios.put(`${mainUrl}/api/laporan/servis/${id}`, data, {
+    const res = await axios.put(`${mainUrl}/api/master/laporan/servis/${id}`, data, {
         headers: {
             Authorization: `Bearer ${getCookie('token')}`,
         }
@@ -75,7 +75,7 @@ export const editServisDatasource = async (data, id) => {
 
 export const lainlainPostRemoteDatasource = async (data) => {
     const store = writable({});
-    const res = await axios.post(`${mainUrl}/api/laporan/lainlain`, data, {
+    const res = await axios.post(`${mainUrl}/api/master/laporan/lainlain`, data, {
         headers: {
             Authorization: `Bearer ${getCookie('token')}`,
         }
@@ -86,7 +86,7 @@ export const lainlainPostRemoteDatasource = async (data) => {
 
 export const editLainLainDatasource = async (data, id) => {
     const store = writable({});
-    const res = await axios.put(`${mainUrl}/api/laporan/lainlain/${id}`, data, {
+    const res = await axios.put(`${mainUrl}/api/master/laporan/lainlain/${id}`, data, {
         headers: {
             Authorization: `Bearer ${getCookie('token')}`,
         }

@@ -4,13 +4,12 @@
   import { mainUrl } from "../../../environment";
   import { getCookie } from "svelte-cookie";
 
-  let error = {
-  };
+  let error = {};
   let data = {
     tgl_transaksi: "",
     master_sopir_id: "",
     nominal_trans: "",
-    ket_trans: ""
+    ket_trans: "",
   };
 
   let sopirs = [];
@@ -18,7 +17,7 @@
   onMount(async () => {
     fetch(`${mainUrl}/api/master/sopir`, {
       headers: {
-        Authorization: `bearer ${getCookie('token')}`,
+        Authorization: `bearer ${getCookie("token")}`,
         "Content-Type": "application/json",
         Accept: "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -34,6 +33,7 @@
   function handleSubmit() {
     const response = fetch(`${mainUrl}/api/transaksi/hutang-sopir`, {
       headers: {
+        Authorization: `Bearer ${getCookie("token")}`,
         "Content-Type": "application/json",
         Accept: "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -72,7 +72,6 @@
     </div>
     <div class="flex-auto px-4 lg:px-10 py-10">
       <div class="flex flex-wrap">
-
         <div class="w-full lg:w-6/12 px-4">
           <div class="relative w-full mb-3">
             <label
@@ -132,9 +131,11 @@
                 rows="4"
                 bind:value={data.master_sopir_id}
               >
-              <option>Silahkan Pilih Sopir</option>
+                <option>Silahkan Pilih Sopir</option>
                 {#each sopirs as sopir}
-                  <option value={sopir.id}>{`${sopir.nama} | ID Sopir: ${sopir.id}`}</option>
+                  <option value={sopir.id}
+                    >{`${sopir.nama} | ID Sopir: ${sopir.id}`}</option
+                  >
                 {/each}
               </select>
               {#if "master_sopir_id" in error}
