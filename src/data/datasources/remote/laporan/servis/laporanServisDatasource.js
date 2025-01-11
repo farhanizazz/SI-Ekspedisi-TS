@@ -1,6 +1,8 @@
 import axios from "axios";
 import { mainUrl } from "/src/environment";
 import { readable, writable } from "svelte/store";
+import { getCookie } from "svelte-cookie";
+
 
 export class ServisService {
     constructor(jenis = "servis") {
@@ -11,9 +13,9 @@ export class ServisService {
     }
 
     async fetchServis() {
-        const res = await axios.get(`${mainUrl}/api/laporan/${this.jenis}?sort=created_at%20ASC&page=${this.page}&search=${this.search}`, {
+        const res = await axios.get(`${mainUrl}/api/master/laporan/${this.jenis}?sort=created_at%20ASC&page=${this.page}&search=${this.search}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getCookie('token')}`,
             }
         });
 
@@ -41,7 +43,7 @@ export const getLainLain = async () => {
 
     const res = await axios.get(`${mainUrl}/api/laporan/lainlain`, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie('token')}`,
         }
     })
 
@@ -53,7 +55,7 @@ export const servisPostRemoteDatasource = async (data) => {
     const store = writable({});
     const res = await axios.post(`${mainUrl}/api/laporan/servis`, data, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie('token')}`,
         }
     })
     store.set(res.data);
@@ -64,7 +66,7 @@ export const editServisDatasource = async (data, id) => {
     const store = writable({});
     const res = await axios.put(`${mainUrl}/api/laporan/servis/${id}`, data, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie('token')}`,
         }
     })
     store.set(res.data);
@@ -75,7 +77,7 @@ export const lainlainPostRemoteDatasource = async (data) => {
     const store = writable({});
     const res = await axios.post(`${mainUrl}/api/laporan/lainlain`, data, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie('token')}`,
         }
     })
     store.set(res.data);
@@ -86,7 +88,7 @@ export const editLainLainDatasource = async (data, id) => {
     const store = writable({});
     const res = await axios.put(`${mainUrl}/api/laporan/lainlain/${id}`, data, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie('token')}`,
         }
     })
     store.set(res.data);

@@ -4,7 +4,9 @@
   import TableDropdown from "../Dropdowns/TableDropdown.svelte";
   import { onMount } from "svelte";
   import { getCookie } from "svelte-cookie";
+  import Modal from "../Modal/Modal.svelte";
   import { createEventDispatcher } from "svelte";
+  import axios from "axios";
 
   // can be one of light or dark
   export let color = "light";
@@ -18,6 +20,20 @@
   export let deleteApi;
   let search = "";
   let dataSearch;
+  let deleteModal = [];
+  let confirmationModal = [];
+  function toggleDeleteModal(index) {
+    deleteModal[index] = !deleteModal[index];
+    return true;
+  }
+
+  function toggleConfirmationModal(index) {
+    confirmationModal[index] = !confirmationModal[index];
+    return true;
+  }
+
+  $: deleteModal = Array(dataSearch.length).fill(false);
+  $: confirmationModal = Array(dataSearch.length).fill(false);
 
   onLoad();
 
@@ -113,6 +129,93 @@
       {#if data.length > 0}
         <tbody>
           {#each dataSearch as tableData, index}
+            <Modal
+              onReject={() => {
+                toggleConfirmationModal(index);
+              }}
+              bind:showModal={confirmationModal[index]}
+              isLoading={false}
+              onAccept={() => {
+                toggleConfirmationModal(index);
+                if (deleteApi !== undefined) {
+                  axios
+                    .delete(deleteApi + `${tableData.id}?force=true`, {
+                      headers: {
+                        Authorization: `bearer ${getCookie("token")}`,
+                      },
+                    })
+                    .then((res) => {
+                      if (res.data.status != "error") {
+                        onLoad();
+                      }
+                    });
+                } else {
+                  handleDelete(tableData.id);
+                }
+              }}
+              saveText="Hapus"
+            >
+              <h1
+                slot="header"
+                class="font-semibold text-2xl {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Hapus Data
+              </h1>
+              <h3
+                class="text-lg mt-5 {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Data ini dipakai di tabel lain, apakah anda yakin ingin
+                menghapus data ini? (Ini berarti menghapus semua tabel dimana
+                data ini tampil)
+              </h3>
+            </Modal>
+            <Modal
+              onReject={() => {
+                toggleDeleteModal(index);
+              }}
+              bind:showModal={deleteModal[index]}
+              isLoading={false}
+              onAccept={() => {
+                toggleDeleteModal(index);
+                if (deleteApi !== undefined) {
+                  axios
+                    .delete(deleteApi + `${tableData.id}`, {
+                      headers: {
+                        Authorization: `bearer ${getCookie("token")}`,
+                      },
+                    })
+                    .then((res) => {
+                      if (res.data.status == "error") {
+                        toggleConfirmationModal(index);
+                      }
+                    })
+                    .finally(() => {});
+                } else {
+                  handleDelete(tableData.id);
+                }
+              }}
+              saveText="Hapus"
+            >
+              <h1
+                slot="header"
+                class="font-semibold text-2xl {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Hapus Data
+              </h1>
+              <h3
+                class="text-lg mt-5 {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Apakah anda yakin ingin menghapus data ini?
+              </h3>
+            </Modal>
             <tr>
               {#each Object.keys(data[0]) as header}
                 {#if tableData[header] == "aktif"}
@@ -169,18 +272,7 @@
                 {/if}
                 <button
                   on:click={() => {
-                    if (deleteApi !== undefined) {
-                      fetch(deleteApi + `${tableData.id}`, {
-                        method: "delete",
-                        headers: {
-                          Authorization: `bearer ${getCookie("token")}`,
-                        },
-                      }).then(() => {
-                        onLoad();
-                      });
-                    } else {
-                      handleDelete(index);
-                    }
+                    toggleDeleteModal(index);
                   }}
                   class="w-full"
                 >

@@ -10,6 +10,7 @@
   import { selectedStore } from "./HeaderStore/Store.js";
   import { derived, writable } from "svelte/store";
   import { deleteCookie } from "../../helper/deleteCookie.js";
+  import axios from "axios";
 
   export let location;
   let userData;
@@ -96,10 +97,24 @@
         >
           Laporan
         </li>
+        <a use:link href="/admin/log">
+          <li
+            class={`${selected == 7 ? "active" : ""} px-6 py-3`}
+            on:click={() => {
+              selectTab(7);
+            }}
+          >
+            Log Perubahan
+          </li>
+        </a>
         <li
           class={`px-6 py-3`}
           on:click={async () => {
-            deleteCookie("token");
+            await axios.post(`${mainUrl}/api/logout`, {} ,{
+              headers: {
+                Authorization: `Bearer ${getCookie("token")}`,
+              },
+            });
             navigate("/auth/login");
           }}
         >

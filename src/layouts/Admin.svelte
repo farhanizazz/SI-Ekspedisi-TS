@@ -39,6 +39,7 @@
   import LaporanHutangSopir from "../views/laporan/LaporanHutangSopir/LaporanRincianUangJalan.svelte";
   import HutangCustomer from "../views/laporan/HutangCustomer/HutangCustomer.svelte";
   import HutangSubkon from "../views/laporan/HutangSubkon/HutangSubkon.svelte";
+  import LogPerubahan from "../views/log/perubahan/LogPerubahan.svelte";
 
   export let location;
   export let admin = "";
@@ -118,6 +119,7 @@
         <Route path="users/*users" component={Users} />
         <Route path="roles/*roles" component={Roles} />
         <Route path="tambahan/*tambahan" component={Tambahan} />
+        <Route path="log/*log" component={LogPerubahan} />
       </Router>
       <Router url="transaksi">
         <Route path="hutangSopir/*hutangSopir" component={HutangSopir} />

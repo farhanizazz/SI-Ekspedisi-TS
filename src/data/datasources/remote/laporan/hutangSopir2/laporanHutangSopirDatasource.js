@@ -1,6 +1,7 @@
 import axios from "axios";
 import { mainUrl } from "/src/environment";
-import { readable, writable } from "svelte/store";
+  import { getCookie } from "svelte-cookie";
+  import { readable, writable } from "svelte/store";
 
 export class laporanHutangSopirService {
     constructor() {
@@ -15,7 +16,7 @@ export class laporanHutangSopirService {
     async fetchLaporanHutangSopir() {
         const res = await axios.get(`${mainUrl}/api/laporan-v2/hutang-sopir?page=${this.page}&search=${this.search}&sort=created_at%20ASC&sopirId=${this.sopirId}&tanggalAwal=${this.tanggalAwal}&tanggalAkhir=${this.tanggalAkhir}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getCookie("token")}`,
             }
         });
 

@@ -5,6 +5,8 @@
   import { onMount } from "svelte";
   import { getCookie } from "svelte-cookie";
   import { createEventDispatcher } from "svelte";
+  import Modal from "../Modal/Modal.svelte";
+  import axios from "axios";
 
   // can be one of light or dark
   export let color = "light";
@@ -18,9 +20,23 @@
   export let onLoad = () => {};
   export let addData = true;
   export let deleteApi;
-  export let subtotal = '';
+  export let subtotal = "";
   let search = "";
   let dataSearch;
+  let deleteModal = [];
+  let confirmationModal = [];
+  function toggleDeleteModal(index) {
+    deleteModal[index] = !deleteModal[index];
+    return true;
+  }
+
+  function toggleConfirmationModal(index) {
+    confirmationModal[index] = !confirmationModal[index];
+    return true;
+  }
+
+  $: deleteModal = Array(dataSearch.length).fill(false);
+  $: confirmationModal = Array(dataSearch.length).fill(false);
 
   onLoad();
 
@@ -120,6 +136,91 @@
       {#if data.length > 0}
         <tbody>
           {#each dataSearch as tableData, index}
+            <Modal
+              onReject={() => {
+                toggleConfirmationModal(index);
+              }}
+              bind:showModal={confirmationModal[index]}
+              isLoading={false}
+              onAccept={() => {
+                toggleConfirmationModal(index);
+                if (deleteApi !== undefined) {
+                  axios
+                    .delete(deleteApi + `${tableData.id}?force=true`, {
+                      headers: {
+                        Authorization: `bearer ${getCookie("token")}`,
+                      },
+                    })
+                    .then((res) => {
+                      if (res.data.status != "error") {
+                        onLoad()
+                      }
+                    })
+                } else {
+                  handleDelete(tableData.id);
+                }
+              }}
+              saveText="Hapus"
+            >
+              <h1
+                slot="header"
+                class="font-semibold text-2xl {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Hapus Data
+              </h1>
+              <h3
+                class="text-lg mt-5 {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Data ini dipakai di tabel lain, apakah anda yakin ingin menghapus data ini? (Ini berarti menghapus semua tabel dimana data ini tampil)
+              </h3>
+            </Modal>
+            <Modal
+              onReject={() => {
+                toggleDeleteModal(index);
+              }}
+              bind:showModal={deleteModal[index]}
+              isLoading={false}
+              onAccept={() => {
+                toggleDeleteModal(index);
+                if (deleteApi !== undefined) {
+                  axios
+                    .delete(deleteApi + `${tableData.id}`, {
+                      headers: {
+                        Authorization: `bearer ${getCookie("token")}`,
+                      },
+                    })
+                    .then((res) => {
+                      if (res.data.status == "error") {
+                        toggleConfirmationModal(index)
+                      }
+                    })
+                    .finally(() => {});
+                } else {
+                  handleDelete(tableData.id);
+                }
+              }}
+              saveText="Hapus"
+            >
+              <h1
+                slot="header"
+                class="font-semibold text-2xl {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Hapus Data
+              </h1>
+              <h3
+                class="text-lg mt-5 {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Apakah anda yakin ingin menghapus data ini?
+              </h3>
+            </Modal>
             <tr>
               {#each Object.keys(data[0]) as header}
                 {#if tableData[header] == "aktif"}
@@ -176,18 +277,7 @@
                   {#if withDelete}
                     <button
                       on:click={() => {
-                        if (deleteApi !== undefined) {
-                          fetch(deleteApi + `${tableData.id}`, {
-                            method: "delete",
-                            headers: {
-                              Authorization: `bearer ${getCookie("token")}`,
-                            },
-                          }).then(() => {
-                            onLoad();
-                          });
-                        } else {
-                          handleDelete(index);
-                        }
+                        toggleDeleteModal(index);
                       }}
                       class="w-full"
                     >
@@ -202,24 +292,30 @@
               {/if}
             </tr>
           {/each}
-          {#if subtotal != ''}
-          <tr>
-            <td
-            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en"
-            colSpan={tableHeading.length - 2}
-          />
-          <td
-            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en font-bold"
-          >
-            Subtotal: 
-          </td>
-          <td
-            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en"
-          >
-            {"Rp. " + IDRFormatter.format(dataSearch.reduce((sum, item) => sum + item[`${subtotal}`], 0))}
-          </td>
-        </tr>
-        {/if}
+          {#if subtotal != ""}
+            <tr>
+              <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en"
+                colSpan={tableHeading.length - 2}
+              />
+              <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en font-bold"
+              >
+                Subtotal:
+              </td>
+              <td
+                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 text-en"
+              >
+                {"Rp. " +
+                  IDRFormatter.format(
+                    dataSearch.reduce(
+                      (sum, item) => sum + item[`${subtotal}`],
+                      0
+                    )
+                  )}
+              </td>
+            </tr>
+          {/if}
         </tbody>
       {:else}
         <tbody>

@@ -1,50 +1,57 @@
 <script lang="ts">
   export let showModal: boolean;
-  export let isLoading: boolean;
+  export let isLoading: boolean = false;
   export let saveText: string = "Save Changes";
-  export let onAccept: () => void;
-  export let onReject: () => void;
+  export let onAccept: () => void = () => {};
+  export let onReject: () => void = () => {};
 
-  let dialog: HTMLDialogElement; // HTMLDialogElement
+  let dialog: HTMLDialogElement;
 
-  $: if (dialog && showModal) dialog.showModal();
+  // Reactive statement to control dialog visibility
+  $: {
+    if (dialog) {
+      showModal ? dialog.showModal() : dialog.close();
+    }
+  }
+
+  // Close handler for dialog events
+  const handleClose = () => {
+    if (showModal) {
+      onReject();
+    }
+  };
+
+  // Prevent dialog closure on clicks inside the modal content
+  const stopPropagation = (e: MouseEvent) => e.stopPropagation();
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
   bind:this={dialog}
-  on:close={onReject}
-  on:click|self={() => dialog.close()}
+  on:close={handleClose}
+  on:click|self={() => (showModal = false)}
 >
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div on:click|stopPropagation>
+  <div class="modal-content" on:click={stopPropagation}>
     <slot name="header" />
-    <hr />
+
     <slot />
-    <!-- svelte-ignore a11y-autofocus -->
-    <!-- <button autofocus on:click={() => dialog.close()}>close modal</button> -->
-    <div
-      class="flex items-center justify-end p-6 border-t border-blueGray-200 rounded-b border-none"
-    >
+
+    <div class="actions">
       <button
-        class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+        class="btn btn-close"
         type="button"
-        on:click={() => dialog.close()}
+        on:click={() => {
+          showModal = false;
+          onReject();
+        }}
       >
         Tutup
       </button>
-      {#if onAccept === undefined}
-        <button
-          class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-          type="submit"
-        >
-          {isLoading ? "Loading..." : saveText}
-        </button>
-      {:else}
+      {#if saveText == ""}
         <button
           class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
           type="button"
           on:click={onAccept}
+          disabled={isLoading}
         >
           {isLoading ? "Loading..." : saveText}
         </button>
@@ -60,15 +67,52 @@
     border: none;
     padding: 0;
   }
+
   dialog::backdrop {
     background: rgba(0, 0, 0, 0.3);
   }
-  dialog > div {
+
+  .modal-content {
     padding: 1em;
+    background: white;
+    border-radius: 0.2em;
   }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+    padding-top: 1em;
+  }
+
+  .btn {
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 0.2em;
+    cursor: pointer;
+  }
+
+  .btn-close {
+    background-color: transparent;
+    color: red;
+    font-weight: bold;
+  }
+
+  .btn-save {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
   dialog[open] {
     animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+
   @keyframes zoom {
     from {
       transform: scale(0.95);
@@ -77,9 +121,11 @@
       transform: scale(1);
     }
   }
+
   dialog[open]::backdrop {
     animation: fade 0.2s ease-out;
   }
+
   @keyframes fade {
     from {
       opacity: 0;
@@ -87,8 +133,5 @@
     to {
       opacity: 1;
     }
-  }
-  button {
-    display: block;
   }
 </style>

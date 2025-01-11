@@ -1,6 +1,8 @@
 import axios from "axios";
 import { mainUrl } from "/src/environment";
 import { readable, writable } from "svelte/store";
+import { getCookie } from "svelte-cookie";
+
 
 export class hutangSopirService {
     constructor() {
@@ -12,7 +14,7 @@ export class hutangSopirService {
     async fetchHutangSopir() {
         const res = await axios.get(`${mainUrl}/api/transaksi/hutang-sopir/total?page=${this.page}&search=${this.search}&sort=created_at%20ASC`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getCookie("token")}`,
             }
         });
 
@@ -39,7 +41,7 @@ export const postHutangSopir = async (data) => {
     const store = writable({});
     const res = await axios.post(`${mainUrl}/api/laporan/servis`, data, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie("token")}`,
         }
     })
     store.set(res.data);
@@ -57,7 +59,7 @@ export class hutangSopirServiceId {
         this.id = id;
         const res = await axios.get(`${mainUrl}/api/transaksi/hutang-sopir/${this.id}/list?itemPerPage=10&page=${this.page}&sort=created_at%20ASC&search=${this.search}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getCookie("token")}`,
             }
         });
 
@@ -84,7 +86,7 @@ export const updateHutangSopir = async (data, id) => {
     const store = writable({});
     const res = await axios.put(`${mainUrl}/api/transaksi/hutang-sopir/${id}`, data, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie("token")}`,
         }
     })
     store.set(res.data);
@@ -95,7 +97,7 @@ export const deleteHutangSopir = async (id) => {
     const store = writable({});
     const res = await axios.delete(`${mainUrl}/api/transaksi/hutang-sopir/${id}`, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie("token")}`,
         }
     })
     store.set(res.data);
@@ -106,7 +108,7 @@ export const getTotalHutangSopir = async () => {
     const store = writable({});
     const res = await axios.put(`${mainUrl}/api/transaksi/hutang-sopir/`, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie("token")}`,
         }
     })
     store.set(res.data);
@@ -117,7 +119,7 @@ export const getTotalHutangSopirById = async (id) => {
     const store = writable({});
     const res = await axios.get(`${mainUrl}/api/transaksi/hutang-sopir/${id}`, {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getCookie("token")}`,
         }
     })
     store.set(res.data);
