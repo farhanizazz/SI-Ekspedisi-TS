@@ -60,26 +60,31 @@
   }
   let IDRFormatter = new Intl.NumberFormat("id-ID");
 
-  function formatJsonToString(jsonString, maxLength = 50, addLineBreaks = false) {
+  function formatJsonToString(
+    jsonString,
+    maxLength = 50,
+    addLineBreaks = false
+  ) {
     try {
-        // Parse the JSON string into an object
-        const data = JSON.parse(jsonString);
+      // Parse the JSON string into an object
+      const data = JSON.parse(jsonString);
 
-        // Convert the object to a formatted string
-        let formattedString = Object.entries(data)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join(addLineBreaks ? ",<br>" : ", ");
+      // Convert the object to a formatted string
+      let formattedString = Object.entries(data)
+        .filter(([key]) => key !== "user")
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(addLineBreaks ? ",<br>" : ", ");
 
-        // Trim the final formatted string if it exceeds maxLength
-        if (formattedString.length > maxLength) {
-            formattedString = `${formattedString.slice(0, maxLength)}...`;
-        }
+      // Trim the final formatted string if it exceeds maxLength
+      if (formattedString.length > maxLength) {
+        formattedString = `${formattedString.slice(0, maxLength)}...`;
+      }
 
-        return formattedString;
+      return formattedString;
     } catch (error) {
-        return "Invalid JSON string";
+      return "Invalid JSON string";
     }
-}
+  }
 </script>
 
 <div
@@ -163,13 +168,20 @@
             <tr>
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
-              >
-                {tableData.user.username}
+                >{#if tableData.path == "api/logout"}
+                  <div
+                    class="bg-red-500 w-28 text-center rounded font-medium text-white"
+                  >
+                    USER LOGOUT
+                  </div>
+                {:else}
+                  {tableData.user.username}
+                {/if}
               </td>
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
               >
-                {#if tableData.method == "DELETE"}
+                {#if tableData.method == "DELETE" || tableData.path == "api/logout"}
                   <div
                     class="w-28 rounded font-medium text-white justify-center flex bg-red-500"
                   >
@@ -211,7 +223,7 @@
                       handleDelete(tableData.id);
                     }
                   }}
-                  saveText="Hapus"
+                  saveText=""
                 >
                   <h3
                     class="text-lg mt-5 {color === 'light'
@@ -224,12 +236,12 @@
               </td>
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
-              > 
+              >
                 {tableData.path}
               </td>
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
-              > 
+              >
                 {#if tableData.method == "PUT"}
                   <div
                     class="bg-green-500 w-10 text-center rounded font-medium text-white"
@@ -241,6 +253,12 @@
                     class="bg-red-500 w-15 text-center rounded font-medium text-white"
                   >
                     HAPUS
+                  </div>
+                {:else if tableData.path == "api/logout"}
+                  <div
+                    class="bg-red-500 w-28 text-center rounded font-medium text-white"
+                  >
+                    USER LOGOUT
                   </div>
                 {:else if tableData.method == "POST"}
                   {#if tableData.path == "api/login"}

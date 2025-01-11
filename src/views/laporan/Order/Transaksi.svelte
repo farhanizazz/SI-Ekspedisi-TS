@@ -212,11 +212,13 @@
   let showUangJalanModal = [];
   let catatanModal: boolean[] = [];
   let deleteModal: boolean[] = [];
+  let confirmationModal: boolean[] = [];
 
   $: {
     showHargaOrderModal = data.map(() => false);
     showUangJalanModal = data.map(() => false);
     deleteModal = data.map(() => false);
+    confirmationModal = data.map(() => false);
   }
 
   function toggleHargaOrderModal(id: number) {
@@ -232,8 +234,11 @@
   }
 
   function toggleDeleteModal(id) {
-    console.log(id);
     deleteModal[id] = !deleteModal[id];
+  }
+
+  function toggleConfirmationModal(id) {
+    confirmationModal[id] = !confirmationModal[id];
   }
 
   let dropdownPopoverShowStatusKendaraanSendiri = [];
@@ -1229,10 +1234,60 @@
                               bind:showModal={deleteModal[index]}
                               isLoading={false}
                               onAccept={() => {
+                                axios
+                                  .delete(
+                                    mainUrl +
+                                      "/api/transaksi/order/" +
+                                      `${tableData.id}`,
+                                    {
+                                      headers: {
+                                        Authorization: `bearer ${getCookie(
+                                          "token"
+                                        )}`,
+                                      },
+                                    }
+                                  )
+                                  .then((res) => {
+                                    toggleDeleteModal(index);
+                                    console.log(res.data);
+                                    if (res.data.status == "error") {
+                                      toggleConfirmationModal(index);
+                                    } else {
+                                      isDataValid.set(false);
+                                      getdata(
+                                        `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+                                      );
+                                    }
+                                  });
+                              }}
+                            >
+                              <h1
+                                slot="header"
+                                class="font-semibold text-2xl {color === 'light'
+                                  ? 'text-blueGray-700'
+                                  : 'text-white'}"
+                              >
+                                Hapus Data
+                              </h1>
+                              <h3
+                                class="text-lg mt-5 {color === 'light'
+                                  ? 'text-blueGray-700'
+                                  : 'text-white'}"
+                              >
+                                Apakah anda yakin ingin menghapus data ini?
+                              </h3>
+                            </Modal>
+                            <Modal
+                              onReject={() => {
+                                toggleDeleteModal(index);
+                              }}
+                              bind:showModal={confirmationModal[index]}
+                              isLoading={false}
+                              onAccept={() => {
                                 fetch(
                                   mainUrl +
                                     "/api/transaksi/order/" +
-                                    `${tableData.id}`,
+                                    `${tableData.id}?force=true`,
                                   {
                                     method: "delete",
                                     headers: {
@@ -1242,7 +1297,7 @@
                                     },
                                   }
                                 ).then(() => {
-                                  toggleDeleteModal(index);
+                                  toggleConfirmationModal(index);
                                   isDataValid.set(false);
                                   getdata(
                                     `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
@@ -1263,7 +1318,9 @@
                                   ? 'text-blueGray-700'
                                   : 'text-white'}"
                               >
-                                Apakah anda yakin ingin menghapus data ini?
+                                Data ini dipakai di tabel lain, apakah anda
+                                yakin ingin menghapus data ini? (Ini berarti
+                                menghapus semua tabel dimana data ini tampil)
                               </h3>
                             </Modal>
                           </td>
@@ -1446,9 +1503,9 @@
                                 }}
                               >
                                 <Modal
-                                onReject={() => {
-                                  catatanModal[index] = false;
-                                }}
+                                  onReject={() => {
+                                    catatanModal[index] = false;
+                                  }}
                                   onAccept={undefined}
                                   bind:showModal={catatanModal[index]}
                                   bind:isLoading={tableData.statusLoadingCatatan}
