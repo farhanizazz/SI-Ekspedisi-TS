@@ -103,7 +103,7 @@
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-    if(formattedCategory == 'User') formattedCategory = 'Pegawai'
+    if (formattedCategory == "User") formattedCategory = "Pegawai";
     return prefix ? `${prefix} ${formattedCategory}` : formattedCategory;
   }
 </script>
@@ -207,6 +207,12 @@
                     class="w-28 rounded font-medium text-white justify-center flex bg-red-500"
                   >
                     Data Dihapus
+                  </div>
+                {:else if tableData.path == "api/login"}
+                  <div
+                    class="w-28 rounded font-medium text-white justify-center flex bg-blue-500"
+                  >
+                    User Login
                   </div>
                 {:else}
                   {formatJsonToString(tableData.response)}
