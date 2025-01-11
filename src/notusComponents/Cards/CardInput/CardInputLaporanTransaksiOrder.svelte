@@ -141,6 +141,8 @@
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Authorization: `Bearer ${getCookie("token")}`,
+
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: "POST",
