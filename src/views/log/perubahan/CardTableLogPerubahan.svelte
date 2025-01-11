@@ -85,6 +85,27 @@
       return "Invalid JSON string";
     }
   }
+
+  function convertApiToTitle(apiPath) {
+    // Extract the relevant part of the path
+    const segments = apiPath.split("/");
+
+    // Determine the prefix (Master or Transaksi) based on the path
+    let prefix = "";
+    if (segments[0] === "api") {
+      if (segments[1] === "master") prefix = "Master";
+      else if (segments[1] === "transaksi") prefix = "Transaksi";
+    }
+
+    // Format the relevant part after the prefix
+    const category = segments[2] || segments[1];
+    let formattedCategory = category
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    if(formattedCategory == 'User') formattedCategory = 'Pegawai'
+    return prefix ? `${prefix} ${formattedCategory}` : formattedCategory;
+  }
 </script>
 
 <div
@@ -237,7 +258,7 @@
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
               >
-                {tableData.path}
+                {convertApiToTitle(tableData.path)}
               </td>
               <td
                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
