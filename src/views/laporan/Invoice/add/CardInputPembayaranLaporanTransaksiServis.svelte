@@ -14,7 +14,7 @@
   let data = {
     servis_id: id,
     master_rekening_id: "",
-    nominal: "",
+    nominal: 0,
     keterangan: "",
   };
   let rekenings = [];
@@ -84,6 +84,8 @@
   });
 
   function handleSubmit() {
+    console.log("tes");
+    
     const response = fetch(`${mainUrl}/api/master/laporan/servis/mutasi`, {
       headers: {
         "Content-Type": "application/json",

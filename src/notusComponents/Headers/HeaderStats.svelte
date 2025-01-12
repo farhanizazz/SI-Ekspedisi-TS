@@ -116,7 +116,7 @@
           on:click={async () => {
             try {
               const res = await axios.post(
-                `${mainUrl}/api/logouts`,
+                `${mainUrl}/api/logout`,
                 {},
                 {
                   headers: {

@@ -206,7 +206,7 @@
                   <div
                     class="w-28 rounded font-medium text-white justify-center flex bg-red-500"
                   >
-                    USER LOGOUT
+                    DATA DIHAPUS
                   </div>
                 {:else if tableData.path == "api/login"}
                   <div
