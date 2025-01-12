@@ -89,6 +89,7 @@
         "Content-Type": "application/json",
         Accept: "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${getCookie("token")}`,
       },
       method: "POST",
       body: JSON.stringify(data),
@@ -96,7 +97,7 @@
       res.json().then((res) => {
         console.log(res);
         if (res.status != "error") {
-          navigate("/transaksi/pengeluaran");
+          navigate("/transaksi/tPengeluaran");
         } else {
           error = res.message;
         }
