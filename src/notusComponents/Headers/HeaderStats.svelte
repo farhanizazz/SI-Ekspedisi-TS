@@ -10,6 +10,7 @@
   import { selectedStore } from "./HeaderStore/Store.js";
   import { derived, writable } from "svelte/store";
   import { deleteCookie } from "../../helper/deleteCookie.js";
+  import Modal from "../Modal/Modal.svelte";
   import axios from "axios";
 
   export let location;
@@ -43,6 +44,9 @@
     unsubscribe;
     unsubscribeUserData;
   });
+
+  let alertModal = false;
+  let errorRes = {};
 </script>
 
 <!-- Header -->
@@ -110,18 +114,47 @@
         <li
           class={`px-6 py-3`}
           on:click={async () => {
-            await axios.post(`${mainUrl}/api/logout`, {} ,{
-              headers: {
-                Authorization: `Bearer ${getCookie("token")}`,
-              },
-            });
-            navigate("/auth/login");
+            try {
+              const res = await axios.post(
+                `${mainUrl}/api/logouts`,
+                {},
+                {
+                  headers: {
+                    Authorization: `Bearer ${getCookie("token")}`,
+                  },
+                }
+              );
+              if (res.data.status == "success") {
+                navigate("/auth/login");
+              }
+            } catch (error) {
+              errorRes = error;
+              alertModal = true;
+              console.log(errorRes);
+            }
           }}
         >
           Logout
         </li>
       </ul>
-
+      {#if alertModal}
+      <Modal
+      onReject={() => {
+        alertModal = false;
+      }}
+      bind:showModal={alertModal}
+      isLoading={false}
+    >
+      <h1 slot="header" class="font-semibold text-2xl">
+        ERROR: {errorRes.code}
+      </h1>
+      <h3 class="text-lg mt-5">
+        {errorRes.message}
+        {errorRes.response.data.exception}
+      </h3>
+    </Modal>
+      {/if}
+      
       {#if selected == 2}
         <ul class="flex text-center">
           {#if userData.role.akses.master_sopir.view == true}

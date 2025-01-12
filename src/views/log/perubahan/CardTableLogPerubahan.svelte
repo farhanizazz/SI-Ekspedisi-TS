@@ -206,13 +206,13 @@
                   <div
                     class="w-28 rounded font-medium text-white justify-center flex bg-red-500"
                   >
-                    Data Dihapus
+                    USER LOGOUT
                   </div>
                 {:else if tableData.path == "api/login"}
                   <div
-                    class="w-28 rounded font-medium text-white justify-center flex bg-blue-500"
+                    class="w-28 rounded font-medium text-white justify-center flex bg-orange-500"
                   >
-                    User Login
+                    USER LOGIN
                   </div>
                 {:else}
                   {formatJsonToString(tableData.response)}
