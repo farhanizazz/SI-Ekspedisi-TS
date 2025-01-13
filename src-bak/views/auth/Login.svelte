@@ -101,11 +101,6 @@
             <small>Forgot password?</small>
           </a>
         </div>
-        <div class="w-1/2 text-right">
-          <a use:link href="/auth/register" class="text-blueGray-200">
-            <small>Create new account</small>
-          </a>
-        </div>
       </div>
     </div>
   </div>
