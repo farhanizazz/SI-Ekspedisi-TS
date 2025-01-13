@@ -1,5 +1,6 @@
 import axios from "axios";
 import { mainUrl } from "/src/environment";
+import { getCookie } from "svelte-cookie";
 import { readable, writable } from "svelte/store";
 
 export class logPerubahanService {
@@ -14,7 +15,7 @@ export class logPerubahanService {
     async fetchLogPerubahan() {
         const res = await axios.get(`${mainUrl}/api/log`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getCookie('token')}`,
             }
         });
 

@@ -84,6 +84,8 @@
   });
 
   function handleSubmit() {
+    console.log("tes pengeluaran");
+
     data.nominal = -data.nominal
     const response = fetch(`${mainUrl}/api/master/laporan/servis/mutasi`, {
       headers: {
@@ -161,9 +163,9 @@
                 searchable={true}
               />
               
-              {#if "master_rekening_id" in error}
+              <!-- {#if "master_rekening_id" in error}
                 <p class="text-red-500 text-sm">{error.master_rekening_id}</p>
-              {/if}
+              {/if} -->
             </div>
           </div>
         </div>

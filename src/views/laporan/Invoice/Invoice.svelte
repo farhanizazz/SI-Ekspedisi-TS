@@ -16,13 +16,7 @@
   import CardEditArmada from "../../../notusComponents/Cards/CardInput/CardEdit/CardEditArmada.svelte";
   import { getCookie } from "svelte-cookie";
   import { mainUrl } from "../../../environment.js";
-  import CardInputLaporanTransaksi from "../../../notusComponents/Cards/CardInput/CardInputLaporanTransaksi.svelte";
-  import CardInputLaporanTransaksiServis from "./add/CardInputLaporanTransaksiServis.svelte";
-  import CardInputLaporanTransaksiLainLain from "./edit/CardEditLaporanTransaksiLainLain.svelte";
   import CardTableLaporan from "../../../notusComponents/Cards/CardTableLaporan.svelte";
-  import LaporanServisDetail from "./details/LaporanServisDetail.svelte";
-  import CardEditLaporanTransaksiServis from "./edit/CardEditLaporanTransaksiServis.svelte";
-  import CardInputPembayaranLaporanTransaksiServis from "./add/CardInputPembayaranLaporanTransaksiServis.svelte";
   import { get, writable } from "svelte/store";
 
   const errorImage = "/public/assets/img/error.png";
@@ -117,21 +111,6 @@
             </div>
           {/await}
         {/if}
-      </Route>
-      <Route path=":type/add/" let:params>
-        <CardInputLaporanTransaksiServis type={params.type} />
-      </Route>
-      <Route path=":type/laporan/:id" let:params>
-        <LaporanServisDetail id={params.id} type={params.type}/>
-      </Route>
-      <!-- <Route path="lain-lain/add">
-        <CardInputLaporanTransaksiLainLain />
-      </Route> -->
-      <Route path=":type/edit/:edit" let:params>
-        <CardEditLaporanTransaksiServis id={params.edit} type={params.type} />
-      </Route>
-      <Route path="servis/laporan/:id/add/" let:params>
-        <CardInputPembayaranLaporanTransaksiServis id={params.id} />
       </Route>
     </Router>
   </div>

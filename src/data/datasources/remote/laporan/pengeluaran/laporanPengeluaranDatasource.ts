@@ -1,5 +1,6 @@
 import axios from "axios";
 import { mainUrl } from "/src/environment";
+import { getCookie } from "svelte-cookie";
 import { readable, writable } from "svelte/store";
 
 export class PengeluaranService {
@@ -26,7 +27,7 @@ export class PengeluaranService {
     async fetchServis() {
         const res = await axios.get(`${mainUrl}/api/laporan/pengeluaran-${this.jenis}?tanggal_awal=${this.tglAwal}&tanggal_akhir=${this.tglAkhir}&page=${this.page + 1}&m_armada_id=[${this.selectedArmadas == null ? '' : this.selectedArmadas}]`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getCookie("token")}`,
             }
         });
 

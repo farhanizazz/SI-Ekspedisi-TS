@@ -20,7 +20,7 @@
     "Pembuat",
     "Nomor transaksi",
   ];
-
+  
   function fetchData() {
     fetch(`${mainUrl}/api/getProfile`, {
       headers: {
@@ -57,7 +57,6 @@
                     break;
                   case "pengeluaran":
                     e.jenis_transaksi = "Pembayaran Invoice";
-                    e.nominal = `-${e.nominal}`;
                     break;
                 }
                 switch (e.asal_transaksi) {
