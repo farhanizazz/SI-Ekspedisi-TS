@@ -706,38 +706,40 @@
                               <form
                                 on:submit|preventDefault={() => {
                                   tableData.statusLoadingCatatan = true;
-                                  axios
-                                    .put(
-                                      `${mainUrl}/api/transaksi/order/${tableData.id}`,
-                                      {
-                                        catatan_surat_jalan:
-                                          tableData.catatan_surat_jalan,
-                                        ...tableData,
-                                      },
-                                      {
-                                        headers: {
-                                          Authorization: `bearer ${getCookie(
-                                            "token"
-                                          )}`,
-                                        },
-                                      }
-                                    )
-                                    .then((res) => {
-                                      isDataValid.set(false);
-
-                                      getdata(
-                                        `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
-                                      ).then(() => {
-                                        tableData.statusLoadingCatatan = false;
-                                      });
-                                    });
                                 }}
                               >
                                 <Modal
                                   onReject={() => {
                                     catatanModal[index] = false;
                                   }}
-                                  onAccept={undefined}
+                                  onAccept={() => {
+                                    tableData.statusLoadingCatatan = true;
+                                    axios
+                                      .put(
+                                        `${mainUrl}/api/transaksi/order/${tableData.id}`,
+                                        {
+                                          catatan_surat_jalan:
+                                            tableData.catatan_surat_jalan,
+                                          ...tableData,
+                                        },
+                                        {
+                                          headers: {
+                                            Authorization: `bearer ${getCookie(
+                                              "token"
+                                            )}`,
+                                          },
+                                        }
+                                      )
+                                      .then((res) => {
+                                        isDataValid.set(false);
+
+                                        getdata(
+                                          `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+                                        ).then(() => {
+                                          tableData.statusLoadingCatatan = false;
+                                        });
+                                      });
+                                  }}
                                   bind:showModal={catatanModal[index]}
                                   bind:isLoading={tableData.statusLoadingCatatan}
                                 >
@@ -1472,41 +1474,39 @@
                               >
                                 <i class={"fa-note-sticky fa-regular"}></i>
                               </button>
-                              <form
-                                on:submit|preventDefault={() => {
-                                  tableData.statusLoadingCatatan = true;
-                                  axios
-                                    .put(
-                                      `${mainUrl}/api/transaksi/order/${tableData.id}`,
-                                      {
-                                        catatan_surat_jalan:
-                                          tableData.catatan_surat_jalan,
-                                        ...tableData,
-                                      },
-                                      {
-                                        headers: {
-                                          Authorization: `bearer ${getCookie(
-                                            "token"
-                                          )}`,
-                                        },
-                                      }
-                                    )
-                                    .then((res) => {
-                                      isDataValid.set(false);
-
-                                      getdata(
-                                        `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
-                                      ).then(() => {
-                                        tableData.statusLoadingCatatan = false;
-                                      });
-                                    });
-                                }}
-                              >
+                              <form on:submit|preventDefault={() => {}}>
                                 <Modal
                                   onReject={() => {
                                     catatanModal[index] = false;
                                   }}
-                                  onAccept={undefined}
+                                  onAccept={() => {
+                                    tableData.statusLoadingCatatan = true;
+                                    axios
+                                      .put(
+                                        `${mainUrl}/api/transaksi/order/${tableData.id}`,
+                                        {
+                                          catatan_surat_jalan:
+                                            tableData.catatan_surat_jalan,
+                                          ...tableData,
+                                        },
+                                        {
+                                          headers: {
+                                            Authorization: `bearer ${getCookie(
+                                              "token"
+                                            )}`,
+                                          },
+                                        }
+                                      )
+                                      .then((res) => {
+                                        isDataValid.set(false);
+
+                                        getdata(
+                                          `${mainUrl}/api/transaksi/order?cari=${$search}&page=${$currentPage + 1}&status_kendaraan=${openTab}`
+                                        ).then(() => {
+                                          tableData.statusLoadingCatatan = false;
+                                        });
+                                      });
+                                  }}
                                   bind:showModal={catatanModal[index]}
                                   bind:isLoading={tableData.statusLoadingCatatan}
                                 >
