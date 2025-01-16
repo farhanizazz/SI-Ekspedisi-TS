@@ -153,9 +153,9 @@
                     })
                     .then((res) => {
                       if (res.data.status != "error") {
-                        onLoad()
+                        onLoad();
                       }
-                    })
+                    });
                 } else {
                   handleDelete(tableData.id);
                 }
@@ -175,7 +175,9 @@
                   ? 'text-blueGray-700'
                   : 'text-white'}"
               >
-                Data ini dipakai di tabel lain, apakah anda yakin ingin menghapus data ini? (Ini berarti menghapus semua tabel dimana data ini tampil)
+                Data ini dipakai di tabel lain, apakah anda yakin ingin
+                menghapus data ini? (Ini berarti menghapus semua tabel dimana
+                data ini tampil)
               </h3>
             </Modal>
             <Modal
@@ -195,7 +197,9 @@
                     })
                     .then((res) => {
                       if (res.data.status == "error") {
-                        toggleConfirmationModal(index)
+                        toggleConfirmationModal(index);
+                      } else {
+                        onLoad();
                       }
                     })
                     .finally(() => {});
