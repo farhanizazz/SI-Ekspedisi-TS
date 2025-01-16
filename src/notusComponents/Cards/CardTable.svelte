@@ -254,7 +254,7 @@
                   >
                     {typeof tableData[header] == "number" &&
                     header != "id" &&
-                    header != "m_rekening_id"
+                    header != "m_rekening_id" && header != "m_tambahan_id"
                       ? "Rp. " + IDRFormatter.format(tableData[header])
                       : tableData[header]}
                   </td>
