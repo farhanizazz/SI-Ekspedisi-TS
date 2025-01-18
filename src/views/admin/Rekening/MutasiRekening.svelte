@@ -5,6 +5,8 @@
   import { mainUrl } from "../../../environment";
   import { Router, Route } from "svelte-routing";
   import { onMount } from "svelte";
+  import Pagination from "/src/notusComponents/Pagination/Pagination.svelte";
+  import { writable } from "svelte/store";
 
   export let location;
 
@@ -20,28 +22,27 @@
     "Pembuat",
     "Nomor transaksi",
   ];
-  
-  function fetchData() {
+
+  function fetchData(page = 0) {
     fetch(`${mainUrl}/api/getProfile`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
     }).then((res) => {
       res.json().then((res) => {
-        console.log(res);
         if (res.data.role.akses.master_rekening.view != true) {
           navigate("/admin/dashboard");
         } else {
-          fetch(`${mainUrl}/api/master/rekening/mutasi`, {
-            headers: {
-              Authorization: `bearer ${getCookie("token")}`,
-            },
-          }).then((res) => {
+          fetch(
+            `${mainUrl}/api/master/rekening/mutasi?master_rekening_id=${id}&page=${page + 1}`,
+            {
+              headers: {
+                Authorization: `bearer ${getCookie("token")}`,
+              },
+            }
+          ).then((res) => {
             res.json().then((res) => {
-              data = res.data.filter((e) => {
-                return e.master_rekening_id == id;
-              });
-              res.data.forEach((e) => {
+              res.data.list.forEach((e) => {
                 switch (e.jenis_transaksi) {
                   case "order":
                     e.jenis_transaksi = "Pembayaran Order";
@@ -91,6 +92,7 @@
                 }
                 if (e.keterangan == null) e.keterangan = "Tidak ada keterangan";
               });
+              data = res.data.list;
               console.log(data);
             });
           });
@@ -98,10 +100,40 @@
       });
     });
   }
+
+  const currentPage = writable(0);
 </script>
 
 <div class="flex flex-wrap mt-4">
   <div class="w-full mb-12 px-4">
+    <div class="flex justify-center">
+      <Pagination
+        onLast={() => {
+          fetchData(data.length - 1);
+          $currentPage = data.length - 1;
+        }}
+        onFirst={() => {
+          fetchData(0);
+          $currentPage = 0;
+        }}
+        {currentPage}
+        pageCount={data.length}
+        onNext={() => {
+          fetchData($currentPage + 1);
+            $currentPage += 1;
+        }}
+        onPrev={() => {
+          fetchData($currentPage - 1);
+          $currentPage -= 1;
+        }}
+        onSeek={(page) => {
+          {
+            fetchData(page);
+          $currentPage = page;
+          }
+        }}
+      />
+    </div>
     <CardTableMutasi
       tableHeading={heading}
       addData={false}

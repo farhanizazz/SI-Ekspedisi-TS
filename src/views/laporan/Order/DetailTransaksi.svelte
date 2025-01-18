@@ -34,7 +34,7 @@
       }
     );
     const response = await responseJson.json();
-    data = response.data.filter((e) => e.jenis_transaksi == jenis);
+    data = response.data.list.filter((e) => e.jenis_transaksi == jenis);
     data = data.map((e) => {
       let copy = { ...e };
       if (copy.pembuat == null) {
