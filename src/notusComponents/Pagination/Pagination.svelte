@@ -47,7 +47,7 @@
         </button>
       </li>
       {/if}
-      {#each [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] as i}
+      {#each [2, 1] as i}
         {#if $currentPage - i >= 0}
         <li>
           <button
@@ -69,7 +69,7 @@
           <span>{$currentPage + 1}</span>
         </button>
       </li>
-      {#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as i}
+      {#each [1, 2] as i}
         {#if $currentPage + i < pageCount}
           <li>
             <button

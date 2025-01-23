@@ -115,10 +115,18 @@
       console.log(index);
       data.biaya_lain_harga_jual.splice(index, 1);
       axios
-        .put(`${mainUrl}/api/transaksi/order/${data.id}`, {
-          biaya_lain_harga_jual: data.biaya_lain_harga_jual,
-          ...data,
-        })
+        .put(
+          `${mainUrl}/api/transaksi/order/${data.id}`,
+          {
+            biaya_lain_harga_jual: data.biaya_lain_harga_jual,
+            ...data,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${getCookie("token")}`,
+            },
+          }
+        )
         .then((res) => {
           if (res.data.status == "success") {
             fetchData();
