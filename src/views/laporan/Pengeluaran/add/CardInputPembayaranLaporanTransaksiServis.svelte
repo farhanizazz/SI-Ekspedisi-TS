@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Select  from 'svelte-select';
+  import Select from "svelte-select";
   import { onMount } from "svelte";
   import { navigate } from "svelte-routing";
   import { mainUrl } from "../../../../environment";
@@ -8,7 +8,6 @@
 
   export let id: number;
   console.log("ID: ", id);
-  
 
   let error = {};
   let data = {
@@ -83,10 +82,21 @@
     await getData();
   });
 
-  function handleSubmit() {
+  async function handleSubmit() {
     console.log("tes pengeluaran");
 
-    data.nominal = -data.nominal
+    const detailServis = await axios.get(
+      `${mainUrl}/api/master/laporan/servis/${id}`,
+      {
+        headers: {
+          Authorization: `bearer ${getCookie("token")}`,
+        },
+      }
+    );
+    if (detailServis.data.total < 0) {
+      data.nominal = -data.nominal;
+    }
+
     const response = fetch(`${mainUrl}/api/master/laporan/servis/mutasi`, {
       headers: {
         "Content-Type": "application/json",
@@ -156,13 +166,18 @@
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 items={rekenings.map((rekening) => ({
                   value: rekening.id,
-                  label: rekening.nama_bank + " - " + rekening.nomor_rekening + " - " + rekening.atas_nama,
+                  label:
+                    rekening.nama_bank +
+                    " - " +
+                    rekening.nomor_rekening +
+                    " - " +
+                    rekening.atas_nama,
                 }))}
                 bind:justValue={data.master_rekening_id}
                 label="label"
                 searchable={true}
               />
-              
+
               <!-- {#if "master_rekening_id" in error}
                 <p class="text-red-500 text-sm">{error.master_rekening_id}</p>
               {/if} -->
