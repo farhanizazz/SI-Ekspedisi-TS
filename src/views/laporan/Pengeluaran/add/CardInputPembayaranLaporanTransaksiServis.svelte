@@ -93,7 +93,7 @@
         },
       }
     );
-    if (detailServis.data.total < 0) {
+    if (detailServis.data.data.total < 0) {
       data.nominal = -data.nominal;
     }
 
