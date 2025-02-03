@@ -25,6 +25,7 @@
   let timeout: number;
   let dataSearch;
   let deleteModal = [];
+  let confirmModal = [];
   let pageCount: number;
 
   const unsubscribe = dataStore.subscribe((value) => {
@@ -44,7 +45,12 @@
     deleteModal[index] = !deleteModal[index];
   }
 
+  function toggleConfirmModal(index) {
+    confirmModal[index] = !confirmModal[index];
+  }
+
   $: deleteModal = Array(data.length).fill(false);
+  $: confirmModal = Array(data.length).fill(false);
 
   $: {
     clearTimeout(timeout);
@@ -208,13 +214,14 @@
               isLoading={false}
               onAccept={() => {
                 if (deleteApi !== undefined) {
-                  fetch(deleteApi + `${tableData.id}`, {
-                    method: "delete",
+                  axios.delete(deleteApi + `${tableData.id}`, {
                     headers: {
                       Authorization: `bearer ${getCookie("token")}`,
                     },
-                  }).then(() => {
-                    repository.fetchServis();
+                  }).then((res) => {
+                    if(res.data.status == 'error' && res.data.message == "Data ini tidak dapat diubah karena sedang digunakan di tabel lain.") {
+                      toggleConfirmModal(index)
+                    }
                   });
                 } else {
                   handleDelete(tableData.id);
@@ -237,6 +244,47 @@
                   : 'text-white'}"
               >
                 Apakah anda yakin ingin menghapus data ini?
+              </h3>
+            </Modal>
+            <Modal
+              onReject={() => {
+                toggleConfirmModal(index);
+              }}
+              bind:showModal={confirmModal[index]}
+              isLoading={false}
+              onAccept={() => {
+                if (deleteApi !== undefined) {
+                  fetch(deleteApi + `${tableData.id}?force=true`, {
+                    method: "delete",
+                    headers: {
+                      Authorization: `bearer ${getCookie("token")}`,
+                    },
+                  }).then(() => {
+                    repository.fetchServis();
+                  });
+                } else {
+                  handleDelete(tableData.id);
+                }
+                toggleConfirmModal(index);
+              }}
+              saveText="Hapus"
+            >
+              <h1
+                slot="header"
+                class="font-semibold text-2xl {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+                Hapus Data
+              </h1>
+              <h3
+                class="text-lg mt-5 {color === 'light'
+                  ? 'text-blueGray-700'
+                  : 'text-white'}"
+              >
+              Data ini dipakai di tabel lain, apakah anda yakin ingin
+              menghapus data ini? (Ini berarti menghapus semua tabel dimana
+              data ini tampil)
               </h3>
             </Modal>
             {#each tableData.nota_beli_items as item, itemIndex}

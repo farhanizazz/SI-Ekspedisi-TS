@@ -13,7 +13,7 @@ export class ServisService {
     }
 
     async fetchServis() {
-        const res = await axios.get(`${mainUrl}/api/master/laporan/${this.jenis}?sort=created_at%20ASC&page=${this.page}&search=${this.search}`, {
+        const res = await axios.get(`${mainUrl}/api/master/laporan/${this.jenis}?sort=created_at%20DESC&page=${this.page}&search=${this.search}`, {
             headers: {
                 Authorization: `Bearer ${getCookie('token')}`,
             }
