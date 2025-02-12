@@ -160,7 +160,7 @@
             return;
           }
           window.open(
-            `${mainUrl}/api/laporan-v2/thr-sopir?tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&sopirId=${selectedSopir == null ? "" : selectedSopir}`
+            `${mainUrl}/api/laporan-v2/thr-sopir?tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&sopirId=${selectedSopir == null ? "" : selectedSopir}&export=true`
           );
         }}
         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105"
