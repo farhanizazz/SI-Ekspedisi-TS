@@ -12,8 +12,9 @@
   export let tableHeading = [];
   export let data = [{}];
   export let href;
-  export let afterHref = '';
+  export let afterHref = "";
   export let withEdit = true;
+  export let withDelete = true;
   export let onLoad = () => {};
   export let addData = true;
   export let deleteApi;
@@ -35,9 +36,9 @@
   const dispatch = createEventDispatcher();
   function handleDelete(index) {
     // Dispatch the custom event with the index value
-    dispatch('delete', { index });
+    dispatch("delete", { index });
   }
-  let IDRFormatter = new Intl.NumberFormat("id-ID",);
+  let IDRFormatter = new Intl.NumberFormat("id-ID");
 </script>
 
 <div
@@ -100,14 +101,16 @@
               {data}
             </th>
           {/each}
-          <th
-            class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
-            'light'
-              ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-              : 'bg-red-700 text-red-200 border-red-600'}"
-          >
-            Action
-          </th>
+          {#if withDelete != false || withEdit != false}
+            <th
+              class="px-6 align-middle border border-solid py-3 text-sm uppercase border-l-0 border-r-0 font-semibold text-left {color ===
+              'light'
+                ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
+                : 'bg-red-700 text-red-200 border-red-600'}"
+            >
+              Action
+            </th>
+          {/if}
         </tr>
       </thead>
       {#if data.length > 0}
@@ -137,54 +140,77 @@
                   </td>
                 {:else if header == "nominal"}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData.jenis_transaksi == 'Pembayaran Penjualan' || tableData.jenis_transaksi == 'Pembayaran Uang Jalan' || tableData.jenis_transaksi == 'Pembayaran Invoice' ? 'text-red-500' : ''}"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData.jenis_transaksi ==
+                      'Pembayaran Penjualan' ||
+                    tableData.jenis_transaksi == 'Pembayaran Uang Jalan' ||
+                    tableData.jenis_transaksi == 'Pembayaran Invoice'
+                      ? 'text-red-500'
+                      : ''}"
                   >
-                    {'Rp. ' + IDRFormatter.format(tableData[header])}
+                    {"Rp. " + IDRFormatter.format(tableData[header])}
                   </td>
                 {:else}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData[header] == 'Pembayaran Penjualan' || tableData[header] == 'Pembayaran Uang Jalan' || tableData[header] == 'Pembayaran Invoice' ? 'text-red-500' : ''}"
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData[
+                      header
+                    ] == 'Pembayaran Penjualan' ||
+                    tableData[header] == 'Pembayaran Uang Jalan' ||
+                    tableData[header] == 'Pembayaran Invoice'
+                      ? 'text-red-500'
+                      : ''}"
                   >
-                    {typeof tableData[header] == "number" && (header != 'id' && header != 'm_rekening_id' && header != 'jumlah') ? 'Rp. ' + IDRFormatter.format(tableData[header]) : tableData[header]}
+                    {typeof tableData[header] == "number" &&
+                    header != "id" &&
+                    header != "m_rekening_id" &&
+                    header != "jumlah"
+                      ? "Rp. " + IDRFormatter.format(tableData[header])
+                      : tableData[header]}
                   </td>
                 {/if}
               {/each}
-              <td
-                class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
-              >
-                {#if withEdit === true}
-                  <a use:link href={`${href}/edit/${tableData.id}/${afterHref}`}>
-                    <p
-                      class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
-                    >
-                      Edit
-                    </p>
-                  </a>
-                {/if}
-                <button
-                  on:click={() => {
-                    if (deleteApi !== undefined) {
-                      fetch(deleteApi + `${tableData.id}`, {
-                        method: "delete",
-                        headers: {
-                          Authorization: `bearer ${getCookie("token")}`,
-                        },
-                      }).then(() => {
-                        onLoad();
-                      });
-                    } else {
-                      handleDelete(index)
-                    }
-                  }}
-                  class="w-full"
+              {#if withDelete != false || withEdit != false}
+                <td
+                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4"
                 >
-                  <p
-                    class="text-center bg-red-500 text-white active:bg-red-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
-                  >
-                    Hapus Data
-                  </p>
-                </button>
-              </td>
+                  {#if withEdit === true}
+                    <a
+                      use:link
+                      href={`${href}/edit/${tableData.id}/${afterHref}`}
+                    >
+                      <p
+                        class="text-center bg-emerald-500 text-white active:bg-emerald-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mb-1 ease-linear transition-all duration-150"
+                      >
+                        Edit
+                      </p>
+                    </a>
+                  {/if}
+                  {#if withDelete === true}
+                    <button
+                      on:click={() => {
+                        if (deleteApi !== undefined) {
+                          fetch(deleteApi + `${tableData.id}`, {
+                            method: "delete",
+                            headers: {
+                              Authorization: `bearer ${getCookie("token")}`,
+                            },
+                          }).then(() => {
+                            onLoad();
+                          });
+                        } else {
+                          handleDelete(index);
+                        }
+                      }}
+                      class="w-full"
+                    >
+                      <p
+                        class="text-center bg-red-500 text-white active:bg-red-600 text-sm font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+                      >
+                        Hapus Data
+                      </p>
+                    </button>
+                  {/if}
+                </td>
+              {/if}
             </tr>
           {/each}
         </tbody>

@@ -354,6 +354,17 @@
               Laporan Hutang Subkon
             </li>
           </a>
+          <a use:link href="/laporan/kasHarian">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/kasHarian'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Laporan Kas Harian
+            </li>
+          </a>
         </ul>
       {/if}
       <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">

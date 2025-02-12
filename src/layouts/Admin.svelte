@@ -40,6 +40,7 @@
   import HutangCustomer from "../views/laporan/HutangCustomer/HutangCustomer.svelte";
   import HutangSubkon from "../views/laporan/HutangSubkon/HutangSubkon.svelte";
   import LogPerubahan from "../views/log/perubahan/LogPerubahan.svelte";
+  import KasHarian from "/src/views/laporan/KasHarian/KasHarian.svelte";
 
   export let location;
   export let admin = "";
@@ -133,6 +134,7 @@
         <Route path="pengeluaran/*pengeluaran" component={Pengeluaran} />
         <Route path="hutangSubkon/*hutangSubkon" component={HutangSubkon} />
         <Route path="hutangCustomer/*hutangCustomer" component={HutangCustomer} />
+        <Route path="kasHarian/*kasHarian" component={KasHarian} />
       </Router>
       <Router url="invoice">
         <Route path="invoice/buat" component={Invoices} />
