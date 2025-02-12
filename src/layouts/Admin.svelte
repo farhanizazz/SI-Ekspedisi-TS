@@ -41,6 +41,8 @@
   import HutangSubkon from "../views/laporan/HutangSubkon/HutangSubkon.svelte";
   import LogPerubahan from "../views/log/perubahan/LogPerubahan.svelte";
   import KasHarian from "/src/views/laporan/KasHarian/KasHarian.svelte";
+  import ThrSopir from "/src/views/laporan/ThrSopir/ThrSopir.svelte";
+  import ArmadaRugiLaba from "/src/views/laporan/armadaRugiLaba/ArmadaRugiLaba.svelte";
 
   export let location;
   export let admin = "";
@@ -135,6 +137,8 @@
         <Route path="hutangSubkon/*hutangSubkon" component={HutangSubkon} />
         <Route path="hutangCustomer/*hutangCustomer" component={HutangCustomer} />
         <Route path="kasHarian/*kasHarian" component={KasHarian} />
+        <Route path="thrSopir/*thrSopir" component={ThrSopir} />
+        <Route path="armadaRugiLaba/*armadaRugiLaba" component={ArmadaRugiLaba} />
       </Router>
       <Router url="invoice">
         <Route path="invoice/buat" component={Invoices} />

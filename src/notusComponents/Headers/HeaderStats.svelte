@@ -366,6 +366,30 @@
             </li>
           </a>
         </ul>
+        <ul class="flex">
+          <a use:link href="/laporan/thrSopir">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/thrSopir'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Laporan THR Wajib Sopir
+            </li>
+          </a>
+          <a use:link href="/laporan/armadaRugiLaba">
+            <li
+              class="px-6 py-3 {location.href.indexOf(
+                '/laporan/armadaRugiLaba'
+              ) !== -1
+                ? 'active'
+                : ''}"
+            >
+              Laporan Rugi Laba
+            </li>
+          </a>
+        </ul>
       {/if}
       <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
           <CardStats
