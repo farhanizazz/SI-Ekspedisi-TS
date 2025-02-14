@@ -177,7 +177,7 @@
       <h1>Nama Sopir: {sopir.sopir}</h1>
       <h1>Total Hutang: {IDRFormatter.format(sopir.totalHutang)}</h1>
       <h1>
-        Total Sisa Uang Jalan: {IDRFormatter.format(sopir.totalSisaUangJalan)}
+        Total Sisa Uang Jalan: {IDRFormatter.format(sopir.sisaUangJalanRange)}
       </h1>
     </div>
   {/each}
