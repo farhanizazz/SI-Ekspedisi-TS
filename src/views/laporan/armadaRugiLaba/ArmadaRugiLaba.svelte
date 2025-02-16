@@ -14,7 +14,7 @@
   import Select from "svelte-select";
 
   let data = [];
-  const headingSubkon = ["Nopol", "Pemasukan Setor", "Pengeluaran Servis"];
+  const headingSubkon = ["Nopol", "Pemasukan Setor", "Pengeluaran Servis", "Total"];
   const today = new Date();
   let tglAwal = today.toISOString().substring(0, 10);
   let tglAkhir = today.toISOString().substring(0, 10);
@@ -26,14 +26,15 @@
   function transformData(data) {
     return {
       "Nopol": data.nopol,
-      "Pemasukan Setor": data.pemasukan_setor_rp, // Using formatted currency
-      "Pengeluaran Servis": data.pengeluaran_servis_rp, // Using formatted currency
+      "Pemasukan Setor": data.pemasukan_setor, // Using formatted currency
+      "Pengeluaran Servis": data.pengeluaran_servis, // Using formatted currency
+      "Total": data.pemasukan_setor - Math.abs(data.pengeluaran_servis)
     };
   }
 
   function fetchData(tglAwal, tglAkhir, currentPage, armadaId) {
     fetch(
-      `${mainUrl}/api/laporan-v2/armada-rugi-laba?tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&page=${currentPage + 1}&armadaId=${armadaId == null ? "" : armadaId}`,
+      `${mainUrl}/api/laporan-v2/armada-rugi-laba?tanggalAwal=${tglAwal}&tanggalAkhir=${tglAkhir}&page=${currentPage + 1}&armadaId=${armadaId == null ? "all" : armadaId}`,
       {
         headers: {
           Authorization: `bearer ${getCookie("token")}`,
@@ -80,10 +81,10 @@
     <div style="display: flex; justify-content: center; align-items: center;">
       <Pagination
         onLast={() => {
-          fetchData(tglAwal, tglAkhir, $currentPage + 1);
+          fetchData(tglAwal, tglAkhir, $currentPage + 1, selectedArmada);
         }}
         onFirst={() => {
-          fetchData(tglAwal, tglAkhir, $currentPage + 1);
+          fetchData(tglAwal, tglAkhir, $currentPage + 1, selectedArmada);
         }}
         {currentPage}
         pageCount={page}
@@ -155,7 +156,7 @@
           {data}
           withDelete={false}
           onLoad={fetchData}
-          subtotal="Pengeluaran Servis"
+          subtotal="Total"
         />
       </Route>
       <Route path="add">
