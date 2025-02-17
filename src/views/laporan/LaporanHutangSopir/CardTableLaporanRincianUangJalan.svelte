@@ -165,7 +165,7 @@
           alert("Data kosong, gagal mencetak laporan");
           return;
         }
-        repository.exportServis()
+        repository.exportServis();
       }}
       class="bg-red-500 hover:bg-red-700 text-white font-bold px-4 my-2 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105"
     >
@@ -280,16 +280,26 @@
                   class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
                   >{IDRFormatter.format(rincian.nominal)}</td
                 >
-                {#if index == 0}
-                  <td
-                    rowspan={tableData.rincian.length}
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap"
-                  >
-                    {IDRFormatter.format(tableData.sisa_uang_jalan)}
-                  </td>
-                {/if}
               </tr>
             {/each}
+            <tr>
+              <td class="px-6 align-middle text-lg whitespace-nowrap border border-r-0"/>
+              <td
+                class="px-6 align-middle text-lg whitespace-nowrap border border-l-0"
+              >
+               <strong>Jumlah Pembayaran</strong>
+              </td>
+              <td
+                class="px-6 align-middle text-lg whitespace-nowrap border"
+              >
+                {IDRFormatter.format(tableData.jumlah_pembayaran)}
+              </td>
+              <td
+                class="px-6 align-middle text-lg whitespace-nowrap border"
+              >
+                {IDRFormatter.format(tableData.sisa_uang_jalan)}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
