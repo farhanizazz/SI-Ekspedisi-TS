@@ -97,6 +97,8 @@
       data.nominal = -data.nominal;
     }
 
+    data.nominal = -data.nominal;
+    
     const response = fetch(`${mainUrl}/api/master/laporan/servis/mutasi`, {
       headers: {
         "Content-Type": "application/json",

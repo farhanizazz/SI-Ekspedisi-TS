@@ -93,7 +93,7 @@
             <div>Loading...</div>
           {:then data}
             <CardTableLaporanLain
-              href="/transaksi/pengeluaran/lainlain"
+              href="/transaksi/pengeluaran/lain-lain"
               deleteApi={`${mainUrl}/api/master/laporan/servis/`}
               heading="Data Invoice Lain-Lain"
               dataStore={data}

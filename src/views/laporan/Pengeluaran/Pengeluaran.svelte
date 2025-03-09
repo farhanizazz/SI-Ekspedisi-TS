@@ -127,7 +127,7 @@
             <CardTablePengeluaran
               jenis={"lain"}
               {armadaData}
-              href="/transaksi/pengeluaran/lainlain"
+              href="/transaksi/pengeluaran/lain-lain"
               deleteApi={`${mainUrl}/api/master/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"
               dataStore={data}
@@ -153,7 +153,7 @@
               jenis={"semua"}
 
               {armadaData}
-              href="/transaksi/pengeluaran/lainlain"
+              href="/transaksi/pengeluaran/lain-lain"
               deleteApi={`${mainUrl}/api/master/laporan/servis/`}
               heading="Data Pengeluaran Lain-Lain"
               dataStore={data}

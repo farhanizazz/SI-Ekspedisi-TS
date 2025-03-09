@@ -94,7 +94,7 @@
           isDataValid = true;
         })
         .catch((err) => {
-          navigate("/transaksi/pengeluaran");
+          navigate("/transaksi/tPengeluaran");
         });
     }
   }
@@ -170,7 +170,7 @@
       res = await laporanLainLainPostRepository(data);
     }
     if (res.status != "error") {
-      navigate("/transaksi/pengeluaran");
+      navigate("/transaksi/tPengeluaran");
     } else {
       error = res.message;
     }
