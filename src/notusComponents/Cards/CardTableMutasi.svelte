@@ -143,7 +143,7 @@
                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData.jenis_transaksi ==
                       'Pembayaran Penjualan' ||
                     tableData.jenis_transaksi == 'Pembayaran Uang Jalan' ||
-                    tableData.jenis_transaksi == 'Pembayaran Invoice'
+                    tableData.jenis_transaksi == 'Pembayaran Pengeluaran'
                       ? 'text-red-500'
                       : ''}"
                   >
@@ -155,7 +155,7 @@
                       header
                     ] == 'Pembayaran Penjualan' ||
                     tableData[header] == 'Pembayaran Uang Jalan' ||
-                    tableData[header] == 'Pembayaran Invoice'
+                    tableData[header] == 'Pembayaran Pengeluaran'
                       ? 'text-red-500'
                       : ''}"
                   >

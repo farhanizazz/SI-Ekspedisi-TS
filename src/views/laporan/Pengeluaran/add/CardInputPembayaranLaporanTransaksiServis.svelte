@@ -96,8 +96,6 @@
     if (detailServis.data.data.total < 0) {
       data.nominal = -data.nominal;
     }
-
-    data.nominal = -data.nominal;
     
     const response = fetch(`${mainUrl}/api/master/laporan/servis/mutasi`, {
       headers: {

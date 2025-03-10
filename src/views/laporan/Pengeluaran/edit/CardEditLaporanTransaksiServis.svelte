@@ -10,7 +10,7 @@
     laporanServisPostRepository,
     laporanLainLainPostRepository,
     editServisRepository,
-    editLainLainRepository
+    editLainLainRepository,
   } from "./../../../../data/repository/laporanServisRepository.js";
 
   export let id: number;
@@ -155,7 +155,7 @@
   onMount(async () => {
     await getData();
     const nota_servis_response = await axios.get(
-      `${mainUrl}/api/master/laporan/${type}/${id}`,
+      `${mainUrl}/api/master/laporan/${type == "lain-lain" ? "lainlain" : type}/${id}`,
       {
         headers: {
           Authorization: `bearer ${getCookie("token")}`,
@@ -163,6 +163,7 @@
       }
     );
     data = nota_servis_response.data.data;
+    mengurangi = data.total < 0 ? true : false;
     data.master_armada_id =
       nota_servis_response.data.data.master_armada.id.toString();
     const selectedValue = data.master_armada;
@@ -185,15 +186,14 @@
   async function handleSubmit() {
     data.nota_beli_items = simplifiedDataTransaksi;
     let res;
-    if(Number.isNaN(Number(data.master_armada_id))) {
-      data.master_armada_id = data.master_armada.id
+    if (Number.isNaN(Number(data.master_armada_id))) {
+      data.master_armada_id = data.master_armada.id;
     }
     if (type === "servis") {
       res = await editServisRepository(data, id);
     } else {
       console.log(data.master_armada_id);
-      
-      
+
       data.kategori_servis = "lain";
       data.nama_toko = "lain";
       data.nomor_nota = "lain";
@@ -207,11 +207,24 @@
             harga: -item.harga,
           };
         });
+      } else {
+        data.nota_beli_items = data.nota_beli_items.map((item) => {
+          if (item < 0) {
+            return {
+              ...item,
+              harga: -item.harga,
+            };
+          }
+          return {
+            ...item,
+            harga: -item.harga,
+          };
+        });
       }
       res = await editLainLainRepository(data, id);
     }
     if (res.status != "error") {
-      navigate("/transaksi/pengeluaran");
+      navigate("/transaksi/tPengeluaran");
     } else {
       error = res.message;
     }

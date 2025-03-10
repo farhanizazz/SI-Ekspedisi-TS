@@ -103,7 +103,7 @@
                     e.nominal = `-${e.nominal}`;
                     break;
                   case "pengeluaran":
-                    e.jenis_transaksi = "Pembayaran Invoice";
+                    e.jenis_transaksi = "Pembayaran Pengeluaran";
                     break;
                 }
                 switch (e.asal_transaksi) {
