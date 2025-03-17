@@ -160,7 +160,7 @@
           {data}
           withDelete={false}
           onLoad={fetchData}
-          subtotal="Total"
+          subtotal="Saldo"
         />
       </Route>
       <Route path="add">
