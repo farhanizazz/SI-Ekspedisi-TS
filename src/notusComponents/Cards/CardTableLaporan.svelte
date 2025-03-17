@@ -213,15 +213,21 @@
               isLoading={false}
               onAccept={() => {
                 if (deleteApi !== undefined) {
-                  axios.delete(deleteApi + `${tableData.id}`, {
-                    headers: {
-                      Authorization: `bearer ${getCookie("token")}`,
-                    },
-                  }).then((res) => {
-                    if(res.data.status == 'error' && res.data.message == "Data ini tidak dapat diubah karena sedang digunakan di tabel lain.") {
-                      toggleConfirmModal(index)
-                    }
-                  });
+                  axios
+                    .delete(deleteApi + `${tableData.id}`, {
+                      headers: {
+                        Authorization: `bearer ${getCookie("token")}`,
+                      },
+                    })
+                    .then((res) => {
+                      if (
+                        res.data.status == "error" &&
+                        res.data.message ==
+                          "Data ini tidak dapat diubah karena sedang digunakan di tabel lain."
+                      ) {
+                        toggleConfirmModal(index);
+                      }
+                    });
                 } else {
                   handleDelete(tableData.id);
                 }

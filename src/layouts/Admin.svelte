@@ -43,6 +43,7 @@
   import KasHarian from "/src/views/laporan/KasHarian/KasHarian.svelte";
   import ThrSopir from "/src/views/laporan/ThrSopir/ThrSopir.svelte";
   import ArmadaRugiLaba from "/src/views/laporan/armadaRugiLaba/ArmadaRugiLaba.svelte";
+  import BukuBesar from "/src/views/laporan/BukuBesar/BukuBesar.svelte";
 
   export let location;
   export let admin = "";
@@ -139,6 +140,7 @@
         <Route path="kasHarian/*kasHarian" component={KasHarian} />
         <Route path="thrSopir/*thrSopir" component={ThrSopir} />
         <Route path="armadaRugiLaba/*armadaRugiLaba" component={ArmadaRugiLaba} />
+        <Route path="bukuBesar/*bukuBesar" component={BukuBesar} />
       </Router>
       <Router url="invoice">
         <Route path="invoice/buat" component={Invoices} />
