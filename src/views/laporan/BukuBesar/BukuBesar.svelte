@@ -1,5 +1,4 @@
 <script>
-  import CardTable from "../../../notusComponents/Cards/CardTable.svelte";
   // core components
   import { Router, Route } from "svelte-routing";
   import { getCookie } from "svelte-cookie";
@@ -12,6 +11,7 @@
   import axios from "axios";
   import { onMount } from "svelte";
   import Select from "svelte-select";
+  import CardTableBukuBesar from "/src/notusComponents/Cards/CardTableBukuBesar.svelte";
 
   let data = [];
   const headingBukuBesar = ["Nomor", "Tanggal", "No Transaksi", "Keterangan", "Debet", "Kredit", "Saldo"];
@@ -29,8 +29,8 @@
       "Tanggal": data.tanggal,
       "NoTransaksi": data.no_transaksi,
       "Keterangan": data.keterangan == null ? '-' : data.keterangan,
-      "Debet": data.kredit,
-      "Kredit": data.debet,
+      "Debet": data.debet,
+      "Kredit": data.kredit,
       "Saldo": data.total,
     };
   }
@@ -46,8 +46,8 @@
     ).then((res) => {
       res.json().then((res) => {
         res.data.list = res.data.list.map((e) => transformData(e));
-        // page = res.data.meta.links.length;
-        page = Math.ceil(res.data.list.length/20)
+        page = res.data.meta.links.length;
+        // page = Math.ceil(res.data.list.length/20)
 
         console.log(res.data.list);
         data = res.data.list;
@@ -151,7 +151,7 @@
     </div>
     <Router route="roles">
       <Route path="">
-        <CardTable
+        <CardTableBukuBesar
           tableHeading={headingBukuBesar}
           href="/admin/roles"
           addData={false}
