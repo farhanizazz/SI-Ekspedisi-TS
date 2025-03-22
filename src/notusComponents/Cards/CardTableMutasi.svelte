@@ -147,9 +147,17 @@
                       ? 'text-red-500'
                       : ''}"
                   >
-                    {"Rp. " + IDRFormatter.format(tableData[header])}
+                    {"Rp. " +
+                      IDRFormatter.format(
+                        tableData[header] == "Pembayaran Penjualan" ||
+                          tableData.jenis_transaksi ==
+                            "Pembayaran Uang Jalan" ||
+                          tableData.jenis_transaksi == "Pembayaran Pengeluaran"
+                          ? -Math.abs(tableData[header])
+                          : tableData[header]
+                      )}
                   </td>
-                {:else}
+                {:else if header !== "servis_mutasi"}
                   <td
                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm p-4 {tableData[
                       header
@@ -164,7 +172,12 @@
                     header != "m_rekening_id" &&
                     header != "jumlah"
                       ? "Rp. " + IDRFormatter.format(tableData[header])
-                      : tableData[header]}
+                      : tableData[header] == "Servis"
+                        ? tableData.servis_mutasi.servis.kategori_servis ==
+                          "servis"
+                          ? "Servis"
+                          : "Lain-lain"
+                        : tableData[header]}
                   </td>
                 {/if}
               {/each}
