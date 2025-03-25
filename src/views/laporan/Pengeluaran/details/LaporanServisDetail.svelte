@@ -10,7 +10,7 @@
   export let id: number;
   export let type: string;
   let data: NotaBeliItem[] = [];
-  const heading = ["ID", "Nominal", "Nama Bank", "Nomor Rekening", "Atas Nama"];
+  const heading = ["ID", "Tanggal Pembayaran", "Nominal", "Nama Bank", "Nomor Rekening", "Atas Nama"];
   let originalData: LaporanServis;
 
   function fetchData() {
@@ -38,6 +38,7 @@
                 delete e.created_at;
                 delete e.updated_at;
                 delete e.servis_id;
+                e.tanggal_pembayaran = e.master_mutasi.tanggal_pembayaran
                 e.nominal = e.master_mutasi.nominal;
                 e.nama_bank = e.master_mutasi.master_rekening.nama_bank;
                 e.nomor_rekening = e.master_mutasi.master_rekening.nomor_rekening.toString();

@@ -15,6 +15,7 @@
     master_rekening_id: "",
     nominal: 0,
     keterangan: "",
+    tanggal_pembayaran: ""
   };
   let rekenings = [];
 
@@ -96,7 +97,7 @@
     if (detailServis.data.data.total < 0) {
       data.nominal = -data.nominal;
     }
-    
+
     const response = fetch(`${mainUrl}/api/master/laporan/servis/mutasi`, {
       headers: {
         "Content-Type": "application/json",
@@ -139,6 +140,27 @@
     <div class="flex-auto px-4 lg:px-10 py-10">
       <div class="flex flex-wrap">
         <div class="flex flex-wrap flex-grow">
+
+          <div class="w-full lg:w-12/12 px-4">
+            <div class="relative w-full mb-3">
+              <label
+                class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                for="grid-alamat"
+              >
+                Tanggal Pembayaran
+              </label>
+              <input
+                bind:value={data.tanggal_pembayaran}
+                type="date"
+                class="border-0 w-full px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"
+                placeholder="Tanggal Awal"
+              />
+              {#if "tanggal_pembayaran" in error}
+                <p class="text-red-500 text-sm">{error.tanggal_pembayaran}</p>
+              {/if}
+            </div>
+          </div>
+
           <div class="w-full w-12/12 px-4">
             <div class="relative w-full mb-3">
               <label
@@ -177,10 +199,9 @@
                 label="label"
                 searchable={true}
               />
-
-              <!-- {#if "master_rekening_id" in error}
+              {#if "master_rekening_id" in error}
                 <p class="text-red-500 text-sm">{error.master_rekening_id}</p>
-              {/if} -->
+              {/if}
             </div>
           </div>
         </div>
