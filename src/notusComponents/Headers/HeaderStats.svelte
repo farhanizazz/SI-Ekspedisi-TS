@@ -380,11 +380,7 @@
           </a>
           <a use:link href="/laporan/armadaRugiLaba">
             <li
-              class="px-6 py-3 {location.href.indexOf(
-                '/laporan/armadaRugiLaba'
-              ) !== -1
-                ? 'active'
-                : ''}"
+              class="px-6 py-3 {location.pathname === '/laporan/armadaRugiLaba' ? 'active' : ''}"
             >
               Laporan Rugi Laba
             </li>
@@ -398,6 +394,13 @@
                 : ''}"
             >
               Laporan Buku Besar
+            </li>
+          </a>
+          <a use:link href="/laporan/armadaRugiLabaPajak">
+            <li
+              class="px-6 py-3 {location.pathname === '/laporan/armadaRugiLabaPajak' ? 'active' : ''}"
+            >
+              Laporan Laba Rugi Pajak
             </li>
           </a>
         </ul>
