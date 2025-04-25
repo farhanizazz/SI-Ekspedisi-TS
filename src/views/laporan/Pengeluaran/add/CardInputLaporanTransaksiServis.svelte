@@ -413,11 +413,11 @@
                 items={[
                   {
                     value: true,
-                    label: "Mengurangi",
+                    label: "Mengurangi / Kas Keluar",
                   },
                   {
                     value: false,
-                    label: "Menambahkan",
+                    label: "Menambahkan / Kas Masuk",
                   },
                 ]}
                 bind:justValue={mengurangi}
