@@ -141,6 +141,8 @@
       deleteApi={`${mainUrl}/api/master/rekening/mutasi/`}
       heading="Data Mutasi Rekening"
       {data}
+      withDelete={false}
+      withEdit={false}
       onLoad={fetchData}
     />
   </div>

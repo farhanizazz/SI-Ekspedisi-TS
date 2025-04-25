@@ -196,7 +196,7 @@
                     USER LOGOUT
                   </div>
                 {:else}
-                  {tableData.user.username}
+                  {tableData.user == null ? 'User' : tableData.user.username}
                 {/if}
               </td>
               <td
