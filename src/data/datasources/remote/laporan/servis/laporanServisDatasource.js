@@ -10,10 +10,11 @@ export class ServisService {
         this.page = 0;
         this.search = "";
         this.jenis = jenis;
+        this.statusPembayaran = null;
     }
 
     async fetchServis() {
-        const res = await axios.get(`${mainUrl}/api/master/laporan/${this.jenis}?sort=tanggal_servis%20DESC&page=${this.page}&search=${this.search}`, {
+        const res = await axios.get(`${mainUrl}/api/master/laporan/${this.jenis}?sort=tanggal_servis%20DESC&page=${this.page}&search=${this.search}&status_pembayaran=${this.statusPembayaran}`, {
             headers: {
                 Authorization: `Bearer ${getCookie('token')}`,
             }
@@ -24,6 +25,11 @@ export class ServisService {
 
     updatePage(newPage) {
         this.page = newPage;
+        this.fetchServis();
+    }
+
+    updateStatusPembayaran(newStatus) {
+        this.statusPembayaran = newStatus;
         this.fetchServis();
     }
 

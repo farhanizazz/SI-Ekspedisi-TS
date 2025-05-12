@@ -9,6 +9,7 @@
   import Pagination from "/src/notusComponents/Pagination/Pagination.svelte";
   import type { Writable } from "svelte/store";
   import type { LaporanServisRepository } from "src/data/repository/laporanServisRepository.js";
+  import Select from "svelte-select";
 
   export let color = "light";
   export let heading = "Invoice Table";
@@ -20,6 +21,7 @@
   export let repository: LaporanServisRepository;
 
   let search = "";
+  let statusPembayaran = null;
   let timeout: number;
   let deleteModal: any[] = [];
   let confirmModal = [];
@@ -56,6 +58,7 @@
     timeout = setTimeout(() => {
       // Your function here
       repository.updateSearch(search);
+      repository.updateStatusPembayaran(statusPembayaran);
     }, 500);
   }
 
@@ -127,15 +130,32 @@
             class="px-2 py-1 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:shadow-outline w-full pl-10"
           />
         </div>
-        {#if addData === true}
-          <a use:link href={`${href}/add`}>
-            <p
-              class="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-            >
-              Tambah Data
-            </p>
-          </a>
-        {/if}
+        <div class="flex-row flex gap-5 items-center">
+          <div class="w-48">
+            <Select
+              items={[
+                { value: "lunas", label: "Lunas" },
+                { value: "belum_lunas", label: "Belum Lunas" },
+              ]}
+              id="grid-penyewa"
+              placeholder=""
+              class="custom-select"
+              bind:justValue={statusPembayaran}
+              showChevron={true}
+              searchable={true}
+              label="label"
+            />
+          </div>
+          {#if addData === true}
+            <a use:link href={`${href}/add`}>
+              <p
+                class="whitespace-nowrap bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+              >
+                Tambah Data
+              </p>
+            </a>
+          {/if}
+        </div>
       </div>
     </div>
   </div>

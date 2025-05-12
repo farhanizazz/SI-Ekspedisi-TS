@@ -17,6 +17,10 @@ export class LaporanServisRepository {
         this.store.updateSearch(newSearch);
     }
 
+    updateStatusPembayaran(newStatus) {
+        this.store.updateStatusPembayaran(newStatus);
+    }
+
     getStore() {
         return this.store.getStore();
     }
