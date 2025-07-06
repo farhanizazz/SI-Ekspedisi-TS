@@ -94,8 +94,10 @@
         },
       }
     );
-    if (detailServis.data.data.total < 0) {
-      data.nominal = -data.nominal;
+    if (detailServis.data.data.total > 0) {
+      if(data.nominal > 0) {
+        data.nominal = -data.nominal;
+      }
     }
 
     const response = fetch(`${mainUrl}/api/master/laporan/servis/mutasi`, {
