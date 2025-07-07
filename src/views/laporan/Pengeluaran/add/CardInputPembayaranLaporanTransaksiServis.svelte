@@ -15,7 +15,7 @@
     master_rekening_id: "",
     nominal: 0,
     keterangan: "",
-    tanggal_pembayaran: ""
+    tanggal_pembayaran: "",
   };
   let rekenings = [];
 
@@ -94,8 +94,14 @@
         },
       }
     );
-    if (detailServis.data.data.total > 0) {
-      if(data.nominal > 0) {
+    if (detailServis.data.data.kategori_servis == "lain") {
+      if (detailServis.data.data.total < 0) {
+        if (data.nominal > 0) {
+          data.nominal = -data.nominal;
+        }
+      }
+    } else {
+      if (data.nominal > 0) {
         data.nominal = -data.nominal;
       }
     }
@@ -142,7 +148,6 @@
     <div class="flex-auto px-4 lg:px-10 py-10">
       <div class="flex flex-wrap">
         <div class="flex flex-wrap flex-grow">
-
           <div class="w-full lg:w-12/12 px-4">
             <div class="relative w-full mb-3">
               <label
