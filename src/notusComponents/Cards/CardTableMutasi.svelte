@@ -173,7 +173,7 @@
                     header != "jumlah"
                       ? "Rp. " + IDRFormatter.format(tableData[header])
                       : tableData[header] == "Servis"
-                        ? tableData.servis_mutasi.servis.kategori_servis ==
+                        ? tableData.servis_mutasi?.servis?.kategori_servis ===
                           "servis"
                           ? "Servis"
                           : "Lain-lain"
