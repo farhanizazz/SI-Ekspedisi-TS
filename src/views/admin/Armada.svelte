@@ -28,41 +28,13 @@
 
   async function fetchData() {
     var data;
-    // fetch(`${mainUrl}/api/getProfile`, {
-    //   headers: {
-    //     Authorization: `bearer ${getCookie("token")}`,
-    //   },
-    // }).then((res) => {
-    //   res.json().then((res) => {
-    //     data = res.data;
-    //     console.log(data);
-    //     if (data.role.akses.master_armada.view != true) {
-    //       navigate("/admin/dashboard");
-    //     } else {
-    //       fetch(`${mainUrl}/api/master/armada`, {
-    //         headers: {
-    //           Authorization: `bearer ${getCookie("token")}`,
-    //         },
-    //       }).then((res) => {
-    //         res.json().then((res) => {
-    //           res.data.forEach((e) => {
-    //             delete e.created_at;
-    //             delete e.updated_at;
-    //           });
-    //           data = res.data;
-    //         });
-    //       });
-    //     }
-    //   });
-    // });
-    // return data;
     const permission = await axios.get(`${mainUrl}/api/getProfile`, {
       headers: {
         Authorization: `bearer ${getCookie("token")}`,
       },
     });
 
-    if(permission.data.data.role.akses.master_armada.view != true){
+    if (permission.data.data.role.akses.master_armada.view != true) {
       navigate("/admin/dashboard");
     }
 
@@ -75,30 +47,50 @@
       delete e.created_at;
       delete e.updated_at;
     });
-    console.log(response)
-    return response.data.data;
+    const sorted = response.data.data
+      .map((e) => {
+        // remove unused fields
+        delete e.created_at;
+        delete e.updated_at;
+
+        // assign rank
+        let rank = 2; // default middle
+        if (e.status_stnk === "aktif" && e.status_uji_kir === "aktif") {
+          rank = 1; // top
+        } else if (
+          e.status_stnk === "nonaktif" &&
+          e.status_uji_kir === "nonaktif"
+        ) {
+          rank = 3; // bottom
+        }
+        return { ...e, rank };
+      })
+      .sort((a, b) => a.rank - b.rank);
+
+    console.log(sorted);
+    return sorted;
   }
 
   var isDataValid = false;
 
   async function getData() {
     var cachelife = 5000;
-    var localStorageData = localStorage.getItem('armada'); 
+    var localStorageData = localStorage.getItem("armada");
     var cacheddata = await JSON.parse(localStorageData);
-    if(cacheddata){
-     var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
+    if (cacheddata) {
+      var expired = Date.now() / 1000 - cacheddata.cachetime > cachelife;
     }
-    if (cacheddata  && (!expired && isDataValid)){
+    if (cacheddata && !expired && isDataValid) {
       data = cacheddata.data;
       isDataValid = true;
-    }else{
-    //otherwise fetch data from api then save the data in localstorage 
-     fetchData().then((res) => {
-      var json = {data: res, cachetime: Date.now() / 1000};
-      localStorage.setItem('armada', JSON.stringify(json));
-      data = res;
-      isDataValid = true;
-     })
+    } else {
+      //otherwise fetch data from api then save the data in localstorage
+      fetchData().then((res) => {
+        var json = { data: res, cachetime: Date.now() / 1000 };
+        localStorage.setItem("armada", JSON.stringify(json));
+        data = res;
+        isDataValid = true;
+      });
     }
   }
 </script>
@@ -117,10 +109,13 @@
         />
       </Route>
       <Route path="add">
-        <CardInputArmada onSuccess={() => isDataValid = false} />
+        <CardInputArmada onSuccess={() => (isDataValid = false)} />
       </Route>
       <Route path="edit/:edit" let:params>
-        <CardEditArmada onSuccess={() => isDataValid = false} id={params.edit} />
+        <CardEditArmada
+          onSuccess={() => (isDataValid = false)}
+          id={params.edit}
+        />
       </Route>
     </Router>
   </div>

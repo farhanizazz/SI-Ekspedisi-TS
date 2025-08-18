@@ -20,7 +20,7 @@
     "Nomor HP",
     "Keterangan",
     "Tanggal bergabung",
-    "Status Sopir"
+    "Status Sopir",
   ];
 
   function fetchData() {
@@ -43,10 +43,16 @@
               res.data.forEach((e) => {
                 delete e.created_at;
                 delete e.updated_at;
-                if(e.status == 'tidak_aktif') {
-                  e.status = "nonaktif"
+                if (e.status == "tidak_aktif") {
+                  e.status = "nonaktif";
                 }
               });
+
+              res.data.sort((a, b) => {
+                if (a.status === b.status) return 0;
+                return a.status === "aktif" ? -1 : 1;
+              });
+
               data = res.data;
             });
           });
