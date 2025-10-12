@@ -137,6 +137,8 @@
                   e.pembuat = e.pembuat.name;
                 }
                 if (e.keterangan == null) e.keterangan = "Tidak ada keterangan";
+                const { nominal, ...rest } = e;
+                e = { ...rest, nominal };
               });
               data = res.data.list;
               dataLength = res.data.meta.links.length;

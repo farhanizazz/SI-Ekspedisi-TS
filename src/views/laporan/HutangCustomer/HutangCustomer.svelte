@@ -156,6 +156,7 @@
         />
         <h1>Status:</h1>
         <Select
+          value="all"
           showChevron={true}
           placeholder=""
           id="grid-penyewa"

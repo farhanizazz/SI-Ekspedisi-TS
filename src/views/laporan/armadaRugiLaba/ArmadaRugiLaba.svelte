@@ -14,7 +14,18 @@
   import Select from "svelte-select";
 
   let data = [];
-  const headingSubkon = ["Nopol", "Pemasukan Setor", "Pengeluaran Servis", "Total"];
+  let total = {
+    pemasukan_setor: 0,
+    pengeluaran_servis: 0,
+    total_akhir: 0
+  };
+  const headingSubkon = [
+    "Nopol",
+    "Pemasukan Setor",
+    "Pengeluaran Servis",
+    "Total",
+  ];
+  let IDRFormatter = new Intl.NumberFormat("id-ID");
   const today = new Date();
   let tglAwal = today.toISOString().substring(0, 10);
   let tglAkhir = today.toISOString().substring(0, 10);
@@ -25,10 +36,10 @@
 
   function transformData(data) {
     return {
-      "Nopol": data.nopol,
+      Nopol: data.nopol,
       "Pemasukan Setor": data.pemasukan_setor, // Using formatted currency
       "Pengeluaran Servis": data.pengeluaran_servis, // Using formatted currency
-      "Total": data.pemasukan_setor - Math.abs(data.pengeluaran_servis)
+      Total: data.pemasukan_setor - Math.abs(data.pengeluaran_servis),
     };
   }
 
@@ -47,6 +58,7 @@
 
         console.log(res.data.list);
         data = res.data.list;
+        total = res.data.total;
       });
     });
   }
@@ -145,6 +157,21 @@
         <i class="fa-solid fa-print pr-2"></i>Cetak
       </button>
     </div>
+    <div
+      class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded bg-white"
+    >
+      <div class="rounded-t mb-0 px-4 py-3 border-0">
+        <div class="flex flex-wrap items-center">
+          <div
+            class="relative w-full px-4 max-w-full flex-grow flex flex-1 flex-col"
+          >
+            <p>Pemasukan Setor: { "Rp. " + IDRFormatter.format(total.pemasukan_setor)}</p>
+            <p>Pengeluaran Servis: { "Rp. " + IDRFormatter.format(total.pengeluaran_servis)}</p>
+            <p>Total Akhir: { "Rp. " + IDRFormatter.format(total.total_akhir)}</p>
+          </div>
+        </div>
+      </div>
+    </div>
     <Router route="roles">
       <Route path="">
         <CardTable
@@ -158,12 +185,6 @@
           onLoad={fetchData}
           subtotal="Total"
         />
-      </Route>
-      <Route path="add">
-        <CardInputRoles />
-      </Route>
-      <Route path="edit/:edit" let:params>
-        <CardEditRoles id={params.edit} />
       </Route>
     </Router>
   </div>

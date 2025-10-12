@@ -45,6 +45,7 @@
   import ArmadaRugiLaba from "/src/views/laporan/armadaRugiLaba/ArmadaRugiLaba.svelte";
   import BukuBesar from "/src/views/laporan/BukuBesar/BukuBesar.svelte";
   import ArmadaRugiLabaPajak from "/src/views/laporan/armadaRugiLabaPajak/ArmadaRugiLabaPajak.svelte";
+  import LaporanOrder from "/src/views/laporan/laporanOrder/LaporanOrder.svelte";
 
   export let location;
   export let admin = "";
@@ -143,6 +144,7 @@
         <Route path="armadaRugiLaba/*armadaRugiLaba" component={ArmadaRugiLaba} />
         <Route path="armadaRugiLabaPajak/*armadaRugiLabaPajak" component={ArmadaRugiLabaPajak} />
         <Route path="bukuBesar/*bukuBesar" component={BukuBesar} />
+        <Route path="laporanOrder/*laporanOrder" component={LaporanOrder} />
       </Router>
       <Router url="invoice">
         <Route path="invoice/buat" component={Invoices} />
