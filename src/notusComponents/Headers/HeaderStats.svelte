@@ -403,6 +403,13 @@
               Laporan Laba Rugi Pajak
             </li>
           </a>
+          <a use:link href="/laporan/laporanOrder">
+            <li
+              class="px-6 py-3 {location.pathname === '/laporan/laporanOrder' ? 'active' : ''}"
+            >
+              Laporan Order
+            </li>
+          </a>
         </ul>
       {/if}
       <!-- <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
